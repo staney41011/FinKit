@@ -123,6 +123,7 @@ const SimpleLineChart = ({ data, color="#d97706", data2 }) => {
   if (!data || data.length === 0) return null;
   const maxVal = Math.max(...data.map(d => d.value), ...(data2 ? data2.map(d => d.value) : [0]));
   const minVal = 0;
+  
   const getPoints = (dataset) => dataset.map((d, i) => {
     const x = (i / (dataset.length - 1)) * 100;
     const y = 100 - ((d.value - minVal) / (maxVal - minVal)) * 100;
@@ -137,14 +138,8 @@ const SimpleLineChart = ({ data, color="#d97706", data2 }) => {
         <line x1="0" y1="100" x2="100" y2="100" stroke="#cbd5e1" strokeWidth="0.5" />
         
         {/* Line 1 (Amber) */}
-        <defs>
-            <linearGradient id="gold-gradient" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.2"/>
-              <stop offset="100%" stopColor="#f59e0b" stopOpacity="0"/>
-            </linearGradient>
-        </defs>
         <polyline fill="none" stroke={color} strokeWidth="2" points={getPoints(data)} vectorEffect="non-scaling-stroke" />
-        <polygon fill="url(#gold-gradient)" points={`0,100 ${getPoints(data)} 100,100`} />
+        <polygon fill={color} fillOpacity="0.1" points={`0,100 ${getPoints(data)} 100,100`} />
         
         {/* Line 2 (Comparison - Grey) */}
         {data2 && <polyline fill="none" stroke="#94a3b8" strokeWidth="2" points={getPoints(data2)} vectorEffect="non-scaling-stroke" strokeDasharray="4" />}
@@ -155,7 +150,7 @@ const SimpleLineChart = ({ data, color="#d97706", data2 }) => {
 };
 
 // ==========================================
-// 核心計算模組
+// 計算機模組
 // ==========================================
 
 const TaxCalculator = () => {
@@ -229,27 +224,45 @@ const CompoundCalculator = () => {
   const [years, setYears] = useStickyState(20, 'v4_cmp_y');
   const [compareMode, setCompareMode] = useState(false);
   const [compareRate, setCompareRate] = useStickyState(1.7, 'v4_cmp_cr');
+
   const calculate = (r) => {
-    const P = Number(principal); const rateVal = Number(r)/100; let data = [];
+    const P = Number(principal);
+    const rateVal = Number(r) / 100;
+    let data = [];
     for(let i=0; i<=years; i++) data.push({ value: P * Math.pow((1 + rateVal), i) });
     return { final: data[data.length-1].value, data };
   };
-  const res1 = calculate(rate); const res2 = calculate(compareRate);
+
+  const res1 = calculate(rate);
+  const res2 = calculate(compareRate);
+
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
       <SectionHeader title="單筆複利效應" icon={TrendingUp} description="時間是財富最好的朋友，PK 模式比較投資與定存差距。" />
-      <div className="flex justify-end no-print mb-2"><button onClick={()=>setCompareMode(!compareMode)} className={`text-xs px-4 py-1.5 rounded-full border transition-all ${compareMode ? 'bg-amber-600 text-white border-amber-600' : 'text-slate-500 border-slate-300 hover:border-amber-500 hover:text-amber-600'}`}>{compareMode ? '關閉比較' : '開啟定存 PK'}</button></div>
+      <div className="flex justify-end no-print mb-2">
+         <button onClick={()=>setCompareMode(!compareMode)} className={`text-xs px-4 py-1.5 rounded-full border transition-all ${compareMode ? 'bg-amber-600 text-white border-amber-600' : 'text-slate-500 border-slate-300 hover:border-amber-500 hover:text-amber-600'}`}>
+            {compareMode ? '關閉比較' : '開啟定存 PK'}
+         </button>
+      </div>
       <div className="grid md:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-2xl shadow-lg border border-slate-100">
           <InputGroup label="本金投入" value={principal} onChange={setPrincipal} prefix="$" />
           <InputGroup label="投資年化報酬率" value={rate} onChange={setRate} suffix="%" />
           <InputGroup label="投資年限" value={years} onChange={setYears} suffix="年" />
-          {compareMode && <div className="pt-4 border-t border-slate-100 mt-4 animate-in fade-in"><InputGroup label="比較對象 (如定存) 利率" value={compareRate} onChange={setCompareRate} suffix="%" /></div>}
+          {compareMode && (
+             <div className="pt-4 border-t border-slate-100 mt-4 animate-in fade-in">
+                <InputGroup label="比較對象 (如定存) 利率" value={compareRate} onChange={setCompareRate} suffix="%" />
+             </div>
+          )}
         </div>
         <div className="space-y-4">
           <ResultCard title={`${years} 年後總資產`} value={`$${fmt(res1.final)}`} highlight={true} />
-          {compareMode && <ResultCard title="定存對照組資產" value={`$${fmt(res2.final)}`} subtext={`相差 $${fmt(res1.final - res2.final)}`} colorClass="text-slate-500" />}
-          <div className="bg-white p-4 rounded-xl border border-slate-200 no-print"><SimpleLineChart data={res1.data} data2={compareMode ? res2.data : null} /></div>
+          {compareMode && (
+             <ResultCard title="定存對照組資產" value={`$${fmt(res2.final)}`} subtext={`相差 $${fmt(res1.final - res2.final)}`} colorClass="text-slate-500" />
+          )}
+          <div className="bg-white p-4 rounded-xl border border-slate-200 no-print">
+             <SimpleLineChart data={res1.data} data2={compareMode ? res2.data : null} />
+          </div>
         </div>
       </div>
     </div>
@@ -262,21 +275,46 @@ const StockCalculator = () => {
   const [shares, setShares] = useStickyState(1000, 'v4_stk_sh');
   const [discount, setDiscount] = useStickyState(60, 'v4_stk_disc');
   const [type, setType] = useStickyState('stock', 'v4_stk_type');
+
   const calculate = () => {
-    let taxRate = 0.003; if(type === 'day') taxRate = 0.0015; if(type === 'etf') taxRate = 0.001; if(type === 'bond') taxRate = 0;
-    const feeRate = 0.001425; const discVal = discount/100;
-    const buyVal = buyPrice * shares; const sellVal = sellPrice * shares;
-    const buyFee = Math.floor(Math.max(20, buyVal * feeRate * discVal)); const sellFee = Math.floor(Math.max(20, sellVal * feeRate * discVal));
+    let taxRate = 0.003; 
+    if (type === 'day') taxRate = 0.0015;
+    if (type === 'etf') taxRate = 0.001;
+    if (type === 'bond') taxRate = 0;
+
+    const feeRate = 0.001425;
+    const discVal = discount / 100;
+    const totalShares = Number(shares);
+    const buyVal = buyPrice * totalShares;
+    const sellVal = sellPrice * totalShares;
+    
+    const buyFee = Math.floor(Math.max(20, buyVal * feeRate * discVal));
+    const sellFee = Math.floor(Math.max(20, sellVal * feeRate * discVal));
     const tax = Math.floor(sellVal * taxRate);
-    return { profit: sellVal - sellFee - tax - buyVal - buyFee, tax, buyFee, sellFee };
+    
+    const profit = sellVal - sellFee - tax - buyVal - buyFee;
+    return { profit, tax, buyFee, sellFee };
   };
   const res = calculate();
+
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
       <SectionHeader title="台股交易獲利" icon={BarChart3} description="支援個股、當沖、ETF (0.1%) 及債券 (0%) 稅率。" />
       <div className="grid md:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-2xl shadow-lg border border-slate-100">
-          <div className="mb-6"><label className="block text-xs uppercase tracking-wider font-bold text-slate-500 mb-3">交易種類</label><div className="grid grid-cols-2 gap-3">{[{id:'stock', name:'個股 (0.3%)'}, {id:'day', name:'當沖 (0.15%)'}, {id:'etf', name:'ETF (0.1%)'}, {id:'bond', name:'債券ETF (0%)'}].map(t => (<button key={t.id} onClick={()=>setType(t.id)} className={`py-2.5 text-xs font-medium rounded-lg border transition-all ${type===t.id ? 'bg-amber-600 text-white border-amber-600 shadow-md' : 'text-slate-500 border-slate-200 bg-slate-50 hover:bg-white'}`}>{t.name}</button>))}</div></div>
+          <div className="mb-6">
+             <label className="block text-xs uppercase tracking-wider font-bold text-slate-500 mb-3">交易種類</label>
+             <div className="grid grid-cols-2 gap-3">
+               {[
+                 {id:'stock', name:'個股 (0.3%)'}, {id:'day', name:'當沖 (0.15%)'},
+                 {id:'etf', name:'ETF (0.1%)'}, {id:'bond', name:'債券ETF (0%)'}
+               ].map(t => (
+                 <button key={t.id} onClick={()=>setType(t.id)} className={`py-2.5 text-xs font-medium rounded-lg border transition-all ${type===t.id ? 'bg-amber-600 text-white border-amber-600 shadow-md' : 'text-slate-500 border-slate-200 bg-slate-50 hover:bg-white'}`}>
+                   {t.name}
+                 </button>
+               ))}
+             </div>
+          </div>
           <InputGroup label="買入價格" value={buyPrice} onChange={setBuyPrice} prefix="$" />
           <InputGroup label="賣出價格" value={sellPrice} onChange={setSellPrice} prefix="$" />
           <InputGroup label="股數" value={shares} onChange={setShares} suffix="股" />
@@ -284,7 +322,10 @@ const StockCalculator = () => {
         </div>
         <div className="space-y-4">
           <ResultCard title="預估淨損益" value={`$${fmt(res.profit)}`} highlight={true} colorClass={res.profit >= 0 ? "text-red-500" : "text-green-600"} />
-          <div className="grid grid-cols-2 gap-4"><div className="p-4 bg-slate-50 border border-slate-200 rounded-xl"><p className="text-xs text-slate-500 mb-1">總手續費</p><p className="font-bold text-slate-700 font-mono">${res.buyFee + res.sellFee}</p></div><div className="p-4 bg-slate-50 border border-slate-200 rounded-xl"><p className="text-xs text-slate-500 mb-1">證交稅</p><p className="font-bold text-slate-700 font-mono">${res.tax}</p></div></div>
+          <div className="grid grid-cols-2 gap-4">
+             <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl"><p className="text-xs text-slate-500 mb-1">總手續費</p><p className="font-bold text-slate-700 font-mono">${res.buyFee + res.sellFee}</p></div>
+             <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl"><p className="text-xs text-slate-500 mb-1">證交稅</p><p className="font-bold text-slate-700 font-mono">${res.tax}</p></div>
+          </div>
         </div>
       </div>
     </div>
@@ -295,8 +336,12 @@ const DividendCalculator = () => {
     const [shares, setShares] = useStickyState(10000, 'v4_div_sh');
     const [dividend, setDividend] = useStickyState(1.5, 'v4_div_val');
     const [freq, setFreq] = useStickyState(1, 'v4_div_freq');
-    const totalDiv = shares * dividend; const singlePayment = totalDiv / freq;
-    const healthFee = singlePayment >= 20000 ? Math.floor(totalDiv * 0.0211) : 0; const finalIncome = totalDiv - healthFee;
+
+    const totalDiv = shares * dividend;
+    const singlePayment = totalDiv / freq;
+    const healthFee = singlePayment >= 20000 ? Math.floor(totalDiv * 0.0211) : 0;
+    const finalIncome = totalDiv - healthFee;
+
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
             <SectionHeader title="存股配息 & 二代健保" icon={Coins} description="自動試算補充保費門檻 (單筆2萬)。" />
@@ -304,11 +349,23 @@ const DividendCalculator = () => {
                 <div className="bg-white p-6 rounded-2xl shadow-lg border border-slate-100">
                     <InputGroup label="持有股數" value={shares} onChange={setShares} suffix="股" />
                     <InputGroup label="預估每股總配息 (年)" value={dividend} onChange={setDividend} prefix="$" />
-                    <div className="mb-4"><label className="block text-xs uppercase tracking-wider font-bold text-slate-500 mb-3">配息頻率</label><div className="flex gap-2">{[{v:1, l:'年配'}, {v:2, l:'半年'}, {v:4, l:'季配'}, {v:12, l:'月配'}].map(o => (<button key={o.v} onClick={()=>setFreq(o.v)} className={`flex-1 py-2 text-xs rounded-lg border transition-colors ${freq===o.v ? 'bg-amber-600 text-white border-amber-600' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-white'}`}>{o.l}</button>))}</div></div>
+                    <div className="mb-4">
+                        <label className="block text-xs uppercase tracking-wider font-bold text-slate-500 mb-3">配息頻率</label>
+                        <div className="flex gap-2">
+                            {[{v:1, l:'年配'}, {v:2, l:'半年'}, {v:4, l:'季配'}, {v:12, l:'月配'}].map(o => (
+                                <button key={o.v} onClick={()=>setFreq(o.v)} className={`flex-1 py-2 text-xs rounded-lg border transition-colors ${freq===o.v ? 'bg-amber-600 text-white border-amber-600' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-white'}`}>{o.l}</button>
+                            ))}
+                        </div>
+                    </div>
                 </div>
                 <div className="space-y-4">
                     <ResultCard title="全年總股息 (稅前)" value={`$${fmt(totalDiv)}`} />
-                    {healthFee > 0 && <div className="p-3 bg-red-50 border border-red-100 rounded-lg flex items-start gap-2 text-red-600 text-sm"><AlertTriangle size={16} className="mt-0.5 shrink-0"/><span>單次領取 ${fmt(singlePayment)} 已達 2 萬門檻，預估扣除補充保費 <strong>${fmt(healthFee)}</strong></span></div>}
+                    {healthFee > 0 && (
+                        <div className="p-3 bg-red-50 border border-red-100 rounded-lg flex items-start gap-2 text-red-600 text-sm">
+                            <AlertTriangle size={16} className="mt-0.5 shrink-0"/>
+                            <span>單次領取 ${fmt(singlePayment)} 已達 2 萬門檻，預估扣除補充保費 <strong>${fmt(healthFee)}</strong></span>
+                        </div>
+                    )}
                     <ResultCard title="實領金額 (稅後)" value={`$${fmt(finalIncome)}`} highlight={true} />
                 </div>
             </div>
@@ -321,14 +378,21 @@ const LoanCalculator = () => {
     const [rate, setRate] = useStickyState(2.1, 'v4_loan_rate');
     const [years, setYears] = useStickyState(30, 'v4_loan_yrs');
     const [gracePeriod, setGracePeriod] = useStickyState(0, 'v4_loan_grace');
+
     const calculate = () => {
-        const P = Number(loanAmount); const r = Number(rate) / 100 / 12;
-        const graceMonths = Number(gracePeriod) * 12; const remainMonths = (Number(years) * 12) - graceMonths;
+        const P = Number(loanAmount);
+        const r = Number(rate) / 100 / 12;
+        const totalMonths = Number(years) * 12;
+        const graceMonths = Number(gracePeriod) * 12;
+        
         const gracePayment = Math.round(P * r);
+        const remainMonths = totalMonths - graceMonths;
         const normalPayment = remainMonths > 0 ? Math.round(P * r * Math.pow(1 + r, remainMonths) / (Math.pow(1 + r, remainMonths) - 1)) : 0;
+        
         return { gracePayment, normalPayment };
     };
     const res = calculate();
+
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
             <SectionHeader title="房貸試算" icon={Home} description="含寬限期計算。" />
@@ -340,7 +404,9 @@ const LoanCalculator = () => {
                     <InputGroup label="寬限期" value={gracePeriod} onChange={setGracePeriod} suffix="年" />
                 </div>
                 <div className="space-y-4">
-                    {gracePeriod > 0 && <ResultCard title={`前 ${gracePeriod} 年月付金`} value={`$${fmt(res.gracePayment)}`} subtext="只繳利息" />}
+                    {gracePeriod > 0 && (
+                        <ResultCard title={`前 ${gracePeriod} 年月付金`} value={`$${fmt(res.gracePayment)}`} subtext="只繳利息" />
+                    )}
                     <ResultCard title={gracePeriod > 0 ? "寬限期後月付金" : "每月應繳本息"} value={`$${fmt(res.normalPayment)}`} highlight={true} />
                 </div>
             </div>
@@ -352,9 +418,11 @@ const FireCalculator = () => {
     const [annualExpense, setAnnualExpense] = useStickyState(600000, 'v4_fire_exp');
     const [pension, setPension] = useStickyState(20000, 'v4_fire_pen');
     const [assets, setAssets] = useStickyState(2000000, 'v4_fire_assets');
+    
     const gapYearly = Math.max(0, annualExpense - (pension * 12));
     const fireNumber = gapYearly * 25;
     const progress = Math.min(100, (assets / fireNumber) * 100);
+
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
             <SectionHeader title="FIRE 退休" icon={Target} description="4% 法則 + 勞退估算。" />
@@ -369,7 +437,9 @@ const FireCalculator = () => {
                          <div className="absolute top-0 right-0 p-4 opacity-5"><Target size={64} className="text-amber-500"/></div>
                          <p className="text-slate-400 text-xs uppercase mb-1 font-bold">FIRE Number</p>
                          <p className="text-3xl font-bold text-amber-500 mb-4 font-mono">${fmt(fireNumber)}</p>
-                         <div className="w-full bg-slate-100 rounded-full h-2 mb-1"><div className="bg-amber-500 h-2 rounded-full" style={{ width: `${progress}%` }}></div></div>
+                         <div className="w-full bg-slate-100 rounded-full h-2 mb-1">
+                            <div className="bg-amber-500 h-2 rounded-full" style={{ width: `${progress}%` }}></div>
+                         </div>
                          <p className="text-xs text-right text-slate-400">進度 {progress.toFixed(1)}%</p>
                     </div>
                 </div>
@@ -383,10 +453,16 @@ const RentVsBuy = () => {
     const [rent, setRent] = useStickyState(30000, 'v4_rvb_rent');
     const [investReturn, setInvestReturn] = useStickyState(6, 'v4_rvb_roi');
     const [years, setYears] = useStickyState(20, 'v4_rvb_yrs');
-    const downPayment = homePrice * 0.2; const loan = homePrice * 0.8; const rate = 0.021 / 12; const n = 360;
+
+    const downPayment = homePrice * 0.2;
+    const loan = homePrice * 0.8;
+    const rate = 0.021 / 12;
+    const n = 360;
     const mortgage = loan * rate * Math.pow(1+rate,n)/(Math.pow(1+rate,n)-1);
+    
     const buyEnd = homePrice * Math.pow(1.02, years) - (years<30?loan*0.4:0);
     const rentEnd = downPayment * Math.pow(1+investReturn/100, years) + Math.max(0, mortgage-rent)*12*years;
+
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
             <SectionHeader title="買房 vs 租房" icon={Building} description="20年後資產 PK。" />
@@ -411,7 +487,9 @@ const InsuranceGap = () => {
     const [debt, setDebt] = useStickyState(5000000, 'v4_ins_debt');
     const [family, setFamily] = useStickyState(5000000, 'v4_ins_fam');
     const [savings, setSavings] = useStickyState(1000000, 'v4_ins_sav');
+    
     const gap = Math.max(0, Number(debt) + Number(family) - Number(savings));
+
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
             <SectionHeader title="保險缺口" icon={ShieldCheck} description="責任需求法。" />
@@ -434,6 +512,7 @@ const InflationCalc = () => {
     const [rate, setRate] = useStickyState(3, 'v4_inf_rate');
     const [years, setYears] = useStickyState(20, 'v4_inf_yrs');
     const futureValue = amount * Math.pow(1 - (rate/100), years);
+
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
             <SectionHeader title="通膨試算" icon={TrendingDown} description="購買力縮水預估。" />
@@ -454,6 +533,7 @@ const InflationCalc = () => {
 const ForexCalculator = () => {
     const [amount, setAmount] = useStickyState(1000, 'v4_fx_amt');
     const [rate, setRate] = useState(32.5);
+
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
             <SectionHeader title="匯率換算" icon={Globe} description="簡易換算。" />
@@ -473,6 +553,7 @@ const ForexCalculator = () => {
 const FcnCalculator = () => {
     const [strike, setStrike] = useStickyState(100, 'v4_fcn_s');
     const [ki, setKi] = useStickyState(65, 'v4_fcn_ki');
+    
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
             <SectionHeader title="FCN 試算" icon={PieChart} description="KI 點位計算。" />
@@ -495,6 +576,7 @@ const DcaCalculator = () => {
     const [years, setYears] = useStickyState(20, 'v4_dca_y');
     const n = years * 12; const r = rate/100/12;
     const fv = monthly * (Math.pow(1+r, n)-1)/r;
+
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
             <SectionHeader title="定期定額" icon={RefreshCw} description="長期複利。" />
@@ -517,6 +599,7 @@ const IrrCalculator = () => {
     const [final, setFinal] = useStickyState(1200000, 'v4_irr_f');
     const [yrs, setYrs] = useStickyState(6, 'v4_irr_y');
     const irr = (Math.pow(final/prin, 1/yrs)-1)*100;
+
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
             <SectionHeader title="IRR 試算" icon={Percent} description="躉繳試算。" />
@@ -537,6 +620,7 @@ const IrrCalculator = () => {
 const ProfileSettings = () => {
     const [name, setName] = useStickyState('', 'v4_name');
     const [line, setLine] = useStickyState('', 'v4_line');
+
     return (
         <div className="space-y-6">
             <SectionHeader title="品牌設定" icon={User} description="設定浮水印。" />
@@ -549,7 +633,7 @@ const ProfileSettings = () => {
 };
 
 // ==========================================
-// 首頁 (白金流體動畫)
+// 首頁 (白金流體版)
 // ==========================================
 const HomePage = ({ changeTab }) => (
   <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -616,7 +700,7 @@ const HomePage = ({ changeTab }) => (
 );
 
 // ==========================================
-// 主程式 Layout (Fix: Mobile Menu white bg & z-index)
+// 主程式 Layout
 // ==========================================
 const FinancialToolkit = () => {
   const [activeTab, setActiveTab] = useStickyState('home', 'v4_tab');
@@ -651,10 +735,10 @@ const FinancialToolkit = () => {
             <Briefcase className="text-amber-500" />
             <span className="tracking-wide">FinKit</span>
         </div>
-        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 text-slate-500 hover:text-slate-900">{isMenuOpen ? <X /> : <Menu />}</button>
+        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 text-slate-500 hover:text-slate-900">{isMenuOpen ? <X /> : <MenuIcon />}</button>
       </div>
 
-      {/* Sidebar (Fix: z-50 & bg-white) */}
+      {/* Sidebar */}
       <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 transform transition-transform duration-300 ease-in-out print:hidden md:translate-x-0 md:static md:block overflow-y-auto custom-scrollbar ${isMenuOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}`}>
         <div className="p-6 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white z-10">
             <div className="flex items-center gap-3 cursor-pointer group" onClick={() => {setActiveTab('home'); setIsMenuOpen(false);}}>
@@ -716,4 +800,10 @@ const FinancialToolkit = () => {
   );
 };
 
-export default FinancialToolkit;
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<FinancialToolkit />);
+    </script>
+</body>
+</html>
+
+

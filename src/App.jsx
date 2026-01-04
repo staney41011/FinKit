@@ -3,7 +3,7 @@ import {
   Calculator, TrendingUp, PieChart, Briefcase, RefreshCw, Menu, X, 
   AlertTriangle, Home, Percent, Globe, Camera, BookOpen, 
   BarChart3, Coins, Target, User, ShieldCheck,
-  Building, TrendingDown, Copy, Plus, Trash2, Share2, ArrowRight
+  Building, TrendingDown, Copy, Plus, Trash2, Share2, ArrowRight, Lock
 } from 'lucide-react';
 
 // ==========================================
@@ -30,35 +30,36 @@ const fmt = (num) => new Intl.NumberFormat('zh-TW', { maximumFractionDigits: 2 }
 
 const InputGroup = ({ label, value, onChange, prefix, suffix, type = "number", step = "1", placeholder, note, readOnly = false }) => (
   <div className="mb-5 no-print group w-full">
-    <label className="block text-xs uppercase tracking-wider font-bold text-slate-500 mb-2">{label}</label>
-    <div className="relative rounded-lg shadow-sm">
-      {prefix && <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span className="text-amber-600 font-medium sm:text-sm">{prefix}</span></div>}
+    <label className="block text-xs uppercase tracking-wider font-bold text-slate-500 mb-2 ml-1">{label}</label>
+    <div className="relative rounded-xl shadow-sm bg-white border border-slate-300 focus-within:border-amber-500 focus-within:ring-1 focus-within:ring-amber-500 transition-all flex items-center h-[50px] overflow-hidden">
+      {prefix && <div className="pl-4 pr-2 text-amber-600 font-bold text-sm select-none">{prefix}</div>}
       <input
         type={type} step={step} value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         readOnly={readOnly}
-        className={`block w-full sm:text-sm rounded-lg p-3.5 
-        ${readOnly ? 'bg-slate-100 border-slate-200 text-slate-500 cursor-not-allowed' : 'bg-white border-slate-300 text-slate-800 focus:ring-2 focus:ring-amber-500 focus:border-amber-500'}
-        border transition-all font-mono tracking-wide placeholder:text-slate-400
-        ${prefix ? 'pl-10' : ''} ${suffix ? 'pr-10' : ''}`}
+        className={`flex-1 h-full w-full bg-transparent border-none focus:ring-0 text-slate-800 placeholder:text-slate-400 text-base font-mono 
+        ${readOnly ? 'bg-slate-50 text-slate-500 cursor-not-allowed' : ''} 
+        ${prefix ? '' : 'pl-4'} ${suffix ? '' : 'pr-4'}`}
+        // 強制垂直置中樣式
+        style={{ paddingTop: 0, paddingBottom: 0 }}
       />
-      {suffix && <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"><span className="text-slate-500 sm:text-sm">{suffix}</span></div>}
+      {suffix && <div className="pr-4 pl-2 text-slate-400 text-xs font-medium select-none bg-slate-50 h-full flex items-center border-l border-slate-100">{suffix}</div>}
     </div>
-    {note && <p className="mt-1.5 text-xs text-slate-400">{note}</p>}
+    {note && <p className="mt-1.5 text-xs text-slate-400 ml-1">{note}</p>}
   </div>
 );
 
 const ResultCard = ({ title, value, subtext, highlight = false, colorClass = "text-amber-600" }) => (
-  <div className={`p-5 rounded-xl border transition-all duration-300 relative overflow-hidden group
+  <div className={`p-5 rounded-xl border transition-all duration-300 relative overflow-hidden group h-full flex flex-col justify-center
     ${highlight ? 'bg-gradient-to-br from-white to-amber-50/50 border-amber-200 shadow-md' : 'bg-white border-slate-200 shadow-sm'}`}>
-    <p className="text-xs uppercase tracking-widest text-slate-500 font-bold">{title}</p>
-    <p className={`text-3xl font-bold mt-2 tracking-tight font-mono ${highlight ? colorClass : 'text-slate-800'}`}>{value}</p>
-    {subtext && <p className="text-xs text-slate-400 mt-2">{subtext}</p>}
+    <p className="text-xs uppercase tracking-widest text-slate-500 font-bold mb-1">{title}</p>
+    <p className={`text-3xl font-bold tracking-tight font-mono ${highlight ? colorClass : 'text-slate-800'}`}>{value}</p>
+    {subtext && <p className="text-xs text-slate-400 mt-2 border-t border-slate-100 pt-2">{subtext}</p>}
   </div>
 );
 
-// 截圖與分享功能 (強制橫式版)
+// 截圖功能 (背景克隆技術 - 完美橫式)
 const SectionHeader = ({ title, icon: Icon, description }) => {
   const [isCapturing, setIsCapturing] = useState(false);
 
@@ -66,52 +67,54 @@ const SectionHeader = ({ title, icon: Icon, description }) => {
     if (!window.html2canvas) return alert('系統載入中，請稍後再試');
     setIsCapturing(true);
     
-    // 取得截圖區域
-    const element = document.getElementById('capture-area');
+    // 1. 抓取要截圖的區域
+    const originalElement = document.getElementById('capture-area');
     
-    // 強制設定寬度為 1200px (模擬電腦版橫式)，暫時鎖定高度
-    const originalStyle = element.getAttribute('style');
-    element.style.width = '1200px'; 
-    element.style.padding = '40px';
-    element.style.backgroundColor = '#f8fafc';
-    element.style.position = 'fixed';
-    element.style.top = '0';
-    element.style.left = '0';
-    element.style.zIndex = '-1'; // 藏在後面不讓用戶看到變形瞬間
+    // 2. 深度克隆節點 (複製一份一模一樣的)
+    const clone = originalElement.cloneNode(true);
     
-    // 等待 DOM 渲染
-    await new Promise(resolve => setTimeout(resolve, 300));
+    // 3. 設定克隆體的樣式 (強制電腦版寬度，隱藏在背景)
+    clone.id = "capture-clone";
+    Object.assign(clone.style, {
+        position: 'fixed', top: '0', left: '-9999px', // 藏在螢幕外
+        width: '1200px', // 強制寬度為 1200px (橫式)
+        height: 'auto',
+        zIndex: '-1',
+        backgroundColor: '#f8fafc',
+        padding: '40px'
+    });
+
+    // 4. 強制顯示頁尾浮水印 (移除可能導致隱藏的 class)
+    const footer = clone.querySelector('footer');
+    if(footer) footer.style.display = 'flex';
+    
+    // 5. 插入 body 開始渲染
+    document.body.appendChild(clone);
+    
+    // 6. 等待圖片與字型載入
+    await new Promise(resolve => setTimeout(resolve, 800)); 
 
     try {
-        const canvas = await window.html2canvas(element, { 
-            scale: 2, // 高解析度
+        const canvas = await window.html2canvas(clone, { 
+            scale: 2, // 2倍解析度，清晰
             useCORS: true,
-            width: 1200, // 強制寬度
+            width: 1200,
             windowWidth: 1200
         });
 
-        // 復原樣式
-        element.setAttribute('style', originalStyle || '');
-        element.style.width = '';
-        element.style.position = '';
-        element.style.zIndex = '';
-
         canvas.toBlob(async (blob) => {
             const file = new File([blob], `FinKit_${title}.png`, { type: 'image/png' });
-
-            // 嘗試呼叫原生分享 (手機上可選 LINE)
+            // 手機分享 (LINE/AirDrop)
             if (navigator.share && navigator.canShare({ files: [file] })) {
                 try {
                     await navigator.share({
                         files: [file],
                         title: 'FinKit 試算報告',
-                        text: `這是我的 ${title} 試算結果，分享給您參考。`
+                        text: `這是 ${title} 的試算結果`
                     });
-                } catch (err) {
-                    console.log('分享取消');
-                }
+                } catch (err) { console.log('分享取消'); }
             } else {
-                // 電腦版或不支援分享，則下載
+                // 電腦下載
                 const link = document.createElement('a');
                 link.download = `FinKit_${title}.png`;
                 link.href = canvas.toDataURL();
@@ -120,10 +123,10 @@ const SectionHeader = ({ title, icon: Icon, description }) => {
         });
     } catch (err) {
         console.error(err);
-        alert('截圖失敗，請手動截圖');
-        // 確保發生錯誤也要復原
-        element.setAttribute('style', originalStyle || '');
+        alert('截圖失敗，請重試');
     } finally {
+        // 7. 清理戰場
+        document.body.removeChild(clone);
         setIsCapturing(false);
     }
   };
@@ -144,14 +147,14 @@ const SectionHeader = ({ title, icon: Icon, description }) => {
             className="px-4 py-2 bg-slate-800 text-white text-sm font-medium rounded-lg hover:bg-slate-700 transition-colors flex items-center gap-2 shadow-md disabled:opacity-50"
         >
           {isCapturing ? <RefreshCw className="animate-spin" size={16}/> : <Share2 size={16} />} 
-          {isCapturing ? '生成中...' : '分享圖卡'}
+          {isCapturing ? '生成中' : '分享圖卡'}
         </button>
       </div>
     </div>
   );
 };
 
-// 互動式圖表 (含十字線與軸標示)
+// 互動式圖表 (含 X/Y 軸標示)
 const InteractiveChart = ({ data, color="#d97706", data2, title="資產走勢" }) => {
   const [hoverVal, setHoverVal] = useState(null);
   const [hoverPos, setHoverPos] = useState(null);
@@ -181,185 +184,159 @@ const InteractiveChart = ({ data, color="#d97706", data2, title="資產走勢" }
   };
 
   return (
-    <div className="w-full mt-6 mb-2 no-print select-none">
-      <div className="flex justify-between text-xs text-slate-400 mb-1 font-mono">
-          <span>${fmt(maxVal)}</span>
-          <span className="font-bold text-slate-500">{title}</span>
-      </div>
-      <div 
+    <div className="w-full mt-8 mb-4 select-none pr-8"> {/* pr-8 for Y-axis labels */}
+      <div className="relative h-64 border-l border-b border-slate-300 bg-white"
         ref={containerRef}
-        className="relative h-56 border-l border-b border-slate-300 cursor-crosshair bg-slate-50/50"
         onMouseMove={handleMouseMove}
         onMouseLeave={() => {setHoverVal(null); setHoverPos(null);}}
         onTouchMove={handleMouseMove}
       >
+        {/* Y軸標示 (左側) - 不要在截圖時跑掉 */}
+        <div className="absolute -left-8 top-0 text-[10px] text-slate-400 w-6 text-right">${fmt(maxVal)}</div>
+        <div className="absolute -left-8 top-1/2 text-[10px] text-slate-400 w-6 text-right">${fmt(maxVal/2)}</div>
+        <div className="absolute -left-8 bottom-0 text-[10px] text-slate-400 w-6 text-right">$0</div>
+
         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full overflow-visible">
             {/* Grid */}
-            {[0, 25, 50, 75, 100].map(p => (
-                <line key={p} x1="0" y1={p} x2="100" y2={p} stroke="#e2e8f0" strokeWidth="0.5" />
-            ))}
+            {[0, 25, 50, 75, 100].map(p => <line key={p} x1="0" y1={p} x2="100" y2={p} stroke="#f1f5f9" strokeWidth="0.5" />)}
             
             {/* Lines */}
             <polyline fill="none" stroke={color} strokeWidth="2" points={getPoints(data)} vectorEffect="non-scaling-stroke" />
             {data2 && <polyline fill="none" stroke="#94a3b8" strokeWidth="2" points={getPoints(data2)} vectorEffect="non-scaling-stroke" strokeDasharray="4" />}
             
-            {/* Hover Line & Dot */}
+            {/* Hover Crosshair */}
             {hoverPos !== null && (
                 <>
-                    <line x1={hoverPos} y1="0" x2={hoverPos} y2="100" stroke="#64748b" strokeWidth="1" strokeDasharray="2" vectorEffect="non-scaling-stroke" />
-                    <circle cx={hoverPos} cy={100 - (hoverVal.val1/maxVal)*100} r="3" fill={color} stroke="white" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+                    <line x1={hoverPos} y1="0" x2={hoverPos} y2="100" stroke="#64748b" strokeWidth="1" strokeDasharray="4" vectorEffect="non-scaling-stroke" />
+                    <circle cx={hoverPos} cy={100 - (hoverVal.val1/maxVal)*100} r="4" fill={color} stroke="white" strokeWidth="2" vectorEffect="non-scaling-stroke" />
                 </>
             )}
         </svg>
 
         {/* Tooltip */}
         {hoverVal && (
-            <div className="absolute top-2 bg-white/90 backdrop-blur border border-slate-200 text-xs p-2 rounded shadow-lg pointer-events-none z-10 whitespace-nowrap" 
-                style={{ left: `${Math.min(70, Math.max(30, hoverPos))}%`, transform: 'translate(-50%, 0)' }}>
-                <p className="font-bold mb-1 text-slate-700 border-b border-slate-100 pb-1">{hoverVal.label}</p>
-                <p style={{color}}>方案A: ${fmt(hoverVal.val1)}</p>
-                {hoverVal.val2 && <p className="text-slate-500">方案B: ${fmt(hoverVal.val2)}</p>}
+            <div className="absolute top-0 bg-slate-800 text-white text-xs p-2 rounded shadow-xl z-10 pointer-events-none whitespace-nowrap" 
+                style={{ left: `${Math.min(70, Math.max(30, hoverPos))}%`, transform: 'translate(-50%, -120%)' }}>
+                <p className="font-bold border-b border-slate-600 pb-1 mb-1 text-slate-300">{hoverVal.label}</p>
+                <p className="text-amber-400 text-sm">主: ${fmt(hoverVal.val1)}</p>
+                {hoverVal.val2 && <p className="text-slate-400 text-sm">副: ${fmt(hoverVal.val2)}</p>}
             </div>
         )}
       </div>
-      <div className="flex justify-between text-xs text-slate-400 mt-1 font-mono">
+      {/* X軸標示 */}
+      <div className="flex justify-between text-xs text-slate-400 mt-2 font-mono pl-1">
           <span>Start</span>
-          <span>{data.length-1} Years/Periods</span>
+          <span>{Math.floor(data.length/2)}</span>
+          <span>{data.length-1} (End)</span>
       </div>
     </div>
   );
 };
 
 // ==========================================
-// FCN 結構型商品 (全面重做)
+// FCN 結構型商品 (V5 手機版優化)
 // ==========================================
 const FcnCalculator = () => {
-    // 參數狀態
     const [assets, setAssets] = useStickyState([{id:1, code:'2330', price:1000}], 'v5_fcn_assets');
-    const [principal, setPrincipal] = useStickyState(3000000, 'v5_fcn_p'); // 投入本金
-    const [months, setMonths] = useStickyState(3, 'v5_fcn_m'); // 天期(月)
-    const [yieldRate, setYieldRate] = useStickyState(8, 'v5_fcn_y'); // 年化配息
-    const [kiPct, setKiPct] = useStickyState(65, 'v5_fcn_ki'); // KI%
-    const [koPct, setKoPct] = useStickyState(100, 'v5_fcn_ko'); // KO%
-    const [strikePct, setStrikePct] = useStickyState(100, 'v5_fcn_str'); // Strike%
+    const [principal, setPrincipal] = useStickyState(3000000, 'v5_fcn_p');
+    const [months, setMonths] = useStickyState(3, 'v5_fcn_m');
+    const [yieldRate, setYieldRate] = useStickyState(8, 'v5_fcn_y');
+    const [kiPct, setKiPct] = useStickyState(65, 'v5_fcn_ki');
+    const [koPct, setKoPct] = useStickyState(100, 'v5_fcn_ko');
+    const [strikePct, setStrikePct] = useStickyState(100, 'v5_fcn_str');
 
-    // 新增/刪除標的
-    const addAsset = () => {
-        if(assets.length >= 5) return alert('最多支援 5 檔標的');
-        setAssets([...assets, { id: Date.now(), code: '', price: '' }]);
-    };
-    const removeAsset = (id) => {
-        if(assets.length <= 1) return;
-        setAssets(assets.filter(a => a.id !== id));
-    };
-    const updateAsset = (id, field, val) => {
-        setAssets(assets.map(a => a.id === id ? { ...a, [field]: val } : a));
-    };
+    const addAsset = () => { if(assets.length >= 5) return alert('最多5檔'); setAssets([...assets, { id: Date.now(), code: '', price: '' }]); };
+    const removeAsset = (id) => { if(assets.length <= 1) return; setAssets(assets.filter(a => a.id !== id)); };
+    const updateAsset = (id, field, val) => { setAssets(assets.map(a => a.id === id ? { ...a, [field]: val } : a)); };
 
-    // 計算結果
     const monthlyCoupon = Math.floor(principal * (yieldRate / 100) / 12);
     const totalCoupon = monthlyCoupon * months;
     
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
-            <SectionHeader title="FCN / ELN 多標的試算" icon={PieChart} description="連結 1~5 檔標的，自動計算 KO/KI/Strike 價位與預估配息。" />
+            <SectionHeader title="FCN 多標的試算" icon={PieChart} description="連結 1~5 檔標的，自動計算 KO/KI/Strike 價位與預估配息。" />
             
-            <div className="grid md:grid-cols-12 gap-6">
-                {/* 左側：設定區 (佔 7/12) */}
-                <div className="md:col-span-7 space-y-6">
-                    {/* 1. 連結標的設定 */}
-                    <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                        <div className="flex justify-between items-center mb-3">
-                            <h3 className="text-sm font-bold text-slate-600">連結標的 (Underlying)</h3>
-                            <button onClick={addAsset} className="text-xs flex items-center gap-1 text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-colors">
-                                <Plus size={14}/> 新增標的
-                            </button>
+            <div className="grid lg:grid-cols-12 gap-8">
+                {/* 左側：設定區 */}
+                <div className="lg:col-span-7 space-y-6">
+                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-sm font-bold text-slate-700 flex items-center gap-2"><Target size={16} className="text-amber-500"/> 連結標的設定</h3>
+                            <button onClick={addAsset} className="text-xs bg-blue-50 text-blue-600 px-3 py-1.5 rounded-full hover:bg-blue-100 transition-colors font-bold">+ 新增標的</button>
                         </div>
                         <div className="space-y-3">
                             {assets.map((asset, idx) => (
-                                <div key={asset.id} className="flex gap-2 items-center">
-                                    <span className="text-xs text-slate-400 w-4">{idx+1}.</span>
-                                    <input 
-                                        type="text" placeholder="代號 (如 2330)" 
-                                        value={asset.code} 
-                                        onChange={(e)=>updateAsset(asset.id, 'code', e.target.value)}
-                                        className="w-1/3 p-2 text-sm border border-slate-300 rounded bg-slate-50 uppercase"
-                                    />
-                                    <input 
-                                        type="number" placeholder="期初價格" 
-                                        value={asset.price} 
-                                        onChange={(e)=>updateAsset(asset.id, 'price', e.target.value)}
-                                        className="flex-1 p-2 text-sm border border-slate-300 rounded"
-                                    />
-                                    <button onClick={()=>removeAsset(asset.id)} className="p-2 text-slate-400 hover:text-red-500">
-                                        <Trash2 size={16}/>
-                                    </button>
+                                <div key={asset.id} className="flex flex-col sm:flex-row gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100 relative group">
+                                    <div className="flex items-center gap-2 w-full sm:w-1/3">
+                                        <span className="text-xs font-bold text-slate-400 w-4">{idx+1}.</span>
+                                        <input type="text" placeholder="代號 (如 2330)" value={asset.code} onChange={(e)=>updateAsset(asset.id, 'code', e.target.value)} className="w-full p-2.5 text-sm border border-slate-300 rounded-lg uppercase font-bold focus:ring-amber-500"/>
+                                    </div>
+                                    <div className="flex items-center gap-2 w-full sm:w-1/3">
+                                        <input type="number" placeholder="期初價格" value={asset.price} onChange={(e)=>updateAsset(asset.id, 'price', e.target.value)} className="w-full p-2.5 text-sm border border-slate-300 rounded-lg focus:ring-amber-500"/>
+                                    </div>
+                                    <button onClick={()=>removeAsset(asset.id)} className="absolute top-2 right-2 sm:static p-2 text-slate-300 hover:text-red-500 transition-colors"><Trash2 size={16}/></button>
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    {/* 2. 條件與本金 */}
-                    <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                         <InputGroup label="投入本金 (Nominal)" value={principal} onChange={setPrincipal} prefix="$" />
                         <div className="grid grid-cols-2 gap-4">
-                            <InputGroup label="產品天期 (月)" value={months} onChange={setMonths} suffix="個月" />
-                            <InputGroup label="年化配息率" value={yieldRate} onChange={setYieldRate} suffix="%" />
+                            <InputGroup label="天期 (月)" value={months} onChange={setMonths} suffix="個月" />
+                            <InputGroup label="年配息率" value={yieldRate} onChange={setYieldRate} suffix="%" />
                         </div>
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-3 gap-3">
                             <InputGroup label="KO (Call)" value={koPct} onChange={setKoPct} suffix="%" />
-                            <InputGroup label="KI (Protection)" value={kiPct} onChange={setKiPct} suffix="%" />
+                            <InputGroup label="KI (Protect)" value={kiPct} onChange={setKiPct} suffix="%" />
                             <InputGroup label="Strike (Put)" value={strikePct} onChange={setStrikePct} suffix="%" />
                         </div>
                     </div>
                 </div>
 
-                {/* 右側：結果區 (佔 5/12) */}
-                <div className="md:col-span-5 space-y-4">
-                    {/* 配息試算卡片 */}
-                    <div className="p-5 bg-gradient-to-br from-slate-800 to-slate-900 text-white rounded-2xl shadow-lg border border-slate-700">
-                        <p className="text-xs text-amber-500 uppercase font-bold tracking-wider mb-2">Income Projection</p>
-                        <div className="flex justify-between items-end mb-4">
-                            <div>
-                                <p className="text-sm text-slate-400">每月配息</p>
-                                <p className="text-2xl font-mono font-bold">${fmt(monthlyCoupon)}</p>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-sm text-slate-400">總配息 ({months}期)</p>
-                                <p className="text-xl font-mono text-amber-400">${fmt(totalCoupon)}</p>
-                            </div>
+                {/* 右側：結果區 */}
+                <div className="lg:col-span-5 space-y-4">
+                    <div className="p-6 bg-slate-800 text-white rounded-2xl shadow-lg border border-slate-700 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-4 opacity-10"><Coins size={80} className="text-amber-500"/></div>
+                        <p className="text-xs text-amber-400 font-bold uppercase tracking-wider mb-4">預估收益分析</p>
+                        <div className="flex justify-between items-end mb-4 border-b border-slate-600 pb-4">
+                            <div><p className="text-sm text-slate-400">每月配息</p><p className="text-2xl font-mono font-bold">${fmt(monthlyCoupon)}</p></div>
+                            <div className="text-right"><p className="text-sm text-slate-400">總配息 ({months}期)</p><p className="text-2xl font-mono text-amber-400">${fmt(totalCoupon)}</p></div>
                         </div>
-                        <div className="w-full bg-slate-700 h-1.5 rounded-full mb-1">
-                            <div className="bg-amber-500 h-1.5 rounded-full" style={{width: '100%'}}></div>
+                        <div className="grid grid-cols-2 gap-4 text-xs text-slate-300">
+                             <div><span className="block text-slate-500">損益兩平點</span> Strike × {(1 - (yieldRate/100)*(months/12)).toFixed(2)}</div>
+                             <div className="text-right"><span className="block text-slate-500">最大損失</span> 本金歸零</div>
                         </div>
-                        <p className="text-[10px] text-slate-400 text-center">不保本商品，最大損失為本金歸零</p>
                     </div>
 
-                    {/* 價位表 */}
-                    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
-                        <table className="w-full text-sm">
-                            <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
-                                <tr>
-                                    <th className="p-3 text-left">標的</th>
-                                    <th className="p-3 text-right">KO (出場)</th>
-                                    <th className="p-3 text-right">KI (保護)</th>
-                                    <th className="p-3 text-right text-red-500">Strike</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-100">
-                                {assets.map((asset) => {
-                                    const p = Number(asset.price) || 0;
-                                    return (
-                                        <tr key={asset.id}>
-                                            <td className="p-3 font-bold text-slate-700">{asset.code || '-'}</td>
-                                            <td className="p-3 text-right text-green-600 font-mono">{p>0 ? (p*koPct/100).toFixed(2) : '-'}</td>
-                                            <td className="p-3 text-right text-slate-600 font-mono">{p>0 ? (p*kiPct/100).toFixed(2) : '-'}</td>
-                                            <td className="p-3 text-right text-red-500 font-mono font-bold">{p>0 ? (p*strikePct/100).toFixed(2) : '-'}</td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
+                    {/* 手機版：卡片式列表 / 電腦版：表格 */}
+                    <div className="space-y-3">
+                        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">價位檢核表</p>
+                        {assets.map((asset) => {
+                            const p = Number(asset.price) || 0;
+                            return (
+                                <div key={asset.id} className="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-2 shadow-sm">
+                                    <div className="flex justify-between items-center border-b border-slate-100 pb-2">
+                                        <span className="font-bold text-lg text-slate-800">{asset.code || '未輸入'}</span>
+                                        <span className="text-sm font-mono bg-slate-100 px-2 py-1 rounded text-slate-600">${fmt(p)}</span>
+                                    </div>
+                                    <div className="grid grid-cols-3 gap-2 text-center">
+                                        <div className="bg-green-50 p-2 rounded-lg border border-green-100">
+                                            <p className="text-[10px] text-green-600 font-bold">KO (出場)</p>
+                                            <p className="text-sm font-bold text-green-700 font-mono">${fmt(p*koPct/100)}</p>
+                                        </div>
+                                        <div className="bg-slate-50 p-2 rounded-lg border border-slate-100">
+                                            <p className="text-[10px] text-slate-500 font-bold">KI (保護)</p>
+                                            <p className="text-sm font-bold text-slate-700 font-mono">${fmt(p*kiPct/100)}</p>
+                                        </div>
+                                        <div className="bg-red-50 p-2 rounded-lg border border-red-100">
+                                            <p className="text-[10px] text-red-500 font-bold">Strike</p>
+                                            <p className="text-sm font-bold text-red-600 font-mono">${fmt(p*strikePct/100)}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             </div>
@@ -368,14 +345,81 @@ const FcnCalculator = () => {
 };
 
 // ==========================================
-// 計算機模組
+// 匯率計算機 (多幣別 + 網路抓取)
 // ==========================================
+const ForexCalculator = () => {
+    const [amount, setAmount] = useStickyState(1000, 'v5_fx_amt');
+    const [fromCurr, setFromCurr] = useStickyState('USD', 'v5_fx_from');
+    const [toCurr, setToCurr] = useStickyState('TWD', 'v5_fx_to');
+    const [rates, setRates] = useState({});
+    const [loading, setLoading] = useState(false);
+    const [manualRate, setManualRate] = useState('');
 
+    const currencies = [
+        {c:'TWD',n:'台幣'}, {c:'USD',n:'美金'}, {c:'JPY',n:'日圓'}, {c:'EUR',n:'歐元'}, 
+        {c:'CNY',n:'人民幣'}, {c:'HKD',n:'港幣'}, {c:'GBP',n:'英鎊'}, {c:'AUD',n:'澳幣'}, 
+        {c:'CAD',n:'加幣'}, {c:'SGD',n:'新幣'}, {c:'CHF',n:'瑞郎'}, {c:'ZAR',n:'南非幣'},
+        {c:'KRW',n:'韓元'}, {c:'THB',n:'泰銖'}, {c:'VND',n:'越南盾'}
+    ];
+
+    useEffect(() => {
+        setLoading(true);
+        // 使用更穩定的 API (以 USD 為基準)
+        fetch('https://api.exchangerate-api.com/v4/latest/USD')
+            .then(res => res.json())
+            .then(data => {
+                if(data && data.rates) {
+                    setRates(data.rates); // 儲存所有匯率
+                }
+            })
+            .catch(err => console.log('API Error'))
+            .finally(() => setLoading(false));
+    }, []);
+
+    // 交叉匯率計算
+    const getRate = (c) => c === 'USD' ? 1 : (rates[c] || 0);
+    const fromR = getRate(fromCurr);
+    const toR = getRate(toCurr);
+    
+    // 公式：(1 / fromR) * toR
+    const sysRate = (fromR && toR) ? (toR / fromR) : 0;
+    const finalRate = manualRate ? Number(manualRate) : sysRate;
+
+    return (
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
+            <SectionHeader title="即時匯率換算" icon={Globe} description="自動抓取 15+ 國即時匯率，支援交叉換算。" />
+            <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-white p-6 rounded-2xl shadow-lg border border-slate-100">
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                        <div><label className="block text-xs font-bold text-slate-500 mb-2">持有 (From)</label><select value={fromCurr} onChange={(e)=>setFromCurr(e.target.value)} className="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 text-sm font-bold focus:ring-amber-500">{currencies.map(c=><option key={c.c} value={c.c}>{c.c} {c.n}</option>)}</select></div>
+                        <div><label className="block text-xs font-bold text-slate-500 mb-2">兌換 (To)</label><select value={toCurr} onChange={(e)=>setToCurr(e.target.value)} className="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 text-sm font-bold focus:ring-amber-500">{currencies.map(c=><option key={c.c} value={c.c}>{c.c} {c.n}</option>)}</select></div>
+                    </div>
+                    <InputGroup label="金額" value={amount} onChange={setAmount} prefix="$" />
+                    <div className="mb-4">
+                        <div className="flex justify-between mb-1">
+                            <label className="text-xs font-bold text-slate-500">成交匯率</label>
+                            <span className="text-[10px] text-blue-500 cursor-pointer hover:underline" onClick={()=>setManualRate('')}>重置為即時匯率</span>
+                        </div>
+                        <input type="number" step="0.0001" value={manualRate || (sysRate ? sysRate.toFixed(4) : '')} onChange={(e) => setManualRate(e.target.value)} className="w-full p-3.5 border border-slate-300 rounded-xl font-mono text-sm focus:ring-2 focus:ring-amber-500 outline-none"/>
+                        <p className="text-[10px] text-slate-400 mt-2 flex items-center gap-1">{loading ? <RefreshCw className="animate-spin" size={10}/> : null} {sysRate ? `參考匯率: 1 ${fromCurr} ≈ ${sysRate.toFixed(4)} ${toCurr}` : '載入中...'}</p>
+                    </div>
+                </div>
+                <div className="space-y-4">
+                    <ResultCard title={`約合 ${toCurr}`} value={`$${fmt(amount * finalRate)}`} highlight={true} />
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// ==========================================
+// 台股交易 (手續費拉桿同步)
+// ==========================================
 const StockCalculator = () => {
   const [buyPrice, setBuyPrice] = useStickyState(100, 'v5_stk_buy');
   const [sellPrice, setSellPrice] = useStickyState(110, 'v5_stk_sell');
   const [shares, setShares] = useStickyState(1000, 'v5_stk_sh');
-  const [discount, setDiscount] = useStickyState(60, 'v5_stk_disc');
+  const [discount, setDiscount] = useStickyState(60, 'v5_stk_disc'); // 折數 (10~100)
   const [type, setType] = useStickyState('stock', 'v5_stk_type');
 
   const calculate = () => {
@@ -385,7 +429,7 @@ const StockCalculator = () => {
     if (type === 'bond') taxRate = 0;
 
     const feeRate = 0.001425;
-    const discVal = discount / 100;
+    const discVal = discount / 100; // 60折 = 0.6
     const totalShares = Number(shares);
     const buyVal = buyPrice * totalShares;
     const sellVal = sellPrice * totalShares;
@@ -409,13 +453,17 @@ const StockCalculator = () => {
           <InputGroup label="賣出價格" value={sellPrice} onChange={setSellPrice} prefix="$" />
           <InputGroup label="股數" value={shares} onChange={setShares} suffix="股" />
           
+          {/* 手續費：雙向綁定 */}
           <div className="mb-5 group">
-             <label className="block text-xs uppercase tracking-wider font-bold text-slate-500 mb-2">手續費折數 ({discount}折)</label>
-             <div className="flex gap-4 items-center">
+             <label className="block text-xs uppercase tracking-wider font-bold text-slate-500 mb-3">手續費折數 ({discount}折)</label>
+             <div className="flex gap-4 items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
                  <input type="range" min="10" max="100" step="1" value={discount} onChange={(e)=>setDiscount(Number(e.target.value))} className="flex-1 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600"/>
-                 <input type="number" value={discount} onChange={(e)=>setDiscount(Number(e.target.value))} className="w-20 p-2 border border-slate-300 rounded-md text-center font-mono text-sm focus:ring-amber-500 outline-none" />
+                 <div className="relative w-20">
+                    <input type="number" value={discount} onChange={(e)=>setDiscount(Number(e.target.value))} className="w-full p-2 border border-slate-300 rounded-lg text-center font-mono text-sm focus:ring-amber-500 outline-none pr-6" />
+                    <span className="absolute right-2 top-2 text-xs text-slate-400">折</span>
+                 </div>
              </div>
-             <p className="mt-1.5 text-[10px] text-slate-400">100=原價, 28=28折, 60=6折</p>
+             <p className="mt-2 text-[10px] text-slate-400 text-right">例：28折請填 28，原價請填 100</p>
           </div>
         </div>
         <div className="space-y-4">
@@ -427,100 +475,11 @@ const StockCalculator = () => {
   );
 };
 
-// 匯率計算機 (升級版)
-const ForexCalculator = () => {
-    const [amount, setAmount] = useStickyState(1000, 'v5_fx_amt');
-    const [fromCurr, setFromCurr] = useStickyState('USD', 'v5_fx_from');
-    const [toCurr, setToCurr] = useStickyState('TWD', 'v5_fx_to');
-    const [rates, setRates] = useState({ 'TWD': 1, 'USD': 32.5 });
-    const [loading, setLoading] = useState(false);
-    const [manualRate, setManualRate] = useState(''); // 手動匯率優先
+// ... (以下為其餘計算機模組，保持邏輯但套用新 UI) ...
 
-    // 常用貨幣列表
-    const currencies = [
-        {c:'TWD',n:'台幣'}, {c:'USD',n:'美金'}, {c:'JPY',n:'日圓'}, {c:'EUR',n:'歐元'}, 
-        {c:'CNY',n:'人民幣'}, {c:'HKD',n:'港幣'}, {c:'GBP',n:'英鎊'}, {c:'AUD',n:'澳幣'}, 
-        {c:'CAD',n:'加幣'}, {c:'SGD',n:'新幣'}, {c:'CHF',n:'瑞郎'}, {c:'ZAR',n:'南非幣'}
-    ];
-
-    useEffect(() => {
-        setLoading(true);
-        // 使用免費 API 抓取 USD 基準匯率
-        fetch('https://api.exchangerate-api.com/v4/latest/USD')
-            .then(res => res.json())
-            .then(data => {
-                if(data && data.rates) {
-                    setRates(prev => ({...prev, ...data.rates}));
-                }
-            })
-            .catch(err => console.log('匯率更新失敗，使用預設'))
-            .finally(() => setLoading(false));
-    }, []);
-
-    // 計算交叉匯率: (Amount / FromRate) * ToRate
-    // API 給的是 1 USD = x Currency. 
-    // From -> USD -> To
-    const getRate = (curr) => rates[curr] || 1;
-    const sysRate = getRate(toCurr) / getRate(fromCurr);
-    const finalRate = manualRate ? Number(manualRate) : sysRate;
-
-    return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
-            <SectionHeader title="即時匯率換算" icon={Globe} description="自動抓取網路匯率，支援多國貨幣交叉換算。" />
-            <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-white p-6 rounded-2xl shadow-lg border border-slate-100">
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                        <div><label className="block text-xs font-bold text-slate-500 mb-1">持有 (From)</label><select value={fromCurr} onChange={(e)=>setFromCurr(e.target.value)} className="w-full p-2 border border-slate-300 rounded-md bg-slate-50 text-sm">{currencies.map(c=><option key={c.c} value={c.c}>{c.c} {c.n}</option>)}</select></div>
-                        <div><label className="block text-xs font-bold text-slate-500 mb-1">兌換 (To)</label><select value={toCurr} onChange={(e)=>setToCurr(e.target.value)} className="w-full p-2 border border-slate-300 rounded-md bg-slate-50 text-sm">{currencies.map(c=><option key={c.c} value={c.c}>{c.c} {c.n}</option>)}</select></div>
-                    </div>
-                    <InputGroup label="金額" value={amount} onChange={setAmount} prefix="$" />
-                    <div className="mb-4">
-                        <div className="flex justify-between mb-1">
-                            <label className="text-xs font-bold text-slate-500">成交匯率</label>
-                            <span className="text-[10px] text-blue-500 cursor-pointer" onClick={()=>setManualRate(sysRate.toFixed(4))}>重置為即時匯率</span>
-                        </div>
-                        <input type="number" step="0.0001" value={manualRate || sysRate.toFixed(4)} onChange={(e) => setManualRate(e.target.value)} className="w-full p-3 border border-slate-300 rounded-lg font-mono text-sm focus:ring-2 focus:ring-amber-500"/>
-                        <p className="text-[10px] text-slate-400 mt-1">{loading ? '匯率更新中...' : `參考: 1 ${fromCurr} ≈ ${sysRate.toFixed(4)} ${toCurr}`}</p>
-                    </div>
-                </div>
-                <div className="space-y-4">
-                    <ResultCard title={`約合 ${toCurr}`} value={`$${fmt(amount * finalRate)}`} highlight={true} />
-                </div>
-            </div>
-        </div>
-    );
-};
-
-// ... (以下為其他模組，保持 v4.2 邏輯但加入新的 InputGroup 與 SectionHeader) ...
-
-const TaxCalculator = () => {
-  const [mode, setMode] = useState('income'); const [inputValue, setInputValue] = useStickyState(1500000, 'v4_tax_val'); const [result, setResult] = useState({}); const AMT_EXEMPTION = 7500000;
-  const brackets = [{ limit: 610000, rate: 0.05, correction: 0, maxTax: 30500 }, { limit: 1330000, rate: 0.12, correction: 42700, maxTax: 116900 }, { limit: 2660000, rate: 0.20, correction: 149100, maxTax: 382900 }, { limit: 4980000, rate: 0.30, correction: 415100, maxTax: 1078900 }, { limit: Infinity, rate: 0.40, correction: 913100, maxTax: Infinity }];
-  const calculateIncomeFromTax = (tax) => { if (tax <= 0) return 0; let bracket = brackets.find(b => tax <= b.maxTax); if (!bracket) bracket = brackets[brackets.length - 1]; return Math.floor((tax + bracket.correction) / bracket.rate); };
-  useEffect(() => {
-    let regularTax = 0, netIncome = 0;
-    if (mode === 'income') { netIncome = Number(inputValue); let bracket = brackets.find(b => netIncome <= b.limit) || brackets[brackets.length - 1]; regularTax = Math.max(0, Math.floor(netIncome * bracket.rate - bracket.correction)); } else { regularTax = Number(inputValue); netIncome = calculateIncomeFromTax(regularTax); }
-    let quota = (regularTax / 0.2) + AMT_EXEMPTION - netIncome; setResult({ regularTax, netIncome, quota: Math.max(1000000, Math.floor(quota)) });
-  }, [inputValue, mode]);
-  return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4"><SectionHeader title="2025 海外所得額度" icon={Calculator} description="輸入「所得淨額」或「應繳稅額」，自動反推免稅額度。" /><div className="flex bg-slate-100 p-1 rounded-lg w-full max-w-md mx-auto border border-slate-200 mb-6"><button onClick={() => setMode('income')} className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${mode === 'income' ? 'bg-white text-amber-600 shadow-sm font-bold' : 'text-slate-500 hover:text-slate-700'}`}>輸入 所得淨額</button><button onClick={() => setMode('tax')} className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${mode === 'tax' ? 'bg-white text-amber-600 shadow-sm font-bold' : 'text-slate-500 hover:text-slate-700'}`}>輸入 應繳稅額</button></div><div className="grid md:grid-cols-2 gap-6"><div className="bg-white p-6 rounded-2xl shadow-lg border border-slate-100 relative overflow-hidden"><div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-transparent"></div><InputGroup label={mode === 'income' ? "國內綜合所得淨額" : "今年應繳一般所得稅額"} value={inputValue} onChange={setInputValue} prefix="$" placeholder="請輸入金額"/><div className="mb-5 group"><div className="flex justify-between items-center mb-2"><label className="text-xs uppercase tracking-wider font-bold text-slate-400">基本稅額免稅額 (2025)</label><Lock size={12} className="text-slate-400"/></div><div className="relative rounded-lg bg-slate-50 border border-slate-200 p-3.5 flex justify-between items-center"><span className="text-slate-600 font-mono pl-7">$7,500,000</span><span className="text-[10px] text-slate-500 border border-slate-200 bg-white px-2 py-0.5 rounded uppercase tracking-wider">法定固定</span><div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span className="text-slate-400 sm:text-sm">$</span></div></div></div>{mode === 'tax' && <div className="mt-4 p-3 bg-amber-50/50 rounded-lg border border-amber-100 text-xs text-slate-600 flex justify-between"><span>反推綜合所得淨額：</span><span className="font-mono text-amber-600 font-bold">${fmt(result.netIncome)}</span></div>}</div><div className="space-y-4"><ResultCard title="最佳海外所得配置額度" value={`$${fmt(result.quota)}`} subtext="在此金額內的海外收入，不需補繳最低稅負 (AMT)。" highlight={true} /><div className="grid grid-cols-2 gap-4"><div className="p-4 bg-slate-50 border border-slate-200 rounded-xl"><p className="text-xs text-slate-500 mb-1">一般所得稅</p><p className="text-lg font-bold text-slate-700 font-mono">${fmt(result.regularTax)}</p></div><div className="p-4 bg-slate-50 border border-slate-200 rounded-xl"><p className="text-xs text-slate-500 mb-1">基本稅額門檻</p><p className="text-lg font-bold text-slate-700 font-mono">${fmt(result.regularTax)}</p></div></div></div></div></div>
-  );
-};
-const CompoundCalculator = () => {
-  const [principal, setPrincipal] = useStickyState(100000, 'v4_cmp_p'); const [rate, setRate] = useStickyState(6, 'v4_cmp_r'); const [years, setYears] = useStickyState(20, 'v4_cmp_y'); const [compareMode, setCompareMode] = useState(false); const [compareRate, setCompareRate] = useStickyState(1.7, 'v4_cmp_cr');
-  const calculate = (r) => { const P = Number(principal); const rateVal = Number(r)/100; let data = []; for(let i=0; i<=years; i++) data.push({ value: P * Math.pow((1 + rateVal), i) }); return { final: data[data.length-1].value, data }; };
-  const res1 = calculate(rate); const res2 = calculate(compareRate);
-  return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4"><SectionHeader title="單筆複利效應" icon={TrendingUp} description="時間是財富最好的朋友，PK 模式比較投資與定存差距。" /><div className="flex justify-end no-print mb-2"><button onClick={()=>setCompareMode(!compareMode)} className={`text-xs px-4 py-1.5 rounded-full border transition-all ${compareMode ? 'bg-amber-600 text-white border-amber-600' : 'text-slate-500 border-slate-300 hover:border-amber-500 hover:text-amber-600'}`}>{compareMode ? '關閉比較' : '開啟定存 PK'}</button></div><div className="grid md:grid-cols-2 gap-6"><div className="bg-white p-6 rounded-2xl shadow-lg border border-slate-100"><InputGroup label="本金投入" value={principal} onChange={setPrincipal} prefix="$" /><InputGroup label="投資年化報酬率" value={rate} onChange={setRate} suffix="%" /><InputGroup label="投資年限" value={years} onChange={setYears} suffix="年" />{compareMode && <div className="pt-4 border-t border-slate-100 mt-4 animate-in fade-in"><InputGroup label="比較對象 (如定存) 利率" value={compareRate} onChange={setCompareRate} suffix="%" /></div>}</div><div className="space-y-4"><ResultCard title={`${years} 年後總資產`} value={`$${fmt(res1.final)}`} highlight={true} />{compareMode && <ResultCard title="定存對照組資產" value={`$${fmt(res2.final)}`} subtext={`相差 $${fmt(res1.final - res2.final)}`} colorClass="text-slate-500" />}<div className="bg-white p-4 rounded-xl border border-slate-200 no-print"><InteractiveChart data={res1.data} data2={compareMode ? res2.data : null} /></div></div></div></div>
-  );
-};
-const DividendCalculator = () => {
-    const [shares, setShares] = useStickyState(10000, 'v4_div_sh'); const [dividend, setDividend] = useStickyState(1.5, 'v4_div_val'); const [freq, setFreq] = useStickyState(1, 'v4_div_freq');
-    const totalDiv = shares * dividend; const singlePayment = totalDiv / freq; const healthFee = singlePayment >= 20000 ? Math.floor(totalDiv * 0.0211) : 0; const finalIncome = totalDiv - healthFee;
-    return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4"><SectionHeader title="存股配息 & 二代健保" icon={Coins} description="自動試算補充保費門檻 (單筆2萬)。" /><div className="grid md:grid-cols-2 gap-6"><div className="bg-white p-6 rounded-2xl shadow-lg border border-slate-100"><InputGroup label="持有股數" value={shares} onChange={setShares} suffix="股" /><InputGroup label="預估每股總配息 (年)" value={dividend} onChange={setDividend} prefix="$" /><div className="mb-4"><label className="block text-xs uppercase tracking-wider font-bold text-slate-500 mb-3">配息頻率</label><div className="flex gap-2">{[{v:1, l:'年配'}, {v:2, l:'半年'}, {v:4, l:'季配'}, {v:12, l:'月配'}].map(o => (<button key={o.v} onClick={()=>setFreq(o.v)} className={`flex-1 py-2 text-xs rounded-lg border transition-colors ${freq===o.v ? 'bg-amber-600 text-white border-amber-600' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-white'}`}>{o.l}</button>))}</div></div></div><div className="space-y-4"><ResultCard title="全年總股息 (稅前)" value={`$${fmt(totalDiv)}`} />{healthFee > 0 && <div className="p-3 bg-red-50 border border-red-100 rounded-lg flex items-start gap-2 text-red-600 text-sm"><AlertTriangle size={16} className="mt-0.5 shrink-0"/><span>單次領取 ${fmt(singlePayment)} 已達 2 萬門檻，預估扣除補充保費 <strong>${fmt(healthFee)}</strong></span></div>}<ResultCard title="實領金額 (稅後)" value={`$${fmt(finalIncome)}`} highlight={true} /></div></div></div>
-    );
-};
+const TaxCalculator = () => { const [mode, setMode] = useState('income'); const [inputValue, setInputValue] = useStickyState(1500000, 'v4_tax_val'); const [result, setResult] = useState({}); const AMT_EXEMPTION = 7500000; const brackets = [{ limit: 610000, rate: 0.05, correction: 0, maxTax: 30500 }, { limit: 1330000, rate: 0.12, correction: 42700, maxTax: 116900 }, { limit: 2660000, rate: 0.20, correction: 149100, maxTax: 382900 }, { limit: 4980000, rate: 0.30, correction: 415100, maxTax: 1078900 }, { limit: Infinity, rate: 0.40, correction: 913100, maxTax: Infinity }]; const calculateIncomeFromTax = (tax) => { if (tax <= 0) return 0; let bracket = brackets.find(b => tax <= b.maxTax); if (!bracket) bracket = brackets[brackets.length - 1]; return Math.floor((tax + bracket.correction) / bracket.rate); }; useEffect(() => { let regularTax = 0, netIncome = 0; if (mode === 'income') { netIncome = Number(inputValue); let bracket = brackets.find(b => netIncome <= b.limit) || brackets[brackets.length - 1]; regularTax = Math.max(0, Math.floor(netIncome * bracket.rate - bracket.correction)); } else { regularTax = Number(inputValue); netIncome = calculateIncomeFromTax(regularTax); } let quota = (regularTax / 0.2) + AMT_EXEMPTION - netIncome; setResult({ regularTax, netIncome, quota: Math.max(1000000, Math.floor(quota)) }); }, [inputValue, mode]); return (<div className="space-y-8 animate-in fade-in slide-in-from-bottom-4"><SectionHeader title="2025 海外所得額度" icon={Calculator} description="輸入「所得淨額」或「應繳稅額」，自動反推免稅額度。" /><div className="flex bg-slate-100 p-1 rounded-lg w-full max-w-md mx-auto border border-slate-200 mb-6"><button onClick={() => setMode('income')} className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${mode === 'income' ? 'bg-white text-amber-600 shadow-sm font-bold' : 'text-slate-500 hover:text-slate-700'}`}>輸入 所得淨額</button><button onClick={() => setMode('tax')} className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${mode === 'tax' ? 'bg-white text-amber-600 shadow-sm font-bold' : 'text-slate-500 hover:text-slate-700'}`}>輸入 應繳稅額</button></div><div className="grid md:grid-cols-2 gap-6"><div className="bg-white p-6 rounded-2xl shadow-lg border border-slate-100 relative overflow-hidden"><div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-transparent"></div><InputGroup label={mode === 'income' ? "國內綜合所得淨額" : "今年應繳一般所得稅額"} value={inputValue} onChange={setInputValue} prefix="$" placeholder="請輸入金額"/><div className="mb-5 group"><div className="flex justify-between items-center mb-2"><label className="text-xs uppercase tracking-wider font-bold text-slate-400">基本稅額免稅額 (2025)</label><Lock size={12} className="text-slate-400"/></div><div className="relative rounded-lg bg-slate-50 border border-slate-200 p-3.5 flex justify-between items-center"><span className="text-slate-600 font-mono pl-7">$7,500,000</span><span className="text-[10px] text-slate-500 border border-slate-200 bg-white px-2 py-0.5 rounded uppercase tracking-wider">法定固定</span><div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span className="text-slate-400 sm:text-sm">$</span></div></div></div>{mode === 'tax' && <div className="mt-4 p-3 bg-amber-50/50 rounded-lg border border-amber-100 text-xs text-slate-600 flex justify-between"><span>反推綜合所得淨額：</span><span className="font-mono text-amber-600 font-bold">${fmt(result.netIncome)}</span></div>}</div><div className="space-y-4"><ResultCard title="最佳海外所得配置額度" value={`$${fmt(result.quota)}`} subtext="在此金額內的海外收入，不需補繳最低稅負 (AMT)。" highlight={true} /><div className="grid grid-cols-2 gap-4"><div className="p-4 bg-slate-50 border border-slate-200 rounded-xl"><p className="text-xs text-slate-500 mb-1">一般所得稅</p><p className="text-lg font-bold text-slate-700 font-mono">${fmt(result.regularTax)}</p></div><div className="p-4 bg-slate-50 border border-slate-200 rounded-xl"><p className="text-xs text-slate-500 mb-1">基本稅額門檻</p><p className="text-lg font-bold text-slate-700 font-mono">${fmt(result.regularTax)}</p></div></div></div></div></div>); };
+const CompoundCalculator = () => { const [principal, setPrincipal] = useStickyState(100000, 'v4_cmp_p'); const [rate, setRate] = useStickyState(6, 'v4_cmp_r'); const [years, setYears] = useStickyState(20, 'v4_cmp_y'); const [compareMode, setCompareMode] = useState(false); const [compareRate, setCompareRate] = useStickyState(1.7, 'v4_cmp_cr'); const calculate = (r) => { const P = Number(principal); const rateVal = Number(r)/100; let data = []; for(let i=0; i<=years; i++) data.push({ value: P * Math.pow((1 + rateVal), i) }); return { final: data[data.length-1].value, data }; }; const res1 = calculate(rate); const res2 = calculate(compareRate); return (<div className="space-y-6 animate-in fade-in slide-in-from-bottom-4"><SectionHeader title="單筆複利效應" icon={TrendingUp} description="時間是財富最好的朋友，PK 模式比較投資與定存差距。" /><div className="flex justify-end no-print mb-2"><button onClick={()=>setCompareMode(!compareMode)} className={`text-xs px-4 py-1.5 rounded-full border transition-all ${compareMode ? 'bg-amber-600 text-white border-amber-600' : 'text-slate-500 border-slate-300 hover:border-amber-500 hover:text-amber-600'}`}>{compareMode ? '關閉比較' : '開啟定存 PK'}</button></div><div className="grid md:grid-cols-2 gap-6"><div className="bg-white p-6 rounded-2xl shadow-lg border border-slate-100"><InputGroup label="本金投入" value={principal} onChange={setPrincipal} prefix="$" /><InputGroup label="投資年化報酬率" value={rate} onChange={setRate} suffix="%" /><InputGroup label="投資年限" value={years} onChange={setYears} suffix="年" />{compareMode && <div className="pt-4 border-t border-slate-100 mt-4 animate-in fade-in"><InputGroup label="比較對象 (如定存) 利率" value={compareRate} onChange={setCompareRate} suffix="%" /></div>}</div><div className="space-y-4"><ResultCard title={`${years} 年後總資產`} value={`$${fmt(res1.final)}`} highlight={true} />{compareMode && <ResultCard title="定存對照組資產" value={`$${fmt(res2.final)}`} subtext={`相差 $${fmt(res1.final - res2.final)}`} colorClass="text-slate-500" />}<div className="bg-white p-4 rounded-xl border border-slate-200 no-print"><InteractiveChart data={res1.data} data2={compareMode ? res2.data : null} /></div></div></div></div>); };
+const DividendCalculator = () => { const [shares, setShares] = useStickyState(10000, 'v4_div_sh'); const [dividend, setDividend] = useStickyState(1.5, 'v4_div_val'); const [freq, setFreq] = useStickyState(1, 'v4_div_freq'); const totalDiv = shares * dividend; const singlePayment = totalDiv / freq; const healthFee = singlePayment >= 20000 ? Math.floor(totalDiv * 0.0211) : 0; const finalIncome = totalDiv - healthFee; return (<div className="space-y-6 animate-in fade-in slide-in-from-bottom-4"><SectionHeader title="存股配息 & 二代健保" icon={Coins} description="自動試算補充保費門檻 (單筆2萬)。" /><div className="grid md:grid-cols-2 gap-6"><div className="bg-white p-6 rounded-2xl shadow-lg border border-slate-100"><InputGroup label="持有股數" value={shares} onChange={setShares} suffix="股" /><InputGroup label="預估每股總配息 (年)" value={dividend} onChange={setDividend} prefix="$" /><div className="mb-4"><label className="block text-xs uppercase tracking-wider font-bold text-slate-500 mb-3 ml-1">配息頻率</label><div className="flex gap-2">{[{v:1, l:'年配'}, {v:2, l:'半年'}, {v:4, l:'季配'}, {v:12, l:'月配'}].map(o => (<button key={o.v} onClick={()=>setFreq(o.v)} className={`flex-1 py-3 text-sm rounded-xl border transition-colors ${freq===o.v ? 'bg-amber-600 text-white border-amber-600' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-white'}`}>{o.l}</button>))}</div></div></div><div className="space-y-4"><ResultCard title="全年總股息 (稅前)" value={`$${fmt(totalDiv)}`} />{healthFee > 0 && <div className="p-3 bg-red-50 border border-red-100 rounded-lg flex items-start gap-2 text-red-600 text-sm"><AlertTriangle size={16} className="mt-0.5 shrink-0"/><span>單次領取 ${fmt(singlePayment)} 已達 2 萬門檻，預估扣除補充保費 <strong>${fmt(healthFee)}</strong></span></div>}<ResultCard title="實領金額 (稅後)" value={`$${fmt(finalIncome)}`} highlight={true} /></div></div></div>); };
 const DcaCalculator = () => { const [monthly, setMonthly] = useStickyState(10000, 'v4_dca_m'); const [rate, setRate] = useStickyState(6, 'v4_dca_r'); const [years, setYears] = useStickyState(20, 'v4_dca_y'); const calculate = () => { const pmt = Number(monthly); const r = Number(rate)/100/12; const n = Number(years)*12; let data = []; for(let i=0; i<=Number(years); i++) { let m = i*12; data.push({ value: m===0?0:pmt*(Math.pow(1+r,m)-1)/r }); } const fv = data[data.length-1].value; return { fv, total: pmt*n, data }; }; const res = calculate(); return (<div className="space-y-6 animate-in fade-in slide-in-from-bottom-4"><SectionHeader title="定期定額" icon={RefreshCw} description="長期複利。" /><div className="grid md:grid-cols-2 gap-6"><div className="bg-white p-6 rounded-2xl shadow-lg border border-slate-100"><InputGroup label="月投金額" value={monthly} onChange={setMonthly} prefix="$" /><InputGroup label="年化報酬" value={rate} onChange={setRate} suffix="%" /><InputGroup label="年數" value={years} onChange={setYears} suffix="年" /></div><div className="space-y-4"><ResultCard title="累積資產" value={`$${fmt(res.fv)}`} highlight={true} /><div className="bg-white p-4 rounded-xl border border-slate-200 no-print"><InteractiveChart data={res.data} title="資產累積"/></div></div></div></div>); };
 const LoanCalculator = () => { const [loanAmount, setLoanAmount] = useStickyState(10000000, 'v4_loan_amt'); const [rate, setRate] = useStickyState(2.1, 'v4_loan_rate'); const [years, setYears] = useStickyState(30, 'v4_loan_yrs'); const [gracePeriod, setGracePeriod] = useStickyState(0, 'v4_loan_grace'); const calculate = () => { const P = Number(loanAmount); const r = Number(rate) / 100 / 12; const graceMonths = Number(gracePeriod) * 12; const remainMonths = (Number(years) * 12) - graceMonths; const gracePayment = Math.round(P * r); const normalPayment = remainMonths > 0 ? Math.round(P * r * Math.pow(1 + r, remainMonths) / (Math.pow(1 + r, remainMonths) - 1)) : 0; return { gracePayment, normalPayment }; }; const res = calculate(); return (<div className="space-y-6 animate-in fade-in slide-in-from-bottom-4"><SectionHeader title="房貸試算" icon={Home} description="含寬限期。" /><div className="grid md:grid-cols-2 gap-6"><div className="bg-white p-6 rounded-2xl shadow-lg border border-slate-100"><InputGroup label="貸款總金額" value={loanAmount} onChange={setLoanAmount} prefix="$" /><InputGroup label="年利率" value={rate} onChange={setRate} suffix="%" step="0.01" /><InputGroup label="總期限" value={years} onChange={setYears} suffix="年" /><InputGroup label="寬限期" value={gracePeriod} onChange={setGracePeriod} suffix="年" /></div><div className="space-y-4">{gracePeriod > 0 && <ResultCard title={`前 ${gracePeriod} 年月付金`} value={`$${fmt(res.gracePayment)}`} subtext="只繳利息" />}<ResultCard title={gracePeriod > 0 ? "寬限期後月付金" : "每月應繳本息"} value={`$${fmt(res.normalPayment)}`} highlight={true} /></div></div></div>); };
 const IrrCalculator = () => { const [prin, setPrin] = useStickyState(1000000, 'v4_irr_p'); const [final, setFinal] = useStickyState(1200000, 'v4_irr_f'); const [yrs, setYrs] = useStickyState(6, 'v4_irr_y'); const irr = (Math.pow(final/prin, 1/yrs)-1)*100; return (<div className="space-y-6 animate-in fade-in slide-in-from-bottom-4"><SectionHeader title="IRR 試算" icon={Percent} description="躉繳試算。" /><div className="grid md:grid-cols-2 gap-6"><div className="bg-white p-6 rounded-2xl shadow-lg border border-slate-100"><InputGroup label="投入" value={prin} onChange={setPrin} prefix="$" /><InputGroup label="領回" value={final} onChange={setFinal} prefix="$" /><InputGroup label="年數" value={yrs} onChange={setYrs} suffix="年" /></div><div className="space-y-4"><ResultCard title="IRR" value={`${irr.toFixed(2)}%`} highlight={true} /></div></div></div>); };
@@ -560,12 +519,14 @@ const HomePage = ({ changeTab }) => (
 );
 
 // ==========================================
-// 主程式
+// 主程式 Layout (Fix: Full-screen menu & Capture Area)
 // ==========================================
 const FinancialToolkit = () => {
   const [activeTab, setActiveTab] = useStickyState('home', 'v5_tab');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [name] = useStickyState('', 'v4_name');
+  const [line] = useStickyState('', 'v4_line');
+  const [phone] = useStickyState('', 'v4_phone');
   
   const menuCategories = [
     { title: "獲利決策", items: [{ id: 'compound', name: '複利 PK', icon: TrendingUp }, { id: 'stock', name: '交易試算', icon: BarChart3 }, { id: 'dividend', name: '配息健保', icon: Coins }, { id: 'rvb', name: '買租比較', icon: Building }] },
@@ -609,7 +570,7 @@ const FinancialToolkit = () => {
         <div id="capture-area" className="max-w-5xl mx-auto print:max-w-none print:w-full pb-20 bg-slate-50 p-4 rounded-xl">
           <div className="hidden print:flex justify-between items-end mb-8 border-b border-slate-200 pb-4"><div className="flex items-center gap-2 font-bold text-2xl text-black"><Briefcase className="text-black" size={32} /><span>FinKit 理財規劃報告</span></div><div className="text-right text-sm text-slate-500"><p>Generated by FinKit</p>{name && <p className="font-bold text-black mt-1">顧問：{name}</p>}</div></div>
           {renderContent()}
-          <footer className="mt-20 pt-8 border-t border-slate-200 text-center text-slate-400 text-xs flex flex-col md:flex-row justify-between items-center gap-4"><div className="text-left"><p>© 2026 FinKit. 用心規劃，遇見美好未來。</p><p className="opacity-70">本站工具僅供試算參考，不代表投資建議。</p></div>{name && (<div className="flex items-center gap-3 opacity-80 border-l border-slate-300 pl-4"><div className="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-xs">{name[0]}</div><div className="text-left"><p className="font-bold text-slate-700 text-sm">{name}</p><p className="text-xs text-slate-500">專屬顧問</p></div></div>)}</footer>
+          <footer className="mt-20 pt-8 border-t border-slate-200 text-center text-slate-400 text-xs flex flex-col md:flex-row justify-between items-center gap-4"><div className="text-left"><p>© 2026 FinKit. 用心規劃，遇見美好未來。</p><p className="opacity-70">本站工具僅供試算參考，不代表投資建議。</p></div>{name && (<div className="flex items-center gap-3 opacity-80 border-l border-slate-300 pl-4"><div className="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-xs">{name[0]}</div><div className="text-left"><p className="font-bold text-slate-700 text-sm">{name}</p><p className="text-xs text-slate-500">{line ? `LINE: ${line}` : ''} {phone ? `• ${phone}` : ''}</p></div></div>)}</footer>
         </div>
       </main>
     </div>

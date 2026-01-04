@@ -2,15 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 隱藏列印時不必要的元素 */
 @media print {
     .no-print { display: none !important; }
     .print-only { display: block !important; }
     body { background: white; color: black; }
 }
 
-::-webkit-scrollbar { width: 8px; }
+/* 質感捲軸 */
+::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 .dark ::-webkit-scrollbar-thumb { background: #475569; }
 .dark ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+

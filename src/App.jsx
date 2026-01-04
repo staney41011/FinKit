@@ -10,7 +10,6 @@ import {
 // 核心 Hooks 與 工具
 // ==========================================
 
-// 自動儲存 Hook (讓資料不會重新整理就不見)
 function useStickyState(defaultValue, key) {
   const [value, setValue] = useState(() => {
     try {
@@ -26,7 +25,6 @@ function useStickyState(defaultValue, key) {
   return [value, setValue];
 }
 
-// 數字格式化 (加逗號)
 const fmt = (num) => new Intl.NumberFormat('zh-TW').format(Math.floor(num));
 
 // ==========================================
@@ -116,7 +114,6 @@ const ContentBlock = ({ title, children }) => (
   </div>
 );
 
-// 簡單 SVG 折線圖
 const SimpleLineChart = ({ data, color="#3b82f6", data2 }) => {
   if (!data || data.length === 0) return null;
   const maxVal = Math.max(...data.map(d => d.value), ...(data2 ? data2.map(d => d.value) : [0]));
@@ -135,11 +132,9 @@ const SimpleLineChart = ({ data, color="#3b82f6", data2 }) => {
         <line x1="0" y1="50" x2="100" y2="50" stroke="currentColor" strokeOpacity="0.1" strokeWidth="0.5" />
         <line x1="0" y1="100" x2="100" y2="100" stroke="currentColor" strokeOpacity="0.2" strokeWidth="0.5" />
         
-        {/* Line 1 */}
         <polyline fill="none" stroke={color} strokeWidth="2" points={getPoints(data)} vectorEffect="non-scaling-stroke" />
         <polygon fill={color} fillOpacity="0.1" points={`0,100 ${getPoints(data)} 100,100`} />
         
-        {/* Line 2 (Comparison) */}
         {data2 && <polyline fill="none" stroke="#ef4444" strokeWidth="2" points={getPoints(data2)} vectorEffect="non-scaling-stroke" strokeDasharray="4" />}
       </svg>
       <div className="absolute top-0 right-0 text-xs font-bold text-blue-600 dark:text-blue-400 -translate-y-full pb-1">${fmt(maxVal)}</div>
@@ -151,7 +146,6 @@ const SimpleLineChart = ({ data, color="#3b82f6", data2 }) => {
 // 計算機模組
 // ==========================================
 
-// 1. 稅務計算機 (含二代健保)
 const TaxCalculator = () => {
   const [income, setIncome] = useStickyState(1500000, 'v3_tax_inc');
   const [amtExemption, setAmtExemption] = useStickyState(7500000, 'v3_tax_amt');
@@ -189,13 +183,12 @@ const TaxCalculator = () => {
   );
 };
 
-// 2. 複利計算機 (含比較模式)
 const CompoundCalculator = () => {
   const [principal, setPrincipal] = useStickyState(100000, 'v3_cmp_p');
   const [rate, setRate] = useStickyState(6, 'v3_cmp_r');
   const [years, setYears] = useStickyState(20, 'v3_cmp_y');
   const [compareMode, setCompareMode] = useState(false);
-  const [compareRate, setCompareRate] = useStickyState(1.7, 'v3_cmp_cr'); // 定存利率
+  const [compareRate, setCompareRate] = useStickyState(1.7, 'v3_cmp_cr');
 
   const calculate = (r) => {
     const P = Number(principal);
@@ -241,16 +234,15 @@ const CompoundCalculator = () => {
   );
 };
 
-// 3. 台股交易 (含ETF稅率)
 const StockCalculator = () => {
   const [buyPrice, setBuyPrice] = useStickyState(100, 'v3_stk_buy');
   const [sellPrice, setSellPrice] = useStickyState(110, 'v3_stk_sell');
   const [shares, setShares] = useStickyState(1000, 'v3_stk_sh');
   const [discount, setDiscount] = useStickyState(60, 'v3_stk_disc');
-  const [type, setType] = useStickyState('stock', 'v3_stk_type'); // stock, day, etf, bond
+  const [type, setType] = useStickyState('stock', 'v3_stk_type');
 
   const calculate = () => {
-    let taxRate = 0.003; // 現股
+    let taxRate = 0.003; 
     if (type === 'day') taxRate = 0.0015;
     if (type === 'etf') taxRate = 0.001;
     if (type === 'bond') taxRate = 0;
@@ -305,7 +297,6 @@ const StockCalculator = () => {
   );
 };
 
-// 4. 配息預估 (含二代健保)
 const DividendCalculator = () => {
     const [shares, setShares] = useStickyState(10000, 'v3_div_sh');
     const [dividend, setDividend] = useStickyState(1.5, 'v3_div_val');
@@ -347,7 +338,6 @@ const DividendCalculator = () => {
     );
 };
 
-// 5. 房貸試算 (含寬限期)
 const LoanCalculator = () => {
     const [loanAmount, setLoanAmount] = useStickyState(10000000, 'v3_loan_amt');
     const [rate, setRate] = useStickyState(2.1, 'v3_loan_rate');
@@ -360,10 +350,7 @@ const LoanCalculator = () => {
         const totalMonths = Number(years) * 12;
         const graceMonths = Number(gracePeriod) * 12;
         
-        // 寬限期月付 (只繳息)
         const gracePayment = Math.round(P * r);
-        
-        // 寬限期後月付 (本利攤)
         const remainMonths = totalMonths - graceMonths;
         const normalPayment = remainMonths > 0 ? Math.round(P * r * Math.pow(1 + r, remainMonths) / (Math.pow(1 + r, remainMonths) - 1)) : 0;
         
@@ -392,32 +379,26 @@ const LoanCalculator = () => {
     );
 };
 
-// 6. 買房 vs 租房 (Rent vs Buy)
 const RentVsBuy = () => {
     const [homePrice, setHomePrice] = useStickyState(15000000, 'v3_rvb_price');
     const [rent, setRent] = useStickyState(30000, 'v3_rvb_rent');
     const [years, setYears] = useStickyState(20, 'v3_rvb_yrs');
     const [investReturn, setInvestReturn] = useStickyState(6, 'v3_rvb_roi');
-    const [homeApprec, setHomeApprec] = useStickyState(2, 'v3_rvb_apprec'); // 房價漲幅
+    const [homeApprec, setHomeApprec] = useStickyState(2, 'v3_rvb_apprec');
 
     const calculate = () => {
-        // 買房: 假設自備20%，貸款80% (簡單算，忽略寬限與稅金細項以求直觀)
         const downPayment = homePrice * 0.2;
         const loan = homePrice * 0.8;
         const rate = 2.1 / 100 / 12;
-        const n = 30 * 12; // 30年房貸
+        const n = 30 * 12;
         const monthlyMortgage = loan * rate * Math.pow(1+rate,n) / (Math.pow(1+rate,n)-1);
         
-        // 20年後的房子價值
         const finalHomeValue = homePrice * Math.pow(1 + homeApprec/100, years);
-        // 20年後的剩餘房貸 (概估)
-        const remainingLoan = years >= 30 ? 0 : loan * 0.4; // 簡化
+        const remainingLoan = years >= 30 ? 0 : loan * 0.4;
         const buyNetWorth = finalHomeValue - remainingLoan;
 
-        // 租房: 頭期款拿去投資 + (房貸-租金)的差額拿去投資
         const monthlyDiff = Math.max(0, monthlyMortgage - rent);
         let investAssets = downPayment * Math.pow(1 + investReturn/100, years);
-        // 差額定投複利
         const r = investReturn/100/12;
         const diffFV = monthlyDiff * (Math.pow(1+r, years*12) - 1) / r;
         const rentNetWorth = investAssets + diffFV;
@@ -451,15 +432,13 @@ const RentVsBuy = () => {
     );
 };
 
-// 7. FIRE (含勞退)
 const FireCalculator = () => {
     const [annualExpense, setAnnualExpense] = useStickyState(600000, 'v3_fire_exp');
-    const [pension, setPension] = useStickyState(20000, 'v3_fire_pen'); // 勞保勞退月領
+    const [pension, setPension] = useStickyState(20000, 'v3_fire_pen');
     const [assets, setAssets] = useStickyState(2000000, 'v3_fire_assets');
     
-    // 每年需自籌 = 年支出 - (勞保勞退*12)
     const gapYearly = Math.max(0, annualExpense - (pension * 12));
-    const fireNumber = gapYearly * 25; // 4% rule
+    const fireNumber = gapYearly * 25;
     const progress = Math.min(100, (assets / fireNumber) * 100);
 
     return (
@@ -489,10 +468,9 @@ const FireCalculator = () => {
     );
 };
 
-// 8. 保險缺口
 const InsuranceGap = () => {
     const [debt, setDebt] = useStickyState(5000000, 'v3_ins_debt');
-    const [family, setFamily] = useStickyState(500000, 'v3_ins_fam'); // 孝親/子女教育 (年)
+    const [family, setFamily] = useStickyState(500000, 'v3_ins_fam');
     const [years, setYears] = useStickyState(10, 'v3_ins_yrs');
     const [savings, setSavings] = useStickyState(1000000, 'v3_ins_sav');
     
@@ -518,7 +496,6 @@ const InsuranceGap = () => {
     );
 };
 
-// 9. 通膨試算
 const InflationCalc = () => {
     const [amount, setAmount] = useStickyState(1000000, 'v3_inf_amt');
     const [rate, setRate] = useStickyState(3, 'v3_inf_rate');
@@ -543,7 +520,6 @@ const InflationCalc = () => {
     );
 };
 
-// 10. 個人品牌設定 (浮水印)
 const ProfileSettings = () => {
     const [name, setName] = useStickyState('', 'v3_prof_name');
     const [line, setLine] = useStickyState('', 'v3_prof_line');
@@ -564,7 +540,6 @@ const ProfileSettings = () => {
     );
 };
 
-// 11. 雙向匯率換算機
 const ForexCalculator = () => {
     const [amount, setAmount] = useStickyState(1000, 'v3_fx_amt');
     const [fromCurr, setFromCurr] = useStickyState('USD', 'v3_fx_from');
@@ -601,7 +576,6 @@ const ForexCalculator = () => {
     );
 };
 
-// 12. FCN 計算機
 const FcnCalculator = () => {
     const [strikePrice, setStrikePrice] = useStickyState(100, 'v3_fcn_stk');
     const [couponRate, setCouponRate] = useStickyState(8, 'v3_fcn_cp');
@@ -628,7 +602,6 @@ const FcnCalculator = () => {
     );
 };
 
-// 13. 定期定額計算機
 const DcaCalculator = () => {
     const [monthly, setMonthly] = useStickyState(10000, 'v3_dca_m');
     const [rate, setRate] = useStickyState(6, 'v3_dca_r');
@@ -659,7 +632,6 @@ const DcaCalculator = () => {
     );
 };
 
-// 14. IRR 計算機
 const IrrCalculator = () => {
     const [mode, setMode] = useStickyState('single', 'v3_irr_mode');
     const [sPrincipal, setSPrincipal] = useStickyState(1000000, 'v3_irr_sp');
@@ -688,71 +660,75 @@ const IrrCalculator = () => {
     );
 };
 
-        // --- 主程式 Layout ---
-        const FinancialToolkit = () => {
-            const [activeTab, setActiveTab] = useStickyState('tax', 'v3_tab');
-            const [isMenuOpen, setIsMenuOpen] = useState(false);
-            const [darkMode, setDarkMode] = useStickyState(false, 'v3_dark');
-            const [name] = useStickyState('', 'v3_prof_name');
-            const [line] = useStickyState('', 'v3_prof_line');
+// ==========================================
+// 主應用程式架構
+// ==========================================
+const FinancialToolkit = () => {
+  const [activeTab, setActiveTab] = useStickyState('tax', 'v3_tab');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [darkMode, setDarkMode] = useStickyState(false, 'v3_dark');
+  const [name] = useStickyState('', 'v3_prof_name');
+  const [line] = useStickyState('', 'v3_prof_line');
 
-            useEffect(() => {
-                if (darkMode) document.documentElement.classList.add('dark');
-                else document.documentElement.classList.remove('dark');
-            }, [darkMode]);
+  useEffect(() => {
+    if (darkMode) document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
+  }, [darkMode]);
 
-            const menuCategories = [
-                { title: "投資獲利", items: [{ id: 'compound', name: '複利 PK', icon: TrendingUp }, { id: 'stock', name: '台股交易', icon: BarChart3 }, { id: 'dividend', name: '配息/健保', icon: Coins }, { id: 'rvb', name: '買房 vs 租房', icon: Building }] },
-                { title: "規劃與稅務", items: [{ id: 'tax', name: '稅務試算', icon: Calculator }, { id: 'loan', name: '房貸寬限期', icon: Home }, { id: 'fire', name: 'FIRE 退休', icon: Target }, { id: 'ins', name: '保險缺口', icon: ShieldCheck }, { id: 'inf', name: '通膨試算', icon: TrendingDown }] },
-                { title: "其他工具", items: [{ id: 'forex', name: '雙向匯率', icon: Globe }, { id: 'fcn', name: 'FCN/ELN', icon: PieChart }, { id: 'dca', name: '定期定額', icon: RefreshCw }, { id: 'irr', name: 'IRR', icon: Percent }] },
-                { title: "個人設定", items: [{ id: 'profile', name: '品牌浮水印', icon: User }] }
-            ];
+  const menuCategories = [
+    { title: "投資獲利", items: [{ id: 'compound', name: '複利 PK', icon: TrendingUp }, { id: 'stock', name: '台股交易', icon: BarChart3 }, { id: 'dividend', name: '配息/健保', icon: Coins }, { id: 'rvb', name: '買房 vs 租房', icon: Building }] },
+    { title: "規劃與稅務", items: [{ id: 'tax', name: '稅務試算', icon: Calculator }, { id: 'loan', name: '房貸寬限期', icon: Home }, { id: 'fire', name: 'FIRE 退休', icon: Target }, { id: 'ins', name: '保險缺口', icon: ShieldCheck }, { id: 'inf', name: '通膨試算', icon: TrendingDown }] },
+    { title: "其他工具", items: [{ id: 'forex', name: '雙向匯率', icon: Globe }, { id: 'fcn', name: 'FCN/ELN', icon: PieChart }, { id: 'dca', name: '定期定額', icon: RefreshCw }, { id: 'irr', name: 'IRR', icon: Percent }] },
+    { title: "個人設定", items: [{ id: 'profile', name: '品牌浮水印', icon: User }] }
+  ];
 
-            const renderContent = () => {
-                switch (activeTab) {
-                    case 'tax': return <TaxCalculator />; case 'compound': return <CompoundCalculator />; case 'stock': return <StockCalculator />;
-                    case 'dividend': return <DividendCalculator />; case 'loan': return <LoanCalculator />; case 'fire': return <FireCalculator />;
-                    case 'rvb': return <RentVsBuy />; case 'ins': return <InsuranceGap />; case 'inf': return <InflationCalc />;
-                    case 'profile': return <ProfileSettings />; case 'forex': return <ForexCalculator />; case 'fcn': return <FcnCalculator />;
-                    case 'dca': return <DcaCalculator />; case 'irr': return <IrrCalculator />;
-                    default: return <TaxCalculator />;
-                }
-            };
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'tax': return <TaxCalculator />; case 'compound': return <CompoundCalculator />; case 'stock': return <StockCalculator />;
+      case 'dividend': return <DividendCalculator />; case 'loan': return <LoanCalculator />; case 'fire': return <FireCalculator />;
+      case 'rvb': return <RentVsBuy />; case 'ins': return <InsuranceGap />; case 'inf': return <InflationCalc />;
+      case 'profile': return <ProfileSettings />; case 'forex': return <ForexCalculator />; case 'fcn': return <FcnCalculator />;
+      case 'dca': return <DcaCalculator />; case 'irr': return <IrrCalculator />;
+      default: return <TaxCalculator />;
+    }
+  };
 
-            return (
-                <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-sans text-slate-800 dark:text-slate-100 flex flex-col md:flex-row print:bg-white print:text-black">
-                    <div className="md:hidden bg-white dark:bg-slate-800 shadow-sm p-4 flex justify-between items-center sticky top-0 z-20 print:hidden">
-                        <div className="flex items-center gap-2 font-bold text-lg text-slate-800 dark:text-white"><Briefcase className="text-blue-600" /><span>FinKit</span></div>
-                        <div className="flex items-center gap-2">
-                            <button onClick={()=>setDarkMode(!darkMode)} className="p-2 text-slate-500">{darkMode ? <Sun size={20}/> : <Moon size={20}/>}</button>
-                            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 text-slate-600 dark:text-slate-300">{isMenuOpen ? <X /> : <MenuIcon />}</button>
-                        </div>
-                    </div>
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-sans text-slate-800 dark:text-slate-100 flex flex-col md:flex-row print:bg-white print:text-black">
+      <div className="md:hidden bg-white dark:bg-slate-800 shadow-sm p-4 flex justify-between items-center sticky top-0 z-20 print:hidden">
+        <div className="flex items-center gap-2 font-bold text-lg text-slate-800 dark:text-white"><Briefcase className="text-blue-600" /><span>FinKit</span></div>
+        <div className="flex items-center gap-2">
+            <button onClick={()=>setDarkMode(!darkMode)} className="p-2 text-slate-500">{darkMode ? <Sun size={20}/> : <Moon size={20}/>}</button>
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 text-slate-600 dark:text-slate-300">{isMenuOpen ? <X /> : <Menu />}</button>
+        </div>
+      </div>
 
-                    <aside className={`fixed inset-y-0 left-0 z-10 w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 transform transition-transform duration-300 ease-in-out print:hidden md:translate-x-0 md:static md:block overflow-y-auto ${isMenuOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}`}>
-                        <div className="p-6 border-b border-slate-100 dark:border-slate-700 hidden md:flex items-center justify-between sticky top-0 bg-white dark:bg-slate-800 z-10"><div className="flex items-center gap-2 font-bold text-2xl text-slate-800 dark:text-white"><Briefcase className="text-blue-600" size={28}/><span>FinKit</span></div><button onClick={()=>setDarkMode(!darkMode)} className="p-2 text-slate-400 hover:text-blue-500 transition-colors">{darkMode ? <Sun size={20}/> : <Moon size={20}/>}</button></div>
-                        {name && <div className="mx-4 mt-4 p-3 bg-blue-50 dark:bg-slate-700/50 rounded-lg border border-blue-100 dark:border-slate-600 flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 font-bold">{name[0]}</div><div className="overflow-hidden"><p className="text-sm font-bold truncate">{name}</p><p className="text-xs text-slate-500 truncate">{line}</p></div></div>}
-                        <nav className="p-4 space-y-8">{menuCategories.map((group, idx) => (<div key={idx}><h3 className="px-4 mb-3 text-xs font-bold text-slate-400 uppercase tracking-widest">{group.title}</h3><div className="space-y-1">{group.items.map((tab) => { const IconV = tab.icon; const isActive = activeTab === tab.id; return (<button key={tab.id} onClick={() => { setActiveTab(tab.id); setIsMenuOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-medium ${isActive ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}><IconV size={18} className={isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'} />{tab.name}</button>); })}</div></div>))}</nav>
-                        <div className="p-4 mt-auto mb-4"><div className="bg-slate-50 dark:bg-slate-700/30 border-2 border-slate-100 dark:border-slate-700 border-dashed rounded-xl h-32 flex flex-col items-center justify-center text-xs text-slate-400 text-center p-4"><Heart className="mb-2 text-slate-300" size={20} /><p>FinKit Pro</p><p className="opacity-50">廣告贊助版位</p></div></div>
-                    </aside>
+      <aside className={`fixed inset-y-0 left-0 z-10 w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 transform transition-transform duration-300 ease-in-out print:hidden md:translate-x-0 md:static md:block overflow-y-auto ${isMenuOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}`}>
+        <div className="p-6 border-b border-slate-100 dark:border-slate-700 hidden md:flex items-center justify-between sticky top-0 bg-white dark:bg-slate-800 z-10"><div className="flex items-center gap-2 font-bold text-2xl text-slate-800 dark:text-white"><Briefcase className="text-blue-600" size={28}/><span>FinKit</span></div><button onClick={()=>setDarkMode(!darkMode)} className="p-2 text-slate-400 hover:text-blue-500 transition-colors">{darkMode ? <Sun size={20}/> : <Moon size={20}/>}</button></div>
+        {name && <div className="mx-4 mt-4 p-3 bg-blue-50 dark:bg-slate-700/50 rounded-lg border border-blue-100 dark:border-slate-600 flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 font-bold">{name[0]}</div><div className="overflow-hidden"><p className="text-sm font-bold truncate">{name}</p><p className="text-xs text-slate-500 truncate">{line}</p></div></div>}
+        <nav className="p-4 space-y-8">{menuCategories.map((group, idx) => (<div key={idx}><h3 className="px-4 mb-3 text-xs font-bold text-slate-400 uppercase tracking-widest">{group.title}</h3><div className="space-y-1">{group.items.map((tab) => { const IconV = tab.icon; const isActive = activeTab === tab.id; return (<button key={tab.id} onClick={() => { setActiveTab(tab.id); setIsMenuOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-medium ${isActive ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}><IconV size={18} className={isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'} />{tab.name}</button>); })}</div></div>))}</nav>
+        <div className="p-4 mt-auto mb-4"><div className="bg-slate-50 dark:bg-slate-700/30 border-2 border-slate-100 dark:border-slate-700 border-dashed rounded-xl h-32 flex flex-col items-center justify-center text-xs text-slate-400 text-center p-4"><Heart className="mb-2 text-slate-300" size={20} /><p>FinKit Pro</p><p className="opacity-50">廣告贊助版位</p></div></div>
+      </aside>
 
-                    <main className="flex-1 p-4 md:p-8 overflow-y-auto print:p-0 print:overflow-visible h-screen bg-slate-50 dark:bg-slate-900">
-                        <div className="max-w-4xl mx-auto print:max-w-none print:w-full pb-20">
-                            <div className="hidden print:flex justify-between items-end mb-8 border-b pb-4"><div className="flex items-center gap-2 font-bold text-2xl text-slate-800"><Briefcase className="text-blue-600" size={32} /><span>FinKit 理財規劃報告</span></div><div className="text-right text-sm text-slate-500"><p>Generated by FinKit</p>{name && <p className="font-bold text-slate-800 mt-1">顧問：{name} {line && `(Line: ${line})`}</p>}</div></div>
-                            <div className="w-full h-24 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 border-dashed rounded-xl mb-8 flex items-center justify-center text-sm text-slate-400 no-print shadow-sm">Google AdSense (Responsive)</div>
-                            {renderContent()}
-                            <footer className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-700 text-center text-slate-400 text-sm print:mt-8 print:flex print:justify-between"><div className="text-left"><p>© 2026 FinKit. 用心規劃，遇見美好未來。</p><p className="mt-2 text-xs opacity-70 print:hidden">免責聲明：本站工具僅供試算參考，不代表投資建議。</p></div>{name && <div className="hidden print:block text-right"><p className="font-bold text-base text-slate-800">{name}</p><p className="text-xs">{line && `LINE: ${line}`}</p></div>}</footer>
-                        </div>
-                    </main>
-                    {isMenuOpen && <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-0 md:hidden no-print" onClick={() => setIsMenuOpen(false)} />}
-                </div>
-            );
-        };
+      <main className="flex-1 p-4 md:p-8 overflow-y-auto print:p-0 print:overflow-visible h-screen bg-slate-50 dark:bg-slate-900">
+        <div className="max-w-4xl mx-auto print:max-w-none print:w-full pb-20">
+          <div className="hidden print:flex justify-between items-end mb-8 border-b pb-4"><div className="flex items-center gap-2 font-bold text-2xl text-slate-800"><Briefcase className="text-blue-600" size={32} /><span>FinKit 理財規劃報告</span></div><div className="text-right text-sm text-slate-500"><p>Generated by FinKit</p>{name && <p className="font-bold text-slate-800 mt-1">顧問：{name} {line && `(Line: ${line})`}</p>}</div></div>
+          
+          {/* Top Ad */}
+          <div className="w-full h-24 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 border-dashed rounded-xl mb-8 flex items-center justify-center text-sm text-slate-400 no-print shadow-sm">
+             Google AdSense (Responsive)
+          </div>
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<FinancialToolkit />);
-    </script>
-</body>
-</html>
+          {renderContent()}
+
+          <footer className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-700 text-center text-slate-400 text-sm print:mt-8 print:flex print:justify-between"><div className="text-left"><p>© 2026 FinKit. 用心規劃，遇見美好未來。</p><p className="mt-2 text-xs opacity-70 print:hidden">免責聲明：本站工具僅供試算參考，不代表投資建議。</p></div>{name && <div className="hidden print:block text-right"><p className="font-bold text-base text-slate-800">{name}</p><p className="text-xs">{line && `LINE: ${line}`}</p></div>}</footer>
+        </div>
+      </main>
+      {isMenuOpen && <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-0 md:hidden no-print" onClick={() => setIsMenuOpen(false)} />}
+    </div>
+  );
+};
+
+export default FinancialToolkit;
 
 

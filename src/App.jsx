@@ -67,7 +67,7 @@ const ResultCard = ({ title, value, subtext, highlight = false, colorClass = "te
     ${highlight 
       ? 'bg-gradient-to-br from-white to-amber-50/50 border-amber-200 shadow-[0_4px_20px_rgba(245,158,11,0.15)]' 
       : 'bg-white border-slate-200 shadow-sm'
-    } print:border-slate-300 print:bg-white`}>
+    } print:border-slate-300 print:bg-white print:shadow-none`}>
     
     <p className="text-xs uppercase tracking-widest text-slate-500 font-bold print:text-slate-600">{title}</p>
     <p className={`text-3xl font-bold mt-2 tracking-tight font-mono ${highlight ? colorClass : 'text-slate-800 print:text-black'}`}>
@@ -139,7 +139,6 @@ const SimpleLineChart = ({ data, color="#d97706", data2 }) => {
         
         {/* Line 1 (Amber) */}
         <polyline fill="none" stroke={color} strokeWidth="2" points={getPoints(data)} vectorEffect="non-scaling-stroke" />
-        <polygon fill={color} fillOpacity="0.1" points={`0,100 ${getPoints(data)} 100,100`} />
         
         {/* Line 2 (Comparison - Grey) */}
         {data2 && <polyline fill="none" stroke="#94a3b8" strokeWidth="2" points={getPoints(data2)} vectorEffect="non-scaling-stroke" strokeDasharray="4" />}
@@ -150,7 +149,7 @@ const SimpleLineChart = ({ data, color="#d97706", data2 }) => {
 };
 
 // ==========================================
-// 計算機模組
+// 計算機模組 (邏輯層)
 // ==========================================
 
 const TaxCalculator = () => {
@@ -633,7 +632,7 @@ const ProfileSettings = () => {
 };
 
 // ==========================================
-// 首頁 (白金流體版)
+// 首頁 (白金流體動畫)
 // ==========================================
 const HomePage = ({ changeTab }) => (
   <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -700,7 +699,7 @@ const HomePage = ({ changeTab }) => (
 );
 
 // ==========================================
-// 主程式 Layout
+// 主程式 Layout (Fix: Mobile Menu white bg & z-index)
 // ==========================================
 const FinancialToolkit = () => {
   const [activeTab, setActiveTab] = useStickyState('home', 'v4_tab');
@@ -738,7 +737,7 @@ const FinancialToolkit = () => {
         <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 text-slate-500 hover:text-slate-900">{isMenuOpen ? <X /> : <MenuIcon />}</button>
       </div>
 
-      {/* Sidebar */}
+      {/* Sidebar (Fix: z-50 & bg-white) */}
       <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 transform transition-transform duration-300 ease-in-out print:hidden md:translate-x-0 md:static md:block overflow-y-auto custom-scrollbar ${isMenuOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}`}>
         <div className="p-6 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white z-10">
             <div className="flex items-center gap-3 cursor-pointer group" onClick={() => {setActiveTab('home'); setIsMenuOpen(false);}}>

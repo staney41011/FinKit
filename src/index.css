@@ -2,22 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 質感捲軸設定 */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-/* 隱藏列印元素 */
-@media print {
-    .no-print { display: none !important; }
-    .print-only { display: block !important; }
-    body { background: white; color: black; }
+/* 這是救命的強制樣式 */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f8fafc; /* 強制淺灰色背景 */
+  color: #1e293b; /* 強制深色文字 */
 }
 
-/* 確保全螢幕高度 */
-body, #root {
-    min-height: 100vh;
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: block;
 }
-
 

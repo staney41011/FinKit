@@ -3,27 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- 確保手機版面正常 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+    <!-- PWA 與 Mobile 設定 (讓它更像一個 App) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FinKit">
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+    <!-- 防止快取 (告訴瀏覽器不要存舊檔案) -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
     <title>FinKit 財富工具箱</title>
     
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4463068342710380" crossorigin="anonymous"></script>
 
-    <!-- 🌟 關鍵修正：直接載入 Tailwind CDN (不需要設定檔了！) -->
+    <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      // 這裡直接設定我們要的顏色，繞過 tailwind.config.js
       tailwind.config = {
         darkMode: 'class',
         theme: {
           extend: {
             colors: {
-              // 白金高雅版專用色
-              amber: { 
-                50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d', 
-                400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309', 
-                800: '#92400e', 900: '#78350f', 950: '#451a03' 
-              },
+              amber: { 50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309', 800: '#92400e', 900: '#78350f', 950: '#451a03' },
               slate: { 850: '#1e293b' }
             },
             fontFamily: {
@@ -35,25 +43,21 @@
       }
     </script>
 
-    <!-- 字型載入 -->
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
       @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
       
       body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; }
       
-      /* 這些基本樣式也直接寫在這裡，確保安全 */
-      @media print {
-          .no-print { display: none !important; }
-          .print-only { display: block !important; }
-          body { background: white; color: black; }
-      }
+      /* 禁止手機選取文字 (更像 App) */
+      body { -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+      input, textarea { -webkit-user-select: text; user-select: text; }
+
+      @media print { .no-print { display: none !important; } .print-only { display: block !important; } body { background: white; color: black; } }
       ::-webkit-scrollbar { width: 6px; }
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-      ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
       
-      /* 首頁動畫 */
       @keyframes gold-blob {
         0% { transform: translate(0px, 0px) scale(1); }
         33% { transform: translate(30px, -50px) scale(1.1); }
@@ -67,9 +71,9 @@
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <!-- 加入版本號參數 (?v=4.3) 強制瀏覽器認為這是新檔案 -->
+    <script type="module" src="/src/main.jsx?v=4.3"></script>
   </body>
 </html>
-
 
 

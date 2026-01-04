@@ -3,7 +3,7 @@ import {
   Calculator, TrendingUp, PieChart, Briefcase, RefreshCw, Menu, X, 
   AlertTriangle, Home, Percent, Globe, Printer, BookOpen, 
   BarChart3, Coins, Sun, Moon, Target, User, ShieldCheck,
-  Building, TrendingDown, Copy, Heart, Sparkles, ArrowRight, Lock
+  Building, TrendingDown, Copy, Heart, ArrowRight, Lock
 } from 'lucide-react';
 
 // ==========================================
@@ -67,7 +67,7 @@ const ResultCard = ({ title, value, subtext, highlight = false, colorClass = "te
     ${highlight 
       ? 'bg-gradient-to-br from-white to-amber-50/50 border-amber-200 shadow-[0_4px_20px_rgba(245,158,11,0.15)]' 
       : 'bg-white border-slate-200 shadow-sm'
-    } print:border-slate-300 print:bg-white print:shadow-none`}>
+    } print:border-slate-300 print:bg-white`}>
     
     <p className="text-xs uppercase tracking-widest text-slate-500 font-bold print:text-slate-600">{title}</p>
     <p className={`text-3xl font-bold mt-2 tracking-tight font-mono ${highlight ? colorClass : 'text-slate-800 print:text-black'}`}>
@@ -137,11 +137,9 @@ const SimpleLineChart = ({ data, color="#d97706", data2 }) => {
         <line x1="0" y1="50" x2="100" y2="50" stroke="#e2e8f0" strokeWidth="0.5" />
         <line x1="0" y1="100" x2="100" y2="100" stroke="#cbd5e1" strokeWidth="0.5" />
         
-        {/* Line 1 (Amber) */}
         <polyline fill="none" stroke={color} strokeWidth="2" points={getPoints(data)} vectorEffect="non-scaling-stroke" />
         <polygon fill={color} fillOpacity="0.1" points={`0,100 ${getPoints(data)} 100,100`} />
         
-        {/* Line 2 (Comparison - Grey) */}
         {data2 && <polyline fill="none" stroke="#94a3b8" strokeWidth="2" points={getPoints(data2)} vectorEffect="non-scaling-stroke" strokeDasharray="4" />}
       </svg>
       <div className="absolute top-0 right-0 text-xs font-bold text-amber-600 -translate-y-full pb-1 font-mono">${fmt(maxVal)}</div>
@@ -735,10 +733,10 @@ const FinancialToolkit = () => {
             <Briefcase className="text-amber-500" />
             <span className="tracking-wide">FinKit</span>
         </div>
-        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 text-slate-500 hover:text-slate-900">{isMenuOpen ? <X /> : <MenuIcon />}</button>
+        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 text-slate-500 hover:text-slate-900">{isMenuOpen ? <X /> : <Menu />}</button>
       </div>
 
-      {/* Sidebar (Fix: z-50 & bg-white) */}
+      {/* Sidebar */}
       <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 transform transition-transform duration-300 ease-in-out print:hidden md:translate-x-0 md:static md:block overflow-y-auto custom-scrollbar ${isMenuOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}`}>
         <div className="p-6 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white z-10">
             <div className="flex items-center gap-3 cursor-pointer group" onClick={() => {setActiveTab('home'); setIsMenuOpen(false);}}>

@@ -139,6 +139,7 @@ const SimpleLineChart = ({ data, color="#d97706", data2 }) => {
         
         {/* Line 1 (Amber) */}
         <polyline fill="none" stroke={color} strokeWidth="2" points={getPoints(data)} vectorEffect="non-scaling-stroke" />
+        <polygon fill={color} fillOpacity="0.1" points={`0,100 ${getPoints(data)} 100,100`} />
         
         {/* Line 2 (Comparison - Grey) */}
         {data2 && <polyline fill="none" stroke="#94a3b8" strokeWidth="2" points={getPoints(data2)} vectorEffect="non-scaling-stroke" strokeDasharray="4" />}
@@ -149,7 +150,7 @@ const SimpleLineChart = ({ data, color="#d97706", data2 }) => {
 };
 
 // ==========================================
-// 計算機模組 (邏輯層)
+// 計算機模組
 // ==========================================
 
 const TaxCalculator = () => {
@@ -699,7 +700,7 @@ const HomePage = ({ changeTab }) => (
 );
 
 // ==========================================
-// 主程式 Layout (Fix: Mobile Menu white bg & z-index)
+// 主程式 Layout
 // ==========================================
 const FinancialToolkit = () => {
   const [activeTab, setActiveTab] = useStickyState('home', 'v4_tab');
@@ -799,10 +800,6 @@ const FinancialToolkit = () => {
   );
 };
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<FinancialToolkit />);
-    </script>
-</body>
-</html>
+export default FinancialToolkit;
 
 

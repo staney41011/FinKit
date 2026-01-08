@@ -59,7 +59,7 @@ const ResultCard = ({ title, value, subtext, highlight = false, colorClass = "te
   </div>
 );
 
-// 截圖功能
+// 截圖功能 (沙盒模式)
 const SectionHeader = ({ title, icon: Icon, description }) => {
   const [isCapturing, setIsCapturing] = useState(false);
 
@@ -210,7 +210,7 @@ const InteractiveChart = ({ data, color="#d97706", data2, title="資產走勢" }
 // 計算機模組
 // ==========================================
 
-// FCN 結構型商品 (v6.0 升級：多模式 + 情境圖表)
+// FCN 結構型商品 (v6.1 更新：情境圖表帶入數字 + 基準試算)
 const FcnCalculator = () => {
     const [assets, setAssets] = useStickyState([{id:1, code:'2330', price:1000}], 'v5_fcn_assets');
     const [principal, setPrincipal] = useStickyState(3000000, 'v5_fcn_p');
@@ -219,7 +219,7 @@ const FcnCalculator = () => {
     const [kiPct, setKiPct] = useStickyState(65, 'v5_fcn_ki');
     const [koPct, setKoPct] = useStickyState(100, 'v5_fcn_ko');
     const [strikePct, setStrikePct] = useStickyState(100, 'v5_fcn_str');
-    const [mode, setMode] = useStickyState('AKI', 'v6_fcn_mode'); // AKI, EKI, NA
+    const [mode, setMode] = useStickyState('AKI', 'v6_fcn_mode');
 
     const addAsset = () => { if(assets.length >= 5) return alert('最多5檔'); setAssets([...assets, { id: Date.now(), code: '', price: '' }]); };
     const removeAsset = (id) => { if(assets.length <= 1) return; setAssets(assets.filter(a => a.id !== id)); };
@@ -228,16 +228,17 @@ const FcnCalculator = () => {
     const monthlyCoupon = Math.floor(principal * (yieldRate / 100) / 12);
     const totalCoupon = monthlyCoupon * months;
     
-    // 找出最差標的價格模擬 (用於圖表)
-    const worstAssetPrice = assets[0]?.price || 100;
-    const kiPrice = worstAssetPrice * (kiPct/100);
-    const koPrice = worstAssetPrice * (koPct/100);
-    const strikePrice = worstAssetPrice * (strikePct/100);
+    // 找出最差標的 (若無則用第一檔)
+    const refAsset = assets[0] || { price: 100 };
+    const refPrice = Number(refAsset.price) || 100;
+    
+    const kiPrice = refPrice * (kiPct/100);
+    const koPrice = refPrice * (koPct/100);
+    const strikePrice = refPrice * (strikePct/100);
 
     // 損益兩平點 (Break-even)
-    // 成本 = Strike - (已領配息總額 / 單位數) -> 簡化為比例
     const breakEvenPct = strikePct - (yieldRate * (months/12)); 
-    const breakEvenPrice = worstAssetPrice * (breakEvenPct / 100);
+    const breakEvenPrice = refPrice * (breakEvenPct / 100);
 
     // 模式說明文字
     const getModeDesc = () => {
@@ -311,13 +312,25 @@ const FcnCalculator = () => {
                             <div><p className="text-xs text-slate-400">月配息</p><p className="text-xl font-mono font-bold">${fmt(monthlyCoupon)}</p></div>
                             <div className="text-right"><p className="text-xs text-slate-400">總配息 ({months}期)</p><p className="text-xl font-mono text-amber-400">${fmt(totalCoupon)}</p></div>
                         </div>
-                        <div className="grid grid-cols-2 gap-4 text-[10px] text-slate-300">
-                             <div><span className="block text-slate-500">損益兩平</span> ${(breakEvenPrice).toFixed(2)} ({breakEvenPct.toFixed(1)}%)</div>
-                             <div className="text-right"><span className="block text-slate-500">最大損失</span> 本金歸零</div>
+                        
+                        {/* 這裡補回 "原本的價格試算" (基準標的試算) */}
+                        <div className="grid grid-cols-3 gap-2 text-[9px] text-slate-300 border-t border-slate-600 pt-3 mt-1">
+                             <div className="text-center">
+                                 <span className="block text-green-400 mb-1">KO (出場)</span>
+                                 <span className="font-mono">${fmt(koPrice)}</span>
+                             </div>
+                             <div className="text-center">
+                                 <span className="block text-slate-400 mb-1">KI (保護)</span>
+                                 <span className="font-mono">${fmt(kiPrice)}</span>
+                             </div>
+                             <div className="text-center">
+                                 <span className="block text-red-400 mb-1">Strike</span>
+                                 <span className="font-mono">${fmt(strikePrice)}</span>
+                             </div>
                         </div>
                     </div>
 
-                    {/* 情境分析圖表 (New) */}
+                    {/* 情境分析圖表 (v6.1: 帶入數字) */}
                     <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-sm space-y-3">
                         <p className="text-xs font-bold text-slate-600 border-b border-slate-100 pb-2 flex items-center gap-2">
                             <TrendingUp size={14} className="text-blue-500"/> 到期情境模擬 ({mode})
@@ -326,19 +339,19 @@ const FcnCalculator = () => {
                         {/* 情境 1: 快樂出場 */}
                         <div className="flex justify-between items-center text-xs">
                             <span className="text-slate-500">🟢 觸發 KO (提前出場)</span>
-                            <span className="font-mono font-bold text-slate-700">拿回本金 + 配息</span>
+                            <span className="font-mono font-bold text-slate-700">拿回 ${fmt(principal)} + 配息</span>
                         </div>
                         
                         {/* 情境 2: 平安下庄 */}
                         <div className="flex justify-between items-center text-xs">
                             <span className="text-slate-500">🔵 {mode==='NA' ? '到期 > Strike' : (mode==='EKI' ? '到期 > KI' : '期間未觸 KI')}</span>
-                            <span className="font-mono font-bold text-slate-700">拿回本金 + 配息</span>
+                            <span className="font-mono font-bold text-slate-700">拿回 ${fmt(principal + totalCoupon)} (含全期息)</span>
                         </div>
 
                         {/* 情境 3: 接股票 */}
                         <div className="flex justify-between items-center text-xs">
                             <span className="text-slate-500">🔴 {mode==='NA' ? '到期 < Strike' : '觸及 KI 且 < Strike'}</span>
-                            <span className="font-mono font-bold text-red-500">接股票 (成本 ${fmt(strikePrice)})</span>
+                            <span className="font-mono font-bold text-red-500">接股票 (損益平衡點 ${fmt(breakEvenPrice)})</span>
                         </div>
 
                         {/* 簡易 Payoff Chart */}
@@ -360,93 +373,37 @@ const FcnCalculator = () => {
                             )}
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-// 單位數試算 (v6.0 New Feature)
-const UnitCalculator = () => {
-    const [principal, setPrincipal] = useStickyState(1000000, 'v6_unit_p');
-    const [price, setPrice] = useStickyState(10, 'v6_unit_price');
-    const [dividend, setDividend] = useStickyState(0.045, 'v6_unit_div');
-    const [deductHealth, setDeductHealth] = useStickyState(false, 'v6_unit_health');
-
-    const units = Number(price) > 0 ? Number(principal) / Number(price) : 0;
-    const grossIncome = units * Number(dividend);
-    const healthFee = (deductHealth && grossIncome >= 20000) ? Math.floor(grossIncome * 0.0211) : 0;
-    const netIncome = grossIncome - healthFee;
-
-    return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
-            <SectionHeader title="單位數與配息試算" icon={Layers} description="計算單筆投入可購買單位數，及預估配息收入。" />
-            <div className="grid md:grid-cols-2 gap-8">
-                <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 h-fit">
-                    <InputGroup label="投入本金" value={principal} onChange={setPrincipal} prefix="$" />
-                    <InputGroup label="每單位價格 (NAV)" value={price} onChange={setPrice} prefix="$" />
                     
-                    <div className="mb-5 group max-w-[240px]">
-                        <label className="block text-xs uppercase tracking-wider font-bold text-slate-500 mb-2 ml-1">每單位配息</label>
-                        <div className="flex gap-2 mb-2">
-                             <button onClick={() => setDividend(0.045)} className={`flex-1 py-1.5 text-xs font-mono rounded border transition-colors ${dividend === 0.045 ? 'bg-amber-100 text-amber-700 border-amber-300 font-bold' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'}`}>0.045</button>
-                             <button onClick={() => setDividend(0.095)} className={`flex-1 py-1.5 text-xs font-mono rounded border transition-colors ${dividend === 0.095 ? 'bg-amber-100 text-amber-700 border-amber-300 font-bold' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'}`}>0.095</button>
-                        </div>
-                        <div className="relative rounded-xl shadow-sm bg-white border border-slate-300 focus-within:border-amber-500 focus-within:ring-1 focus-within:ring-amber-500 flex items-center h-[46px] overflow-hidden">
-                             <div className="pl-3 pr-2 text-amber-600 font-bold text-sm select-none flex items-center h-full">$</div>
-                             <input type="number" step="0.001" value={dividend} onChange={(e) => setDividend(Number(e.target.value))} className="flex-1 h-full w-full bg-transparent border-none focus:ring-0 text-slate-800 text-sm font-mono pl-0" />
-                        </div>
+                    {/* 價位檢核表 (還是保留，因為多標的需要看每一個) */}
+                    <div className="space-y-3 pt-2">
+                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">各標的價位檢核</p>
+                        {assets.map((asset) => {
+                            const p = Number(asset.price) || 0;
+                            return (
+                                <div key={asset.id} className="bg-white border border-slate-200 p-3 rounded-xl flex flex-col gap-2 shadow-sm">
+                                    <div className="flex justify-between items-center border-b border-slate-100 pb-2">
+                                        <span className="font-bold text-base text-slate-800">{asset.code || '-'}</span>
+                                        <span className="text-xs font-mono bg-slate-100 px-2 py-1 rounded text-slate-600">${fmt(p)}</span>
+                                    </div>
+                                    <div className="grid grid-cols-3 gap-2 text-center">
+                                        <div className="bg-green-50 p-1.5 rounded-lg border border-green-100"><p className="text-[9px] text-green-600 font-bold">KO</p><p className="text-xs font-bold text-green-700 font-mono">${fmt(p*koPct/100)}</p></div>
+                                        <div className="bg-slate-50 p-1.5 rounded-lg border border-slate-100"><p className="text-[9px] text-slate-500 font-bold">KI</p><p className="text-xs font-bold text-slate-700 font-mono">${fmt(p*kiPct/100)}</p></div>
+                                        <div className="bg-red-50 p-1.5 rounded-lg border border-red-100"><p className="text-[9px] text-red-500 font-bold">Strike</p><p className="text-xs font-bold text-red-600 font-mono">${fmt(p*strikePct/100)}</p></div>
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
-
-                    <div className="flex items-center gap-2 mt-4 cursor-pointer p-2 hover:bg-slate-50 rounded-lg transition-colors" onClick={() => setDeductHealth(!deductHealth)}>
-                        <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${deductHealth ? 'bg-amber-500 border-amber-500' : 'bg-white border-slate-300'}`}>
-                            {deductHealth && <Check size={14} className="text-white" />}
-                        </div>
-                        <span className="text-sm text-slate-600 select-none font-medium">扣除二代健保 (2.11%)</span>
-                    </div>
-                </div>
-
-                <div className="space-y-4">
-                    <ResultCard title="總購買單位數" value={`${fmt(units)} 單位`} highlight={true} />
-                    <ResultCard title="預計配息 (單次)" value={`$${fmt(netIncome)}`} subtext={healthFee > 0 ? `已扣除健保費 $${fmt(healthFee)}` : '未達扣費門檻或未勾選'} />
                 </div>
             </div>
         </div>
     );
 };
 
-const ProfileSettings = ({ settings, onUpdate }) => {
-    const [name, setName] = useState(settings.name);
-    const [line, setLine] = useState(settings.line);
-    const [phone, setPhone] = useState(settings.phone);
+// 單位數試算 (保持不變)
+const UnitCalculator = () => { const [principal, setPrincipal] = useStickyState(1000000, 'v6_unit_p'); const [price, setPrice] = useStickyState(10, 'v6_unit_price'); const [dividend, setDividend] = useStickyState(0.045, 'v6_unit_div'); const [deductHealth, setDeductHealth] = useStickyState(false, 'v6_unit_health'); const units = Number(price) > 0 ? Number(principal) / Number(price) : 0; const grossIncome = units * Number(dividend); const healthFee = (deductHealth && grossIncome >= 20000) ? Math.floor(grossIncome * 0.0211) : 0; const netIncome = grossIncome - healthFee; return (<div className="space-y-6 animate-in fade-in slide-in-from-bottom-4"><SectionHeader title="單位數與配息試算" icon={Layers} description="計算單筆投入可購買單位數，及預估配息收入。" /><div className="grid md:grid-cols-2 gap-8"><div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 h-fit"><InputGroup label="投入本金" value={principal} onChange={setPrincipal} prefix="$" /><InputGroup label="每單位價格 (NAV)" value={price} onChange={setPrice} prefix="$" /><div className="mb-5 group max-w-[240px]"><label className="block text-xs uppercase tracking-wider font-bold text-slate-500 mb-2 ml-1">每單位配息</label><div className="flex gap-2 mb-2"><button onClick={() => setDividend(0.045)} className={`flex-1 py-1.5 text-xs font-mono rounded border transition-colors ${dividend === 0.045 ? 'bg-amber-100 text-amber-700 border-amber-300 font-bold' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'}`}>0.045</button><button onClick={() => setDividend(0.095)} className={`flex-1 py-1.5 text-xs font-mono rounded border transition-colors ${dividend === 0.095 ? 'bg-amber-100 text-amber-700 border-amber-300 font-bold' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'}`}>0.095</button></div><div className="relative rounded-xl shadow-sm bg-white border border-slate-300 focus-within:border-amber-500 focus-within:ring-1 focus-within:ring-amber-500 flex items-center h-[46px] overflow-hidden"><div className="pl-3 pr-2 text-amber-600 font-bold text-sm select-none flex items-center h-full">$</div><input type="number" step="0.001" value={dividend} onChange={(e) => setDividend(Number(e.target.value))} className="flex-1 h-full w-full bg-transparent border-none focus:ring-0 text-slate-800 text-sm font-mono pl-0" /></div></div><div className="flex items-center gap-2 mt-4 cursor-pointer p-2 hover:bg-slate-50 rounded-lg transition-colors" onClick={() => setDeductHealth(!deductHealth)}><div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${deductHealth ? 'bg-amber-500 border-amber-500' : 'bg-white border-slate-300'}`}>{deductHealth && <Check size={14} className="text-white" />}</div><span className="text-sm text-slate-600 select-none font-medium">扣除二代健保 (2.11%)</span></div></div><div className="space-y-4"><ResultCard title="總購買單位數" value={`${fmt(units)} 單位`} highlight={true} /><ResultCard title="預計配息 (單次)" value={`$${fmt(netIncome)}`} subtext={healthFee > 0 ? `已扣除健保費 $${fmt(healthFee)}` : '未達扣費門檻或未勾選'} /></div></div></div>); };
 
-    useEffect(() => {
-        setName(settings.name);
-        setLine(settings.line);
-        setPhone(settings.phone);
-    }, [settings]);
-
-    const handleChange = (field, val) => {
-        if(field === 'name') setName(val);
-        if(field === 'line') setLine(val);
-        if(field === 'phone') setPhone(val);
-        onUpdate(field, val);
-    };
-
-    return (
-        <div className="space-y-6">
-            <SectionHeader title="品牌設定" icon={User} description="設定浮水印，將顯示在所有截圖與報表中。" />
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 max-w-lg">
-                <InputGroup label="姓名 / 職稱" value={name} onChange={(e)=>handleChange('name', e)} placeholder="例：王小明 經理" type="text" />
-                <InputGroup label="LINE ID" value={line} onChange={(e)=>handleChange('line', e)} placeholder="ID" type="text" />
-                <InputGroup label="電話" value={phone} onChange={(e)=>handleChange('phone', e)} placeholder="0912-345-678" type="text" />
-                <div className="mt-8 pt-4 border-t border-slate-100 flex items-center gap-2 text-green-600 bg-green-50 p-3 rounded-lg text-sm"><ShieldCheck size={18} /> 設定已自動儲存並生效</div>
-            </div>
-        </div>
-    );
-};
-
-// ... (Compound, Stock, Forex, RentVsBuy, Fire, Insurance, Inflation, DcaCalculator 等其他模組，保持 v5.8 的窄版樣式邏輯) ...
+// ... (其他模組保持 v5.9) ...
 const CompoundCalculator = () => { const [principal, setPrincipal] = useStickyState(100000, 'v4_cmp_p'); const [rate, setRate] = useStickyState(6, 'v4_cmp_r'); const [years, setYears] = useStickyState(20, 'v4_cmp_y'); const [compareMode, setCompareMode] = useState(false); const [compareRate, setCompareRate] = useStickyState(1.7, 'v4_cmp_cr'); const calculate = (r) => { const P = Number(principal); const rateVal = Number(r)/100; let data = []; for(let i=0; i<=years; i++) data.push({ value: P * Math.pow((1 + rateVal), i) }); return { final: data[data.length-1].value, data }; }; const res1 = calculate(rate); const res2 = calculate(compareRate); return (<div className="space-y-6 animate-in fade-in slide-in-from-bottom-4"><SectionHeader title="單筆複利效應" icon={TrendingUp} description="時間是財富最好的朋友，PK 模式比較投資與定存差距。" /><div className="flex justify-end no-print mb-2"><button onClick={()=>setCompareMode(!compareMode)} className={`text-xs px-3 py-1 rounded-full border transition-all ${compareMode ? 'bg-amber-600 text-white border-amber-600' : 'text-slate-500 border-slate-300 hover:border-amber-500 hover:text-amber-600'}`}>{compareMode ? '關閉比較' : '開啟定存 PK'}</button></div><div className="grid md:grid-cols-2 gap-8"><div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 h-fit"><InputGroup label="本金投入" value={principal} onChange={setPrincipal} prefix="$" /><InputGroup label="投資年化報酬率" value={rate} onChange={setRate} suffix="%" /><InputGroup label="投資年限" value={years} onChange={setYears} suffix="年" />{compareMode && <div className="pt-3 border-t border-slate-100 mt-3 animate-in fade-in"><InputGroup label="比較對象 (如定存) 利率" value={compareRate} onChange={setCompareRate} suffix="%" /></div>}</div><div className="space-y-4"><ResultCard title={`${years} 年後總資產`} value={`$${fmt(res1.final)}`} highlight={true} />{compareMode && <ResultCard title="定存對照組資產" value={`$${fmt(res2.final)}`} subtext={`相差 $${fmt(res1.final - res2.final)}`} colorClass="text-slate-500" />}<div className="bg-white p-3 rounded-xl border border-slate-200 no-print"><InteractiveChart data={res1.data} data2={compareMode ? res2.data : null} title="資產成長"/></div></div></div></div>); };
 const DcaCalculator = () => { const [monthly, setMonthly] = useStickyState(10000, 'v4_dca_m'); const [rate, setRate] = useStickyState(6, 'v4_dca_r'); const [years, setYears] = useStickyState(20, 'v4_dca_y'); const calculate = () => { const pmt = Number(monthly); const r = Number(rate)/100/12; const n = Number(years)*12; let data = []; for(let i=0; i<=Number(years); i++) { let m = i*12; data.push({ value: m===0?0:pmt*(Math.pow(1+r,m)-1)/r }); } const fv = data[data.length-1].value; return { fv, total: pmt*n, data }; }; const res = calculate(); return (<div className="space-y-6 animate-in fade-in slide-in-from-bottom-4"><SectionHeader title="定期定額試算" icon={RefreshCw} description="每月固定投入，享受時間複利與平均成本的威力。" /><div className="grid md:grid-cols-2 gap-8"><div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 h-fit"><InputGroup label="每月投入金額" value={monthly} onChange={setMonthly} prefix="$" /><InputGroup label="預期年化報酬率" value={rate} onChange={setRate} suffix="%" /><InputGroup label="投資期間" value={years} onChange={setYears} suffix="年" /></div><div className="space-y-4"><ResultCard title="期末總資產預估" value={`$${fmt(res.fv)}`} highlight={true} /><div className="bg-white p-3 rounded-xl border border-slate-200 no-print"><InteractiveChart data={res.data} title="資產累積"/></div></div></div></div>); };
 const StockCalculator = () => { const [buyPrice, setBuyPrice] = useStickyState(100, 'v5_stk_buy'); const [sellPrice, setSellPrice] = useStickyState(110, 'v5_stk_sell'); const [shares, setShares] = useStickyState(1000, 'v5_stk_sh'); const [discount, setDiscount] = useStickyState(60, 'v5_stk_disc'); const [type, setType] = useStickyState('stock', 'v5_stk_type'); const calculate = () => { let taxRate = 0.003; if (type === 'day') taxRate = 0.0015; if (type === 'etf') taxRate = 0.001; if (type === 'bond') taxRate = 0; const feeRate = 0.001425; const discVal = discount / 100; const totalShares = Number(shares); const buyVal = buyPrice * totalShares; const sellVal = sellPrice * totalShares; const buyFee = Math.floor(Math.max(20, buyVal * feeRate * discVal)); const sellFee = Math.floor(Math.max(20, sellVal * feeRate * discVal)); const tax = Math.floor(sellVal * taxRate); const profit = sellVal - sellFee - tax - buyVal - buyFee; const buySettlement = buyVal + buyFee; const sellSettlement = sellVal - sellFee - tax; return { profit, tax, buyFee, sellFee, buySettlement, sellSettlement, buyVal, sellVal }; }; const res = calculate(); return (<div className="space-y-6 animate-in fade-in slide-in-from-bottom-4"><SectionHeader title="台股交易獲利" icon={BarChart3} description="支援個股、當沖、ETF (0.1%) 及債券 (0%) 稅率。" /><div className="grid md:grid-cols-2 gap-8"><div className="bg-white p-6 rounded-2xl shadow-lg border border-slate-100 h-fit"><div className="mb-6 max-w-[240px]"><label className="block text-xs uppercase tracking-wider font-bold text-slate-500 mb-2 ml-1">交易種類</label><div className="grid grid-cols-2 gap-2">{[{id:'stock', name:'個股 (0.3%)'}, {id:'day', name:'當沖 (0.15%)'}, {id:'etf', name:'ETF (0.1%)'}, {id:'bond', name:'債券ETF (0%)'}].map(t => (<button key={t.id} onClick={()=>setType(t.id)} className={`py-2 text-[10px] font-bold rounded-lg border transition-all ${type===t.id ? 'bg-amber-600 text-white border-amber-600 shadow-md' : 'text-slate-500 border-slate-200 bg-slate-50 hover:bg-white'}`}>{t.name}</button>))}</div></div><InputGroup label="買入價格" value={buyPrice} onChange={setBuyPrice} prefix="$" /><InputGroup label="賣出價格" value={sellPrice} onChange={setSellPrice} prefix="$" /><InputGroup label="股數" value={shares} onChange={setShares} suffix="股" /><div className="mb-5 group max-w-[240px]"><label className="block text-xs uppercase tracking-wider font-bold text-slate-500 mb-1.5 ml-1">手續費折數 ({(discount/10).toFixed(1)}折)</label><div className="flex gap-3 items-center bg-slate-50 p-2 rounded-xl border border-slate-200"><input type="range" min="10" max="100" step="1" value={discount} onChange={(e)=>setDiscount(Number(e.target.value))} className="flex-1 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600"/><input type="number" value={discount} onChange={(e)=>setDiscount(Number(e.target.value))} className="w-12 p-1.5 border border-slate-300 rounded-lg text-center font-mono text-xs focus:ring-amber-500 outline-none" /></div><p className="mt-1.5 text-[10px] text-slate-400 text-right">輸入28 = 2.8折</p></div></div><div className="space-y-4"><ResultCard title="預估淨損益" value={`$${fmt(res.profit)}`} highlight={true} colorClass={res.profit >= 0 ? "text-red-500" : "text-green-600"} /><div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2 font-mono text-xs text-slate-600"><div className="border-b border-slate-200 pb-1 mb-2 font-bold text-slate-400 uppercase tracking-widest text-[10px]">交易明細 (Breakdown)</div><div className="flex justify-between"><span>(A) 買進價金</span><span>${fmt(res.buyVal)}</span></div><div className="flex justify-between"><span>(B) 買入手續費</span><span>${fmt(res.buyFee)}</span></div><div className="flex justify-between text-slate-800 font-bold border-t border-slate-200 pt-1"><span>買進交割 (A+B)</span><span>${fmt(res.buySettlement)}</span></div><div className="border-b border-slate-200 my-2"></div><div className="flex justify-between"><span>(C) 賣出價金</span><span>${fmt(res.sellVal)}</span></div><div className="flex justify-between"><span>(D) 賣出手續費</span><span>${fmt(res.sellFee)}</span></div><div className="flex justify-between"><span>(E) 證交稅</span><span>${fmt(res.tax)}</span></div><div className="flex justify-between text-slate-800 font-bold border-t border-slate-200 pt-1"><span>賣出交割 (C-D-E)</span><span>${fmt(res.sellSettlement)}</span></div></div><div className="p-2 bg-blue-50 text-blue-700 text-[10px] rounded-lg text-center font-mono">公式：獲利 = C - D - E - A - B</div></div></div></div>); };

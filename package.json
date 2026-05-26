@@ -1,6 +1,6 @@
 {
   "name": "finkit",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -8,15 +8,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "html2canvas": "^1.4.1",
     "lucide-react": "^0.263.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.0.3",
+    "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.27",
     "tailwindcss": "^3.3.3",
-    "vite": "^4.4.5"
+    "vite": "^6.4.2"
   }
 }

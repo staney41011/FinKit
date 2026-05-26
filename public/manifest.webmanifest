@@ -1,0 +1,16 @@
+{
+  "name": "FinKit 財富工具箱",
+  "short_name": "FinKit",
+  "description": "台灣理財試算與規劃工具箱。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

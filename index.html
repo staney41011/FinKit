@@ -2,56 +2,37 @@
 <html lang="zh-TW">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <!-- 確保手機縮放正常 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    
-    <!-- PWA 設定 -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="FinKit">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="FinKit 是為台灣使用者打造的理財輔助工具箱，提供預算、負債、緊急預備金、複利、定期定額、台股交易、配息、房貸、退休、保險與稅務試算。" />
+    <meta name="keywords" content="FinKit, 理財工具, 複利計算, 定期定額, 台股交易, 房貸試算, FIRE, 預算規劃, 台灣理財" />
+    <meta name="author" content="FinKit" />
+    <meta name="robots" content="index, follow" />
+    <meta name="google-adsense-account" content="ca-pub-4463068342710380" />
+    <link rel="canonical" href="https://www.finkit.top/" />
+    <link rel="icon" type="image/png" href="/icon.png" />
+    <link rel="apple-touch-icon" href="/icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="FinKit" />
 
-    <title>FinKit 財富工具箱</title>
-    
-    <!-- Google AdSense -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="zh_TW" />
+    <meta property="og:site_name" content="FinKit" />
+    <meta property="og:title" content="FinKit 財富工具箱" />
+    <meta property="og:description" content="一站完成預算、投資、房貸、稅務、退休與風險檢查的台灣理財輔助工具。" />
+    <meta property="og:url" content="https://www.finkit.top/" />
+    <meta property="og:image" content="https://www.finkit.top/icon.png" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="FinKit 財富工具箱" />
+    <meta name="twitter:description" content="一站完成預算、投資、房貸、稅務、退休與風險檢查的台灣理財輔助工具。" />
+
+    <title>FinKit 財富工具箱 | 台灣理財試算與規劃工具</title>
+
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4463068342710380" crossorigin="anonymous"></script>
-
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              amber: { 50:'#fffbeb', 100:'#fef3c7', 200:'#fde68a', 300:'#fcd34d', 400:'#fbbf24', 500:'#f59e0b', 600:'#d97706', 700:'#b45309', 800:'#92400e', 900:'#78350f', 950:'#451a03' },
-              slate: { 850: '#1e293b' }
-            },
-            fontFamily: { sans: ['"Noto Sans TC"', 'sans-serif'], mono: ['"JetBrains Mono"', 'monospace'] }
-          }
-        }
-      }
-    </script>
-    
-    <!-- 截圖功能核心 (新增這個!) -->
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-
-    <!-- 字型與樣式 -->
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
-      @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
-      body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; -webkit-user-select: none; user-select: none; }
-      input, textarea, select { -webkit-user-select: text; user-select: text; }
-      ::-webkit-scrollbar { width: 6px; }
-      ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-      @keyframes gold-blob { 0% { transform: translate(0,0) scale(1); } 33% { transform: translate(30px,-50px) scale(1.1); } 66% { transform: translate(-20px,20px) scale(0.9); } 100% { transform: translate(0,0) scale(1); } }
-      .animate-gold-blob { animation: gold-blob 10s infinite; }
-    </style>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
-
-

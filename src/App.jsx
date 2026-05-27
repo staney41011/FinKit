@@ -25,12 +25,14 @@ import {
   Percent,
   PieChart,
   PiggyBank,
+  Plus,
   RefreshCw,
   Scale,
   ShieldCheck,
   Target,
   TrendingDown,
   TrendingUp,
+  Trash2,
   User,
   Wallet,
   X,
@@ -1299,36 +1301,286 @@ function FcnCalculator() {
   const [principal, setPrincipal] = useStickyState(3000000, 'fcn_principal');
   const [months, setMonths] = useStickyState(3, 'fcn_months');
   const [yieldRate, setYieldRate] = useStickyState(8, 'fcn_yield');
-  const [refPrice, setRefPrice] = useStickyState(1000, 'fcn_ref');
   const [ko, setKo] = useStickyState(100, 'fcn_ko');
   const [strike, setStrike] = useStickyState(100, 'fcn_strike');
   const [ki, setKi] = useStickyState(65, 'fcn_ki');
+  const defaultFcnAssets = [
+    { id: 'asset-aapl', symbol: 'AAPL', price: 308.33, scenario: 85, sourceDate: '' },
+    { id: 'asset-nvda', symbol: 'NVDA', price: 214.86, scenario: 85, sourceDate: '' },
+  ];
+  const [assets, setAssets] = useStickyState(defaultFcnAssets, 'fcn_assets');
+  const [quoteCache, setQuoteCache] = useState(null);
+  const [quoteCacheError, setQuoteCacheError] = useState('');
+  const [quoteStatus, setQuoteStatus] = useState({});
+
+  const getAssetBase = (items = assets) => (Array.isArray(items) && items.length ? items : defaultFcnAssets);
+  const fcnAssets = getAssetBase().map((asset, index) => ({
+    id: asset.id || `asset-${index}`,
+    symbol: asset.symbol ?? '',
+    price: asset.price ?? '',
+    scenario: asset.scenario ?? 85,
+    sourceDate: asset.sourceDate ?? '',
+    source: asset.source ?? '',
+  }));
+
+  useEffect(() => {
+    if (Array.isArray(assets) && assets.some((asset) => !asset.id)) {
+      setAssets((items) =>
+        getAssetBase(items).map((asset, index) => ({ ...asset, id: asset.id || `asset-${Date.now()}-${index}` })),
+      );
+    }
+  }, [assets, setAssets]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/data/us-closes.json', { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error('quote cache unavailable');
+        return response.json();
+      })
+      .then((data) => {
+        if (!cancelled) {
+          setQuoteCache(data);
+          setQuoteCacheError('');
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setQuoteCacheError('收盤價資料暫時無法載入，可先手動輸入。');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const setSafeAssets = (updater) => {
+    setAssets((items) => {
+      const base = getAssetBase(items);
+      return typeof updater === 'function' ? updater(base) : updater;
+    });
+  };
+
+  const normalizeSymbol = (symbol) => symbol.trim().toUpperCase().replace(/\s+/g, '');
+
+  const loadQuoteCache = async () => {
+    if (quoteCache) return quoteCache;
+    const response = await fetch('/data/us-closes.json', { cache: 'no-store' });
+    if (!response.ok) throw new Error('收盤價資料暫時無法載入');
+    const data = await response.json();
+    setQuoteCache(data);
+    setQuoteCacheError('');
+    return data;
+  };
+
+  const updateAsset = (assetId, patch) => {
+    setSafeAssets((items) =>
+      items.map((item, index) => ((item.id || `asset-${index}`) === assetId ? { ...item, ...patch } : item)),
+    );
+  };
+
+  const addAsset = () => {
+    setSafeAssets((items) => [
+      ...items,
+      { id: `asset-${Date.now()}`, symbol: '', price: '', scenario: 85, sourceDate: '', source: '' },
+    ]);
+  };
+
+  const removeAsset = (assetId) => {
+    setSafeAssets((items) => (items.length > 1 ? items.filter((item, index) => (item.id || `asset-${index}`) !== assetId) : items));
+  };
+
+  const applyLatestClose = async (assetId) => {
+    const asset = fcnAssets.find((item) => item.id === assetId);
+    const symbol = normalizeSymbol(asset?.symbol || '');
+    if (!symbol) {
+      setQuoteStatus((items) => ({ ...items, [assetId]: { state: 'error', message: '請先輸入美股代號。' } }));
+      return;
+    }
+    setQuoteStatus((items) => ({ ...items, [assetId]: { state: 'loading', message: '讀取最新收盤價...' } }));
+    try {
+      const data = await loadQuoteCache();
+      const quote = data?.quotes?.[symbol];
+      const close = n(quote?.close, NaN);
+      if (!quote || !Number.isFinite(close)) throw new Error(`${symbol} 尚未在每日資料庫中。`);
+      updateAsset(assetId, {
+        symbol,
+        price: close.toFixed(2),
+        sourceDate: quote.date,
+        source: data.source || 'US latest close',
+      });
+      setQuoteStatus((items) => ({
+        ...items,
+        [assetId]: { state: 'ok', message: `${symbol} 已帶入 ${quote.date} 收盤價 ${money(close, 2)}` },
+      }));
+    } catch (error) {
+      setQuoteStatus((items) => ({
+        ...items,
+        [assetId]: { state: 'error', message: error.message || '無法帶入收盤價，請手動輸入。' },
+      }));
+    }
+  };
+
   const coupon = n(principal) * n(yieldRate) / 100 / 12 * n(months);
-  const koPrice = n(refPrice) * n(ko) / 100;
-  const strikePrice = n(refPrice) * n(strike) / 100;
-  const kiPrice = n(refPrice) * n(ki) / 100;
-  const breakEven = strikePrice * (1 - (n(yieldRate) / 100) * (n(months) / 12));
+  const couponRate = n(principal) ? coupon / n(principal) : 0;
+  const assetCalcs = fcnAssets.map((asset) => {
+    const ref = n(asset.price);
+    const scenarioPct = n(asset.scenario, 100);
+    const koPrice = ref * n(ko) / 100;
+    const strikePrice = ref * n(strike) / 100;
+    const kiPrice = ref * n(ki) / 100;
+    const breakEven = strikePrice * (1 - couponRate);
+    const scenarioPrice = ref * scenarioPct / 100;
+    const allocatedUnits = strikePrice ? n(principal) / strikePrice : 0;
+    const stockValue = allocatedUnits * scenarioPrice;
+    const scenarioPnl = scenarioPrice < strikePrice ? coupon + stockValue - n(principal) : coupon;
+    const scenarioPnlPct = n(principal) ? scenarioPnl / n(principal) * 100 : 0;
+    const status =
+      scenarioPrice >= koPrice
+        ? '可能提前出場'
+        : scenarioPrice <= kiPrice
+          ? '落入 KI 風險區'
+          : scenarioPrice < strikePrice
+            ? '低於 Strike'
+            : '收息返本';
+    return { ...asset, ref, scenarioPct, koPrice, strikePrice, kiPrice, breakEven, scenarioPrice, scenarioPnl, scenarioPnlPct, status };
+  });
+  const primary = assetCalcs[0] || {};
+  const quoteUpdatedAt = quoteCache?.updatedAt
+    ? new Date(quoteCache.updatedAt).toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' })
+    : '載入中';
 
   return (
     <div className="space-y-6">
-      <SectionHeader title="FCN 結構型商品" icon={PieChart} description="估算 FCN 常見 KO、Strike、KI 價位與配息後損益兩平價。" source="結構型商品風險高，實際條件以商品說明書為準。" />
+      <SectionHeader title="FCN 結構型商品" icon={PieChart} description="估算 FCN 常見 KO、Strike、KI 價位、收息與標的情境損益。" source="結構型商品風險高，實際條件以商品說明書為準。" />
       <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="tool-card grid gap-4 p-5 sm:grid-cols-2">
           <NumberField label="本金" value={principal} onChange={setPrincipal} prefix="$" />
           <NumberField label="天期" value={months} onChange={setMonths} suffix="月" />
           <NumberField label="年化配息率" value={yieldRate} onChange={setYieldRate} suffix="%" step="0.1" />
-          <NumberField label="參考價格" value={refPrice} onChange={setRefPrice} prefix="$" />
           <NumberField label="KO" value={ko} onChange={setKo} suffix="%" />
           <NumberField label="Strike" value={strike} onChange={setStrike} suffix="%" />
           <NumberField label="KI" value={ki} onChange={setKi} suffix="%" />
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <ResultCard title="總配息" value={money(coupon)} icon={Coins} tone="emerald" />
-          <ResultCard title="KO 價" value={money(koPrice, 2)} icon={TrendingUp} tone="sky" />
-          <ResultCard title="Strike 價" value={money(strikePrice, 2)} icon={Target} tone="amber" />
-          <ResultCard title="KI 價" value={money(kiPrice, 2)} icon={TrendingDown} tone="rose" />
-          <ResultCard title="配息後兩平" value={money(breakEven, 2)} icon={Scale} tone="indigo" detail="不含交易成本、匯率與提前出場影響。" />
+          <ResultCard title="KO 價" value={money(primary.koPrice, 2)} icon={TrendingUp} tone="sky" detail="依第一個標的顯示。" />
+          <ResultCard title="Strike 價" value={money(primary.strikePrice, 2)} icon={Target} tone="amber" detail="依第一個標的顯示。" />
+          <ResultCard title="KI 價" value={money(primary.kiPrice, 2)} icon={TrendingDown} tone="rose" detail="依第一個標的顯示。" />
+          <ResultCard title="配息後兩平" value={money(primary.breakEven, 2)} icon={Scale} tone="indigo" detail="不含交易成本、匯率與提前出場影響。" />
         </div>
+      </div>
+      <div className="tool-card p-5">
+        <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h3 className="text-base font-black text-slate-900">標的價格試算</h3>
+            <p className="mt-1 text-xs leading-relaxed text-slate-500">
+              每日快取更新時間：{quoteUpdatedAt}。{quoteCacheError || '常用美股與 ETF 可一鍵帶入最新收盤價。'}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={addAsset}
+            title="新增標的"
+            className="focus-ring inline-flex h-10 items-center gap-2 rounded-lg border border-sky-200 bg-sky-50 px-3 text-xs font-bold text-sky-700 hover:bg-sky-100"
+          >
+            <Plus size={16} />
+            新增標的
+          </button>
+        </div>
+        <div className="space-y-4">
+          {fcnAssets.map((asset) => {
+            const status = quoteStatus[asset.id];
+            return (
+              <div key={asset.id} className="grid gap-3 border-b border-slate-100 pb-4 last:border-b-0 last:pb-0 lg:grid-cols-[1fr_1fr_1fr_auto_auto]">
+                <NumberField
+                  label="美股代號"
+                  type="text"
+                  value={asset.symbol}
+                  onChange={(value) => updateAsset(asset.id, { symbol: value.toUpperCase(), sourceDate: '', source: '' })}
+                  placeholder="AAPL"
+                />
+                <NumberField
+                  label="參考價"
+                  value={asset.price}
+                  onChange={(value) => updateAsset(asset.id, { price: value, sourceDate: '', source: '' })}
+                  prefix="$"
+                  step="0.01"
+                  note={asset.sourceDate ? `${asset.sourceDate} 收盤價` : ''}
+                />
+                <NumberField
+                  label="到期情境"
+                  value={asset.scenario}
+                  onChange={(value) => updateAsset(asset.id, { scenario: value })}
+                  suffix="%"
+                  step="0.1"
+                  note="以參考價百分比估算"
+                />
+                <button
+                  type="button"
+                  onClick={() => applyLatestClose(asset.id)}
+                  disabled={status?.state === 'loading'}
+                  title="帶入最新美股收盤價"
+                  className="focus-ring inline-flex h-11 items-center justify-center gap-2 self-end rounded-lg border border-slate-300 bg-white px-3 text-xs font-bold text-slate-700 shadow-sm hover:border-sky-300 hover:text-sky-700 disabled:cursor-wait disabled:opacity-70"
+                >
+                  <Download size={16} />
+                  <span>帶入昨收</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => removeAsset(asset.id)}
+                  disabled={fcnAssets.length === 1}
+                  title="移除標的"
+                  className="focus-ring inline-flex h-11 w-11 items-center justify-center self-end rounded-lg border border-slate-300 bg-white text-slate-500 shadow-sm hover:border-rose-200 hover:text-rose-600 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  <Trash2 size={16} />
+                </button>
+                {status?.message ? (
+                  <p className={`lg:col-span-5 text-xs ${status.state === 'error' ? 'text-rose-600' : 'text-emerald-700'}`}>
+                    {status.state === 'loading' ? '讀取中...' : status.message}
+                  </p>
+                ) : null}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className="tool-card overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
+            <thead className="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+              <tr>
+                <th className="px-4 py-3">標的</th>
+                <th className="px-4 py-3">參考價</th>
+                <th className="px-4 py-3">KO</th>
+                <th className="px-4 py-3">Strike</th>
+                <th className="px-4 py-3">KI</th>
+                <th className="px-4 py-3">損益兩平</th>
+                <th className="px-4 py-3">情境價</th>
+                <th className="px-4 py-3">情境損益</th>
+                <th className="px-4 py-3">狀態</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 bg-white">
+              {assetCalcs.map((asset) => (
+                <tr key={asset.id}>
+                  <td className="px-4 py-3 font-black text-slate-900">{normalizeSymbol(asset.symbol) || '-'}</td>
+                  <td className="mono px-4 py-3 text-slate-700">{money(asset.ref, 2)}</td>
+                  <td className="mono px-4 py-3 text-sky-700">{money(asset.koPrice, 2)}</td>
+                  <td className="mono px-4 py-3 text-amber-700">{money(asset.strikePrice, 2)}</td>
+                  <td className="mono px-4 py-3 text-rose-700">{money(asset.kiPrice, 2)}</td>
+                  <td className="mono px-4 py-3 text-indigo-700">{money(asset.breakEven, 2)}</td>
+                  <td className="mono px-4 py-3 text-slate-700">{money(asset.scenarioPrice, 2)}</td>
+                  <td className={`mono px-4 py-3 font-bold ${asset.scenarioPnl >= 0 ? 'text-emerald-700' : 'text-rose-700'}`}>
+                    {money(asset.scenarioPnl, 0)} / {pct(asset.scenarioPnlPct, 2)}
+                  </td>
+                  <td className="px-4 py-3 text-xs font-bold text-slate-600">{asset.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="border-t border-slate-100 px-4 py-3 text-xs leading-relaxed text-slate-500">
+          情境損益以到期低於 Strike 時可能接股估算；是否觸發 KI、提前贖回、票息支付日與保護條款仍需以商品說明書為準。
+        </p>
       </div>
     </div>
   );

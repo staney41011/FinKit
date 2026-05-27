@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
+﻿import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 import {
   AlertTriangle,
@@ -39,7 +39,7 @@ import {
 } from 'lucide-react';
 
 const ADSENSE_CLIENT = 'ca-pub-4463068342710380';
-const SITE_URL = 'https://www.finkit.top';
+const SITE_URL = 'https://finkit.top';
 const AUTH_PROFILES_KEY = 'finkit:auth:profiles';
 const AUTH_CURRENT_KEY = 'finkit:auth:current';
 

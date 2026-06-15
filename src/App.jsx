@@ -349,6 +349,24 @@ function NumberField({
   );
 }
 
+function SelectField({ label, value, onChange, options, note }) {
+  return (
+    <label className="block w-full">
+      <span className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500">{label}</span>
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="focus-ring h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm font-bold text-slate-800 shadow-sm"
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>{option.label}</option>
+        ))}
+      </select>
+      {note ? <span className="mt-1.5 block text-xs leading-relaxed text-slate-400">{note}</span> : null}
+    </label>
+  );
+}
+
 function ResultCard({ title, value, detail, tone = 'amber', icon: Icon = Info }) {
   const colors = toneMap[tone] || toneMap.amber;
   return (
@@ -491,9 +509,9 @@ function HomePage({ changeTab }) {
   );
 
   const quickTools = [
+    { id: 'health', title: '完整健檢', desc: '一次檢查現金流、預備金、負債、投資與保障。', icon: Check, tone: 'emerald' },
     { id: 'budget', title: '先看現金流', desc: '把收入拆成必需、生活、投資與安全墊。', icon: Wallet, tone: 'sky' },
     { id: 'debt', title: '消滅負債', desc: '比較雪球與雪崩還款速度。', icon: CreditCard, tone: 'rose' },
-    { id: 'goal', title: '目標倒推', desc: '房款、留學、退休一次倒推月投入。', icon: Target, tone: 'emerald' },
     { id: 'allocation', title: '資產配置', desc: '檢查股票、債券、現金比例是否跑偏。', icon: Scale, tone: 'indigo' },
   ];
 
@@ -557,6 +575,142 @@ function HomePage({ changeTab }) {
       <AdvisoryNote>
         FinKit 的定位是「輔助你做出更好的理財決策」，不是保證獲利工具。每個結果都應搭配個人風險承受度、稅務狀況與正式文件再判斷。
       </AdvisoryNote>
+    </div>
+  );
+}
+
+function FinancialHealthAudit() {
+  const [income, setIncome] = useStickyState(90000, 'health_income');
+  const [expense, setExpense] = useStickyState(56000, 'health_expense');
+  const [emergency, setEmergency] = useStickyState(210000, 'health_emergency');
+  const [invest, setInvest] = useStickyState(18000, 'health_invest');
+  const [assets, setAssets] = useStickyState(1800000, 'health_assets');
+  const [debt, setDebt] = useStickyState(420000, 'health_debt');
+  const [debtPay, setDebtPay] = useStickyState(12000, 'health_debt_pay');
+  const [coverage, setCoverage] = useStickyState(6000000, 'health_coverage');
+  const [need, setNeed] = useStickyState(8000000, 'health_need');
+
+  const monthlyIncome = n(income);
+  const monthlyExpense = n(expense);
+  const savingsRate = monthlyIncome ? ((monthlyIncome - monthlyExpense) / monthlyIncome) * 100 : 0;
+  const investRate = monthlyIncome ? (n(invest) / monthlyIncome) * 100 : 0;
+  const emergencyMonths = monthlyExpense ? n(emergency) / monthlyExpense : 0;
+  const dti = monthlyIncome ? (n(debtPay) / monthlyIncome) * 100 : 0;
+  const debtAssetRatio = n(assets) ? (n(debt) / n(assets)) * 100 : 0;
+  const coverageRatio = n(need) ? (n(coverage) / n(need)) * 100 : 100;
+
+  const checks = [
+    {
+      name: '現金流',
+      value: pct(savingsRate),
+      target: '儲蓄率至少 10%，成熟目標 20%+',
+      score: savingsRate >= 20 ? 100 : savingsRate >= 10 ? 75 : savingsRate > 0 ? 45 : 10,
+      action: savingsRate < 10 ? '先把固定支出與訂閱項目降到可控範圍。' : '維持正現金流，優先分配到投資與預備金。',
+    },
+    {
+      name: '緊急預備金',
+      value: `${fmt(emergencyMonths, 1)} 個月`,
+      target: '一般 3-6 個月，收入波動者 9-12 個月',
+      score: emergencyMonths >= 6 ? 100 : emergencyMonths >= 3 ? 75 : emergencyMonths >= 1 ? 40 : 10,
+      action: emergencyMonths < 3 ? '先補到 3 個月支出，再提高投資部位。' : '預備金足夠後，避免現金比例過高拖累長期報酬。',
+    },
+    {
+      name: '負債壓力',
+      value: `${pct(dti)} / 資產比 ${pct(debtAssetRatio)}`,
+      target: '月付債務收入比低於 35%',
+      score: dti <= 20 ? 100 : dti <= 35 ? 75 : dti <= 50 ? 35 : 10,
+      action: dti > 35 ? '高利負債先用雪崩法處理，避免投資報酬被利息抵銷。' : '負債壓力可控，仍需追蹤利率與提前清償效益。',
+    },
+    {
+      name: '投資習慣',
+      value: pct(investRate),
+      target: '長期投資率至少 10%-15%',
+      score: investRate >= 15 ? 100 : investRate >= 10 ? 75 : investRate >= 5 ? 45 : 15,
+      action: investRate < 10 ? '建立固定投入規則，先從收入 5%-10% 自動化。' : '投資率足夠，下一步檢查費用與資產配置。',
+    },
+    {
+      name: '保障缺口',
+      value: `${pct(coverageRatio)} 已覆蓋`,
+      target: '家庭責任期間至少覆蓋主要缺口',
+      score: coverageRatio >= 100 ? 100 : coverageRatio >= 70 ? 70 : coverageRatio >= 40 ? 40 : 10,
+      action: coverageRatio < 70 ? '先補足低成本保障，再處理高風險投資或槓桿。' : '保障接近需求，定期依家庭責任更新。',
+    },
+  ];
+
+  const totalScore = Math.round(checks.reduce((sum, item) => sum + item.score, 0) / checks.length);
+  const priority = [...checks].sort((a, b) => a.score - b.score).slice(0, 3);
+  const scoreTone = totalScore >= 80 ? 'emerald' : totalScore >= 60 ? 'amber' : 'rose';
+
+  return (
+    <div className="space-y-6">
+      <SectionHeader
+        title="理財健檢報告"
+        icon={Check}
+        description="把成熟理財網站常見的現金流、預備金、負債、投資與保障檢查整合成一份可執行報告。"
+        source="此分數是行為與風險檢查，不是投資建議或信用評分。"
+      />
+      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="tool-card grid gap-4 p-5 sm:grid-cols-2">
+          <NumberField label="月收入" value={income} onChange={setIncome} prefix="$" />
+          <NumberField label="月支出" value={expense} onChange={setExpense} prefix="$" />
+          <NumberField label="緊急預備金" value={emergency} onChange={setEmergency} prefix="$" />
+          <NumberField label="每月投資" value={invest} onChange={setInvest} prefix="$" />
+          <NumberField label="總資產" value={assets} onChange={setAssets} prefix="$" />
+          <NumberField label="總負債" value={debt} onChange={setDebt} prefix="$" />
+          <NumberField label="每月債務支出" value={debtPay} onChange={setDebtPay} prefix="$" />
+          <NumberField label="保障需求" value={need} onChange={setNeed} prefix="$" />
+          <NumberField label="現有保障" value={coverage} onChange={setCoverage} prefix="$" />
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <ResultCard title="健檢分數" value={`${totalScore}/100`} icon={Check} tone={scoreTone} detail="低於 60 代表應先處理基礎風險。" />
+          <ResultCard title="儲蓄率" value={pct(savingsRate)} icon={PiggyBank} tone={savingsRate >= 20 ? 'emerald' : 'amber'} />
+          <ResultCard title="預備金" value={`${fmt(emergencyMonths, 1)} 個月`} icon={ShieldCheck} tone={emergencyMonths >= 6 ? 'emerald' : 'rose'} />
+          <ResultCard title="債務收入比" value={pct(dti)} icon={CreditCard} tone={dti <= 35 ? 'emerald' : 'rose'} />
+        </div>
+      </div>
+      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="tool-card overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
+              <thead className="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                <tr>
+                  <th className="px-4 py-3">項目</th>
+                  <th className="px-4 py-3">目前</th>
+                  <th className="px-4 py-3">目標</th>
+                  <th className="px-4 py-3">分數</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 bg-white">
+                {checks.map((item) => (
+                  <tr key={item.name}>
+                    <td className="px-4 py-3 font-black text-slate-900">{item.name}</td>
+                    <td className="mono px-4 py-3 text-slate-700">{item.value}</td>
+                    <td className="px-4 py-3 text-xs leading-relaxed text-slate-500">{item.target}</td>
+                    <td className="px-4 py-3">
+                      <div className="w-28">
+                        <ProgressBar value={item.score} tone={item.score >= 75 ? 'emerald' : item.score >= 45 ? 'amber' : 'rose'} />
+                        <p className="mt-1 mono text-xs text-slate-500">{item.score}/100</p>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className="tool-card p-5">
+          <h3 className="mb-4 text-base font-black text-slate-900">優先改善順序</h3>
+          <div className="space-y-3">
+            {priority.map((item, index) => (
+              <div key={item.name} className="border-l-4 border-slate-200 py-2 pl-4">
+                <p className="text-xs font-black uppercase tracking-wider text-slate-500">Priority {index + 1}</p>
+                <p className="mt-1 font-black text-slate-900">{item.name}</p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">{item.action}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -787,6 +941,121 @@ function AllocationPlanner() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function RiskProfilePlanner() {
+  const [horizon, setHorizon] = useStickyState('3', 'risk_horizon');
+  const [drawdown, setDrawdown] = useStickyState('2', 'risk_drawdown');
+  const [income, setIncome] = useStickyState('3', 'risk_income');
+  const [knowledge, setKnowledge] = useStickyState('2', 'risk_knowledge');
+  const [objective, setObjective] = useStickyState('3', 'risk_objective');
+  const score = n(horizon) + n(drawdown) + n(income) + n(knowledge) + n(objective);
+  const profile =
+    score <= 8
+      ? { name: '保守型', stock: 30, bond: 50, cash: 20, tone: 'sky', note: '重點是本金波動控制，適合短中期或承受度較低的資金。' }
+      : score <= 13
+        ? { name: '穩健型', stock: 55, bond: 30, cash: 15, tone: 'emerald', note: '兼顧成長與波動控制，適合多數中長期目標。' }
+        : score <= 18
+          ? { name: '成長型', stock: 75, bond: 15, cash: 10, tone: 'amber', note: '追求長期成長，但需要能承受較大年度波動。' }
+          : { name: '積極型', stock: 90, bond: 5, cash: 5, tone: 'rose', note: '適合期限長且能承受大幅回撤的資金，不適合短期必要支出。' };
+  const rows = [
+    ['股票/ETF/成長資產', profile.stock, 'sky'],
+    ['債券/收益資產', profile.bond, 'indigo'],
+    ['現金/貨幣型資產', profile.cash, 'emerald'],
+  ];
+
+  return (
+    <div className="space-y-6">
+      <SectionHeader
+        title="風險屬性與配置建議"
+        icon={Scale}
+        description="用投資期限、最大回撤承受度、收入穩定度與經驗，建立比直覺更一致的資產配置起點。"
+        source="風險屬性會隨年齡、收入、目標與市場經驗改變，需定期重測。"
+      />
+      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="tool-card grid gap-4 p-5 sm:grid-cols-2">
+          <SelectField
+            label="投資期限"
+            value={horizon}
+            onChange={setHorizon}
+            options={[
+              { value: '1', label: '3 年內' },
+              { value: '2', label: '3-5 年' },
+              { value: '3', label: '5-10 年' },
+              { value: '4', label: '10 年以上' },
+            ]}
+          />
+          <SelectField
+            label="最大回撤承受"
+            value={drawdown}
+            onChange={setDrawdown}
+            options={[
+              { value: '1', label: '虧損 5% 就會停損' },
+              { value: '2', label: '可承受 10%-15%' },
+              { value: '3', label: '可承受 20%-30%' },
+              { value: '4', label: '可承受 30% 以上' },
+            ]}
+          />
+          <SelectField
+            label="收入穩定度"
+            value={income}
+            onChange={setIncome}
+            options={[
+              { value: '1', label: '不穩定或接案型' },
+              { value: '2', label: '一般穩定' },
+              { value: '3', label: '穩定且有預備金' },
+              { value: '4', label: '多收入來源' },
+            ]}
+          />
+          <SelectField
+            label="投資經驗"
+            value={knowledge}
+            onChange={setKnowledge}
+            options={[
+              { value: '1', label: '剛開始' },
+              { value: '2', label: '了解基本 ETF/基金' },
+              { value: '3', label: '熟悉配置與再平衡' },
+              { value: '4', label: '能管理波動與槓桿風險' },
+            ]}
+          />
+          <SelectField
+            label="資金目標"
+            value={objective}
+            onChange={setObjective}
+            options={[
+              { value: '1', label: '短期支出或購屋頭期' },
+              { value: '2', label: '保值與穩定現金流' },
+              { value: '3', label: '退休或長期增值' },
+              { value: '4', label: '積極累積資產' },
+            ]}
+          />
+        </div>
+        <div className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <ResultCard title="風險分數" value={`${score}/20`} icon={Scale} tone={profile.tone} detail={profile.note} />
+            <ResultCard title="屬性判斷" value={profile.name} icon={Target} tone={profile.tone} detail="可作為配置起點，不是固定答案。" />
+          </div>
+          <div className="tool-card p-5">
+            <p className="mb-4 text-sm font-bold text-slate-900">建議配置起點</p>
+            <div className="space-y-4">
+              {rows.map(([label, value, tone]) => (
+                <div key={label}>
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <span className="font-bold text-slate-800">{label}</span>
+                    <span className="mono text-sm font-bold text-slate-600">{pct(value)}</span>
+                  </div>
+                  <ProgressBar value={value} tone={tone} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+      <AdvisoryNote>
+        配置比例的重點是讓投資行為可以長期執行。若一遇到下跌就賣出，理論上較高的預期報酬不會轉化成實際成果。
+      </AdvisoryNote>
     </div>
   );
 }
@@ -1183,6 +1452,64 @@ function IrrCalculator() {
   );
 }
 
+function futureValueWithExpense(initial, monthly, grossReturn, expenseRatio, years) {
+  const months = Math.max(0, Math.round(n(years) * 12));
+  const monthlyReturn = (n(grossReturn) - n(expenseRatio)) / 100 / 12;
+  if (months === 0) return n(initial);
+  if (Math.abs(monthlyReturn) < 0.000001) return n(initial) + n(monthly) * months;
+  const growth = Math.pow(1 + monthlyReturn, months);
+  return n(initial) * growth + n(monthly) * ((growth - 1) / monthlyReturn);
+}
+
+function FeeDragCalculator() {
+  const [initial, setInitial] = useStickyState(1000000, 'fee_initial');
+  const [monthly, setMonthly] = useStickyState(20000, 'fee_monthly');
+  const [returnRate, setReturnRate] = useStickyState(6, 'fee_return');
+  const [lowFee, setLowFee] = useStickyState(0.15, 'fee_low');
+  const [highFee, setHighFee] = useStickyState(1.5, 'fee_high');
+  const [years, setYears] = useStickyState(20, 'fee_years');
+  const lowValue = futureValueWithExpense(initial, monthly, returnRate, lowFee, years);
+  const highValue = futureValueWithExpense(initial, monthly, returnRate, highFee, years);
+  const noFeeValue = futureValueWithExpense(initial, monthly, returnRate, 0, years);
+  const drag = lowValue - highValue;
+  const highFeeCost = noFeeValue - highValue;
+  const lowFeeCost = noFeeValue - lowValue;
+
+  return (
+    <div className="space-y-6">
+      <SectionHeader
+        title="投資費用拖累"
+        icon={Scale}
+        description="比較同樣報酬假設下，不同內扣費用率對長期資產的影響。"
+        source="費用率會逐年侵蝕複利成果，實際成本仍需查閱基金或保單公開說明。"
+      />
+      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="tool-card grid gap-4 p-5 sm:grid-cols-2">
+          <NumberField label="初始投入" value={initial} onChange={setInitial} prefix="$" />
+          <NumberField label="每月投入" value={monthly} onChange={setMonthly} prefix="$" />
+          <NumberField label="年化報酬假設" value={returnRate} onChange={setReturnRate} suffix="%" step="0.1" />
+          <NumberField label="低費用率" value={lowFee} onChange={setLowFee} suffix="%" step="0.01" />
+          <NumberField label="高費用率" value={highFee} onChange={setHighFee} suffix="%" step="0.01" />
+          <NumberField label="投資年限" value={years} onChange={setYears} suffix="年" />
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <ResultCard title="低費用期末值" value={money(lowValue)} icon={TrendingUp} tone="emerald" detail={`費用成本約 ${money(lowFeeCost)}。`} />
+          <ResultCard title="高費用期末值" value={money(highValue)} icon={TrendingDown} tone="rose" detail={`費用成本約 ${money(highFeeCost)}。`} />
+          <ResultCard title="費用差距" value={money(drag)} icon={Scale} tone="amber" detail="同樣市場報酬下，被費用吃掉的差額。" />
+          <ResultCard title="差距占投入" value={pct(drag / Math.max(n(initial) + n(monthly) * n(years) * 12, 1) * 100, 2)} icon={Percent} tone="indigo" />
+        </div>
+      </div>
+      <div className="tool-card p-5">
+        <div className="mb-2 flex justify-between text-sm">
+          <span className="font-bold text-slate-700">高費用商品保留的資產比例</span>
+          <span className="mono">{pct((highValue / Math.max(lowValue, 1)) * 100, 1)}</span>
+        </div>
+        <ProgressBar value={(highValue / Math.max(lowValue, 1)) * 100} tone="rose" />
+      </div>
+    </div>
+  );
+}
+
 function RentVsBuy() {
   const [homePrice, setHomePrice] = useStickyState(15000000, 'rvb_home');
   const [rent, setRent] = useStickyState(30000, 'rvb_rent');
@@ -1241,6 +1568,89 @@ function FireCalculator() {
             <ProgressBar value={progress} tone="emerald" />
             <p className="mt-3 text-sm text-slate-500">還差 {money(Math.max(0, fireNumber - n(assets)))}。</p>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RetirementWithdrawalPlanner() {
+  const [assets, setAssets] = useStickyState(12000000, 'retire_assets');
+  const [annualSpend, setAnnualSpend] = useStickyState(720000, 'retire_spend');
+  const [passive, setPassive] = useStickyState(240000, 'retire_passive');
+  const [returnRate, setReturnRate] = useStickyState(4.5, 'retire_return');
+  const [inflation, setInflation] = useStickyState(2, 'retire_inflation');
+  const [years, setYears] = useStickyState(30, 'retire_years');
+  let balance = n(assets);
+  let depletedYear = null;
+  const rows = [];
+
+  for (let year = 1; year <= n(years); year += 1) {
+    const spend = n(annualSpend) * Math.pow(1 + n(inflation) / 100, year - 1);
+    const income = n(passive) * Math.pow(1 + n(inflation) / 100, year - 1);
+    const withdrawal = Math.max(0, spend - income);
+    balance = balance * (1 + n(returnRate) / 100) - withdrawal;
+    if ((year <= 5 || year === n(years) || year % 5 === 0) && depletedYear === null) {
+      rows.push({ year, spend, income, withdrawal, balance: Math.max(0, balance) });
+    }
+    if (balance <= 0 && depletedYear === null) {
+      depletedYear = year;
+      balance = 0;
+    }
+  }
+
+  const firstWithdrawal = Math.max(0, n(annualSpend) - n(passive));
+  const withdrawalRate = n(assets) ? (firstWithdrawal / n(assets)) * 100 : 0;
+  const resultTone = depletedYear ? 'rose' : withdrawalRate <= 4 ? 'emerald' : 'amber';
+
+  return (
+    <div className="space-y-6">
+      <SectionHeader
+        title="退休提領壓力測試"
+        icon={PiggyBank}
+        description="估算退休後每年支出、被動收入、報酬率與通膨對資產壽命的影響。"
+        source="模型未納入市場報酬順序風險、稅費與醫療長照支出，僅作壓力測試。"
+      />
+      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="tool-card grid gap-4 p-5 sm:grid-cols-2">
+          <NumberField label="退休投資資產" value={assets} onChange={setAssets} prefix="$" />
+          <NumberField label="目前年支出" value={annualSpend} onChange={setAnnualSpend} prefix="$" />
+          <NumberField label="年被動收入/年金" value={passive} onChange={setPassive} prefix="$" />
+          <NumberField label="退休後年化報酬" value={returnRate} onChange={setReturnRate} suffix="%" step="0.1" />
+          <NumberField label="通膨率" value={inflation} onChange={setInflation} suffix="%" step="0.1" />
+          <NumberField label="測試年限" value={years} onChange={setYears} suffix="年" />
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <ResultCard title="初始提領率" value={pct(withdrawalRate, 2)} icon={Percent} tone={resultTone} detail="第一年需由資產支付的支出比例。" />
+          <ResultCard title="資產耗盡" value={depletedYear ? `第 ${depletedYear} 年` : '未耗盡'} icon={AlertTriangle} tone={depletedYear ? 'rose' : 'emerald'} />
+          <ResultCard title="期末資產" value={money(balance)} icon={Wallet} tone={balance > n(assets) ? 'emerald' : 'amber'} />
+          <ResultCard title="第一年提領" value={money(firstWithdrawal)} icon={Download} tone="sky" />
+        </div>
+      </div>
+      <div className="tool-card overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
+            <thead className="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+              <tr>
+                <th className="px-4 py-3">年</th>
+                <th className="px-4 py-3">支出</th>
+                <th className="px-4 py-3">被動收入</th>
+                <th className="px-4 py-3">資產提領</th>
+                <th className="px-4 py-3">年底資產</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 bg-white">
+              {rows.map((row) => (
+                <tr key={row.year}>
+                  <td className="mono px-4 py-3 font-bold text-slate-800">{row.year}</td>
+                  <td className="mono px-4 py-3 text-slate-700">{money(row.spend)}</td>
+                  <td className="mono px-4 py-3 text-emerald-700">{money(row.income)}</td>
+                  <td className="mono px-4 py-3 text-rose-700">{money(row.withdrawal)}</td>
+                  <td className="mono px-4 py-3 text-sky-700">{money(row.balance)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -1663,6 +2073,7 @@ const menuGroups = [
     title: '總覽',
     items: [
       { id: 'home', name: '理財總覽', icon: Compass },
+      { id: 'health', name: '理財健檢', icon: Check },
       { id: 'budget', name: '預算現金流', icon: Wallet },
       { id: 'networth', name: '淨資產', icon: Landmark },
       { id: 'emergency', name: '預備金', icon: ShieldCheck },
@@ -1673,6 +2084,7 @@ const menuGroups = [
     items: [
       { id: 'goal', name: '目標倒推', icon: Target },
       { id: 'debt', name: '負債清償', icon: CreditCard },
+      { id: 'risk', name: '風險屬性', icon: Scale },
       { id: 'allocation', name: '資產配置', icon: Scale },
       { id: 'insurance', name: '保障缺口', icon: ShieldCheck },
     ],
@@ -1686,6 +2098,7 @@ const menuGroups = [
       { id: 'dividend', name: '配息健保', icon: Coins },
       { id: 'unit', name: '單位配息', icon: Layers },
       { id: 'irr', name: 'IRR', icon: Percent },
+      { id: 'fees', name: '費用拖累', icon: Scale },
       { id: 'fcn', name: 'FCN', icon: PieChart },
     ],
   },
@@ -1695,6 +2108,7 @@ const menuGroups = [
       { id: 'loan', name: '房貸', icon: Home },
       { id: 'rentbuy', name: '買租比較', icon: Building },
       { id: 'fire', name: 'FIRE', icon: Target },
+      { id: 'retirement', name: '退休提領', icon: PiggyBank },
       { id: 'inflation', name: '通膨', icon: TrendingDown },
       { id: 'forex', name: '匯率', icon: Globe },
       { id: 'tax', name: '海外所得', icon: Calculator },
@@ -1737,11 +2151,13 @@ function FinancialToolkit() {
 
   const content = useMemo(() => {
     switch (activeTab) {
+      case 'health': return <FinancialHealthAudit />;
       case 'budget': return <BudgetPlanner />;
       case 'networth': return <NetWorthTracker />;
       case 'emergency': return <EmergencyFund />;
       case 'goal': return <GoalPlanner />;
       case 'debt': return <DebtPayoff />;
+      case 'risk': return <RiskProfilePlanner />;
       case 'allocation': return <AllocationPlanner />;
       case 'insurance': return <InsuranceGap />;
       case 'compound': return <CompoundCalculator />;
@@ -1750,10 +2166,12 @@ function FinancialToolkit() {
       case 'dividend': return <DividendCalculator />;
       case 'unit': return <UnitCalculator />;
       case 'irr': return <IrrCalculator />;
+      case 'fees': return <FeeDragCalculator />;
       case 'fcn': return <FcnCalculator />;
       case 'loan': return <LoanCalculator />;
       case 'rentbuy': return <RentVsBuy />;
       case 'fire': return <FireCalculator />;
+      case 'retirement': return <RetirementWithdrawalPlanner />;
       case 'inflation': return <InflationCalc />;
       case 'forex': return <ForexCalculator />;
       case 'tax': return <TaxCalculator />;

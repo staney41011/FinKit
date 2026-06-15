@@ -85,8 +85,6 @@ const DEFAULT_SYMBOLS = [
 const symbols = [...new Set((process.env.US_QUOTE_SYMBOLS || DEFAULT_SYMBOLS.join(',')).split(/[,\s]+/).map((item) => item.trim().toUpperCase()).filter(Boolean))];
 const outputPath = fileURLToPath(new URL('../public/data/us-closes.json', import.meta.url));
 
-const toStooqSymbol = (symbol) => `${symbol.toLowerCase()}.us`;
-const fromStooqSymbol = (symbol) => symbol.replace(/\.US$/i, '').toUpperCase();
 const chunk = (items, size) => Array.from({ length: Math.ceil(items.length / size) }, (_, index) => items.slice(index * size, index * size + size));
 
 const numberOrNull = (value) => {
@@ -94,43 +92,56 @@ const numberOrNull = (value) => {
   return Number.isFinite(parsed) ? parsed : null;
 };
 
-const readRows = (csv) =>
-  csv
-    .trim()
-    .split(/\r?\n/)
-    .slice(1)
-    .map((line) => line.split(','))
-    .filter((cells) => cells.length >= 8);
-
 const quotes = {};
 const errors = [];
 
-for (const group of chunk(symbols, 30)) {
-  const stooqSymbols = group.map(toStooqSymbol).join('+');
-  const response = await fetch(`https://stooq.com/q/l/?s=${stooqSymbols}&f=sd2t2ohlcv&h&e=csv`);
-  if (!response.ok) throw new Error(`Stooq returned ${response.status} for ${stooqSymbols}`);
-  const rows = readRows(await response.text());
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  for (const cells of rows) {
-    const [stooqSymbol, date, time, open, high, low, close, volume] = cells;
-    const symbol = fromStooqSymbol(stooqSymbol);
-    const closeNumber = numberOrNull(close);
-    if (!symbol || !date || closeNumber === null) {
-      errors.push(stooqSymbol || group.join(','));
-      continue;
-    }
-    quotes[symbol] = {
-      symbol,
-      stooqSymbol,
-      date,
-      time,
-      open: numberOrNull(open),
-      high: numberOrNull(high),
-      low: numberOrNull(low),
-      close: closeNumber,
-      volume: numberOrNull(volume),
-    };
+const findLastCloseIndex = (closes) => {
+  for (let index = closes.length - 1; index >= 0; index -= 1) {
+    if (numberOrNull(closes[index]) !== null) return index;
   }
+  return -1;
+};
+
+const fetchYahooQuote = async (symbol) => {
+  const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=7d&interval=1d`, {
+    headers: { 'User-Agent': 'Mozilla/5.0 FinKit quote cache updater' },
+  });
+  if (!response.ok) throw new Error(`Yahoo returned ${response.status}`);
+  const data = await response.json();
+  const result = data?.chart?.result?.[0];
+  const quote = result?.indicators?.quote?.[0];
+  const timestamps = result?.timestamp || [];
+  const closes = quote?.close || [];
+  const index = findLastCloseIndex(closes);
+  if (index === -1) throw new Error('No close price in response');
+  return {
+    symbol,
+    sourceSymbol: result?.meta?.symbol || symbol,
+    date: new Date(timestamps[index] * 1000).toISOString().slice(0, 10),
+    time: 'regular close',
+    currency: result?.meta?.currency || 'USD',
+    exchange: result?.meta?.exchangeName || '',
+    open: numberOrNull(quote?.open?.[index]),
+    high: numberOrNull(quote?.high?.[index]),
+    low: numberOrNull(quote?.low?.[index]),
+    close: numberOrNull(closes[index]),
+    volume: numberOrNull(quote?.volume?.[index]),
+  };
+};
+
+for (const group of chunk(symbols, 8)) {
+  const results = await Promise.allSettled(group.map((symbol) => fetchYahooQuote(symbol)));
+  results.forEach((result, index) => {
+    const symbol = group[index];
+    if (result.status === 'fulfilled') {
+      quotes[symbol] = result.value;
+    } else {
+      errors.push(`${symbol}: ${result.reason?.message || 'quote fetch failed'}`);
+    }
+  });
+  await delay(250);
 }
 
 if (!Object.keys(quotes).length) {
@@ -142,7 +153,7 @@ await writeFile(
   outputPath,
   `${JSON.stringify(
     {
-      source: 'Stooq latest US close',
+      source: 'Yahoo Finance chart API latest close',
       market: 'US',
       updatedAt: new Date().toISOString(),
       symbols,

@@ -43,6 +43,134 @@ const SITE_URL = 'https://finkit.top';
 const AUTH_PROFILES_KEY = 'finkit:auth:profiles';
 const AUTH_CURRENT_KEY = 'finkit:auth:current';
 
+const TOOL_SEO = {
+  home: {
+    title: 'FinKit 財富工具箱 | 台灣理財試算與規劃工具',
+    description: 'FinKit 是為台灣使用者打造的理財輔助工具箱，一站完成預算、投資、房貸、稅務、退休與風險檢查。',
+    canonical: `${SITE_URL}/`,
+  },
+  health: {
+    title: '理財健檢工具 | FinKit',
+    description: '整合現金流、預備金、負債、投資率與保障缺口，產生可執行的理財健檢分數與改善順序。',
+    canonical: `${SITE_URL}/tools/financial-health-check.html`,
+  },
+  budget: {
+    title: '預算規劃與現金流工具 | FinKit',
+    description: '拆解月收入、固定支出、生活支出、保險、投資與安全緩衝，建立可執行的現金流配置。',
+    canonical: `${SITE_URL}/tools/budget-planner.html`,
+  },
+  networth: {
+    title: '淨資產計算機 | FinKit',
+    description: '整理現金、投資、房產、退休金、房貸與消費性負債，快速知道真正的財務位置。',
+    canonical: `${SITE_URL}/tools/net-worth-calculator.html`,
+  },
+  emergency: {
+    title: '緊急預備金計算機 | FinKit',
+    description: '用每月必要支出推算 3 到 12 個月緊急預備金目標、缺口與補足時間。',
+    canonical: `${SITE_URL}/tools/emergency-fund-calculator.html`,
+  },
+  goal: {
+    title: '財務目標倒推工具 | FinKit',
+    description: '輸入目標金額、目前資金、期限與報酬假設，倒推出每月需要投入多少。',
+    canonical: `${SITE_URL}/?tool=goal`,
+  },
+  debt: {
+    title: '負債清償計畫 | FinKit',
+    description: '估算總負債、利率、月還款與加速還款後的還清時間與利息成本。',
+    canonical: `${SITE_URL}/?tool=debt`,
+  },
+  risk: {
+    title: '風險屬性測驗與配置建議 | FinKit',
+    description: '用投資期限、回撤承受度、收入穩定度、經驗與目標，估算資產配置起點。',
+    canonical: `${SITE_URL}/tools/risk-profile-calculator.html`,
+  },
+  allocation: {
+    title: '資產配置與再平衡工具 | FinKit',
+    description: '把股票、債券、現金與海外部位的目標比例轉成金額，計算需要加碼或減碼多少。',
+    canonical: `${SITE_URL}/tools/asset-allocation-calculator.html`,
+  },
+  insurance: {
+    title: '保障缺口試算 | FinKit',
+    description: '用責任需求法粗估壽險保障缺口，檢查家庭風險承擔是否過度集中。',
+    canonical: `${SITE_URL}/?tool=insurance`,
+  },
+  compound: {
+    title: '複利計算機 | FinKit',
+    description: '比較投資報酬率與保守利率下的單筆資金長期成長與複利差距。',
+    canonical: `${SITE_URL}/tools/compound-interest-calculator.html`,
+  },
+  dca: {
+    title: '定期定額試算工具 | FinKit',
+    description: '用每月投入、年化報酬與投資年限估算本金、收益與期末資產。',
+    canonical: `${SITE_URL}/tools/dca-calculator.html`,
+  },
+  stock: {
+    title: '台股交易獲利計算機 | FinKit',
+    description: '支援股票、ETF、當沖與債券 ETF 常見稅率，估算手續費、交易稅與淨損益。',
+    canonical: `${SITE_URL}/tools/stock-trading-calculator.html`,
+  },
+  dividend: {
+    title: '配息與二代健保補充保費試算 | FinKit',
+    description: '估算全年股息、單次配息與二代健保補充保費對存股與 ETF 配息的影響。',
+    canonical: `${SITE_URL}/tools/dividend-health-premium-calculator.html`,
+  },
+  unit: {
+    title: '單位數與配息試算 | FinKit',
+    description: '適用基金、ETF 或保單帳戶型商品的單位數、配息與投資本金估算。',
+    canonical: `${SITE_URL}/?tool=unit`,
+  },
+  irr: {
+    title: 'IRR 躉繳試算 | FinKit',
+    description: '把投入金額、領回金額與持有年數轉成等效年化報酬率。',
+    canonical: `${SITE_URL}/?tool=irr`,
+  },
+  fees: {
+    title: '投資費用拖累計算機 | FinKit',
+    description: '比較低費用 ETF 或基金與高費用商品在同樣報酬假設下的長期複利差距。',
+    canonical: `${SITE_URL}/tools/investment-fee-calculator.html`,
+  },
+  fcn: {
+    title: 'FCN 試算工具 | FinKit',
+    description: '估算 FCN 常見 KO、Strike、KI 價位、配息、損益兩平與標的到期情境損益。',
+    canonical: `${SITE_URL}/tools/fcn-calculator.html`,
+  },
+  loan: {
+    title: '房貸試算工具 | FinKit',
+    description: '估算貸款金額、利率、年限與寬限期下的月付金、寬限後月付與月付跳升。',
+    canonical: `${SITE_URL}/tools/mortgage-calculator.html`,
+  },
+  rentbuy: {
+    title: '買房 vs 租房試算 | FinKit',
+    description: '用簡化模型比較買房累積淨值與租房投資資產差異。',
+    canonical: `${SITE_URL}/?tool=rentbuy`,
+  },
+  fire: {
+    title: 'FIRE 退休數字計算機 | FinKit',
+    description: '用年支出、被動收入、目前投資資產與安全提領率，估算財務自由目標資產。',
+    canonical: `${SITE_URL}/tools/fire-calculator.html`,
+  },
+  retirement: {
+    title: '退休提領試算 | FinKit',
+    description: '估算退休資產、年支出、被動收入、通膨與報酬率下，資產是否可能耗盡。',
+    canonical: `${SITE_URL}/tools/retirement-withdrawal-calculator.html`,
+  },
+  inflation: {
+    title: '通膨購買力計算機 | FinKit',
+    description: '估算同一筆錢在未來的實質購買力，以及維持同樣生活水準需要的未來金額。',
+    canonical: `${SITE_URL}/tools/inflation-calculator.html`,
+  },
+  forex: {
+    title: '匯率換算工具 | FinKit',
+    description: '支援美元、台幣、日圓與多幣別換算，可使用公開匯率或手動成交匯率。',
+    canonical: `${SITE_URL}/tools/foreign-exchange-calculator.html`,
+  },
+  tax: {
+    title: '海外所得與最低稅負試算 | FinKit',
+    description: '用所得淨額或一般所得稅額，初步估算台灣投資人的海外所得與最低稅負配置額度。',
+    canonical: `${SITE_URL}/tools/taiwan-overseas-income-tax-calculator.html`,
+  },
+};
+
 const AuthContext = createContext({
   profile: null,
   profiles: [],
@@ -2127,14 +2255,6 @@ const menuGroups = [
   },
 ];
 
-function AdSenseNotice() {
-  return (
-    <div className="no-capture no-print mt-8 rounded-lg border border-slate-200 bg-white p-4 text-center text-xs text-slate-400">
-      廣告區域會在 Google AdSense 審核通過並有可投放需求時顯示；廣告不會放在導覽或操作按鈕內。
-    </div>
-  );
-}
-
 function FinancialToolkit() {
   const [activeTab, setActiveTab] = useStickyState('home', 'active_tab');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -2142,8 +2262,24 @@ function FinancialToolkit() {
   const mainRef = useRef(null);
 
   useEffect(() => {
-    const titleMap = Object.fromEntries(menuGroups.flatMap((group) => group.items.map((item) => [item.id, item.name])));
-    document.title = activeTab === 'home' ? 'FinKit 財富工具箱 | 台灣理財試算與規劃工具' : `${titleMap[activeTab] || 'FinKit'} | FinKit`;
+    const initialTool = new URLSearchParams(window.location.search).get('tool');
+    if (initialTool && TOOL_SEO[initialTool]) setActiveTab(initialTool);
+  }, []);
+
+  useEffect(() => {
+    const seo = TOOL_SEO[activeTab] || TOOL_SEO.home;
+    document.title = seo.title;
+    const setMeta = (selector, attr, value) => {
+      const element = document.head.querySelector(selector);
+      if (element) element.setAttribute(attr, value);
+    };
+    setMeta('meta[name="description"]', 'content', seo.description);
+    setMeta('meta[property="og:title"]', 'content', seo.title);
+    setMeta('meta[property="og:description"]', 'content', seo.description);
+    setMeta('meta[property="og:url"]', 'content', seo.canonical);
+    setMeta('meta[name="twitter:title"]', 'content', seo.title);
+    setMeta('meta[name="twitter:description"]', 'content', seo.description);
+    setMeta('link[rel="canonical"]', 'href', seo.canonical);
     mainRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   }, [activeTab]);
 
@@ -2265,7 +2401,6 @@ function FinancialToolkit() {
           </div>
 
           {content}
-          <AdSenseNotice />
 
           <footer className="mt-14 flex flex-col gap-4 border-t border-slate-200 py-8 text-xs text-slate-500 md:flex-row md:items-center md:justify-between">
             <div>

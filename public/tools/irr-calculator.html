@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IRR 年化報酬率試算｜躉繳、領回金額與持有期間換算｜FinKit</title>
+    <meta name="description" content="FinKit IRR 試算工具把投入金額、領回金額與持有年數換算成等效年化報酬率，適合比較躉繳商品、保單、基金或投資方案。" />
+    <meta name="keywords" content="FinKit, IRR 試算, 年化報酬率, 躉繳試算, 投資報酬率, 保單報酬率, 基金報酬率" />
+    <meta name="robots" content="index, follow" />
+    <meta name="google-adsense-account" content="ca-pub-4463068342710380" />
+    <link rel="canonical" href="https://finkit.top/tools/irr-calculator.html" />
+    <link rel="icon" type="image/png" href="/icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="zh_TW" />
+    <meta property="og:site_name" content="FinKit" />
+    <meta property="og:title" content="IRR 年化報酬率試算｜躉繳、領回金額與持有期間換算｜FinKit" />
+    <meta property="og:description" content="FinKit IRR 試算工具把投入金額、領回金額與持有年數換算成等效年化報酬率，適合比較躉繳商品、保單、基金或投資方案。" />
+    <meta property="og:url" content="https://finkit.top/tools/irr-calculator.html" />
+    <meta property="og:image" content="https://finkit.top/icon.png" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://finkit.top/tools/irr-calculator.html#webpage","url":"https://finkit.top/tools/irr-calculator.html","name":"IRR 年化報酬率試算｜躉繳、領回金額與持有期間換算","description":"FinKit IRR 試算工具把投入金額、領回金額與持有年數換算成等效年化報酬率，適合比較躉繳商品、保單、基金或投資方案。","inLanguage":"zh-TW","isPartOf":{"@id":"https://finkit.top/#website"},"about":[{"@type":"Thing","name":"IRR 試算"},{"@type":"Thing","name":"年化報酬率"},{"@type":"Thing","name":"躉繳試算"},{"@type":"Thing","name":"投資報酬率"},{"@type":"Thing","name":"保單報酬率"},{"@type":"Thing","name":"基金報酬率"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"FinKit","item":"https://finkit.top"},{"@type":"ListItem","position":2,"name":"理財工具","item":"https://finkit.top/tools/irr-calculator.html"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"IRR 和總報酬率差在哪？","acceptedAnswer":{"@type":"Answer","text":"總報酬率只看賺多少，IRR 會把持有時間納入，較適合比較不同年期方案。"}},{"@type":"Question","name":"IRR 越高就一定越好嗎？","acceptedAnswer":{"@type":"Answer","text":"不一定。仍要看流動性、風險、費用、稅務與商品條款。"}}]}]}</script>
+    <style>
+      body{margin:0;background:#f8fafc;color:#0f172a;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.7}
+      main{max-width:960px;margin:0 auto;padding:48px 20px}
+      a{color:#0369a1;font-weight:700}
+      .hero{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:32px;box-shadow:0 18px 45px rgba(15,23,42,.08)}
+      h1{font-size:clamp(2rem,5vw,3.25rem);line-height:1.15;margin:0 0 16px}
+      h2{margin-top:32px}
+      .chips{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0}
+      .chip{border:1px solid #bae6fd;background:#f0f9ff;border-radius:8px;padding:6px 10px;font-size:.9rem;font-weight:700;color:#075985}
+      .cta{display:inline-flex;margin-top:20px;border-radius:8px;background:#0f172a;color:#fff;padding:12px 18px;text-decoration:none}
+      .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+      .panel{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:20px}
+      footer{margin-top:40px;color:#64748b;font-size:.9rem}
+    </style>
+  </head>
+  <body>
+    <main>
+      <nav><a href="/">FinKit</a> / 理財工具</nav>
+      <section class="hero">
+        <h1>IRR 年化報酬率試算工具</h1>
+        <p>不要只看總共領回多少，把時間一起算進去，才能比較不同投資方案的等效年化報酬率。</p>
+        <div class="chips"><span class="chip">IRR 試算</span><span class="chip">年化報酬率</span><span class="chip">躉繳試算</span><span class="chip">投資報酬率</span><span class="chip">保單報酬率</span><span class="chip">基金報酬率</span></div>
+        <a class="cta" href="/?tool=irr">開啟互動試算工具</a>
+      </section>
+      <section>
+        <h2>可以用來做什麼</h2>
+        <div class="grid">
+          <div class="panel">投入與領回金額</div><div class="panel">持有年數換算</div><div class="panel">等效年化報酬率估算</div>
+        </div>
+      </section>
+      <section>
+        <h2>常見問題</h2>
+        <div class="panel"><h3>IRR 和總報酬率差在哪？</h3><p>總報酬率只看賺多少，IRR 會把持有時間納入，較適合比較不同年期方案。</p></div><div class="panel"><h3>IRR 越高就一定越好嗎？</h3><p>不一定。仍要看流動性、風險、費用、稅務與商品條款。</p></div>
+      </section>
+      <footer>
+        <p>FinKit 工具僅供教育與試算參考，不構成投資、稅務、保險或法律建議。</p>
+        <p><a href="/privacy.html">隱私權政策</a> · <a href="/terms.html">服務條款</a> · <a href="/disclaimer.html">免責聲明</a></p>
+      </footer>
+    </main>
+  </body>
+</html>

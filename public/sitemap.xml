@@ -67,6 +67,18 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://finkit.top/tools/financial-goal-calculator.html</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://finkit.top/tools/debt-payoff-calculator.html</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://finkit.top/tools/compound-interest-calculator.html</loc>
     <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
@@ -80,6 +92,12 @@
   </url>
   <url>
     <loc>https://finkit.top/tools/mortgage-calculator.html</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://finkit.top/tools/rent-vs-buy-calculator.html</loc>
     <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -103,6 +121,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://finkit.top/tools/life-insurance-gap-calculator.html</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://finkit.top/tools/investment-fee-calculator.html</loc>
     <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
@@ -116,6 +140,18 @@
   </url>
   <url>
     <loc>https://finkit.top/tools/dividend-health-premium-calculator.html</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://finkit.top/tools/unit-dividend-calculator.html</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://finkit.top/tools/irr-calculator.html</loc>
     <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

@@ -72,12 +72,12 @@ const TOOL_SEO = {
   goal: {
     title: '財務目標倒推工具 | FinKit',
     description: '輸入目標金額、目前資金、期限與報酬假設，倒推出每月需要投入多少。',
-    canonical: `${SITE_URL}/?tool=goal`,
+    canonical: `${SITE_URL}/tools/financial-goal-calculator.html`,
   },
   debt: {
     title: '負債清償計畫 | FinKit',
     description: '估算總負債、利率、月還款與加速還款後的還清時間與利息成本。',
-    canonical: `${SITE_URL}/?tool=debt`,
+    canonical: `${SITE_URL}/tools/debt-payoff-calculator.html`,
   },
   risk: {
     title: '風險屬性測驗與配置建議 | FinKit',
@@ -92,7 +92,7 @@ const TOOL_SEO = {
   insurance: {
     title: '保障缺口試算 | FinKit',
     description: '用責任需求法粗估壽險保障缺口，檢查家庭風險承擔是否過度集中。',
-    canonical: `${SITE_URL}/?tool=insurance`,
+    canonical: `${SITE_URL}/tools/life-insurance-gap-calculator.html`,
   },
   compound: {
     title: '複利計算機 | FinKit',
@@ -100,8 +100,8 @@ const TOOL_SEO = {
     canonical: `${SITE_URL}/tools/compound-interest-calculator.html`,
   },
   dca: {
-    title: '定期定額試算工具 | FinKit',
-    description: '用每月投入、年化報酬與投資年限估算本金、收益與期末資產。',
+    title: '定期定額試算與比較工具 | FinKit',
+    description: '用每月投入、年化報酬與投資年限比較不同定期定額方案的本金、收益與期末資產。',
     canonical: `${SITE_URL}/tools/dca-calculator.html`,
   },
   stock: {
@@ -117,12 +117,12 @@ const TOOL_SEO = {
   unit: {
     title: '單位數與配息試算 | FinKit',
     description: '適用基金、ETF 或保單帳戶型商品的單位數、配息與投資本金估算。',
-    canonical: `${SITE_URL}/?tool=unit`,
+    canonical: `${SITE_URL}/tools/unit-dividend-calculator.html`,
   },
   irr: {
     title: 'IRR 躉繳試算 | FinKit',
     description: '把投入金額、領回金額與持有年數轉成等效年化報酬率。',
-    canonical: `${SITE_URL}/?tool=irr`,
+    canonical: `${SITE_URL}/tools/irr-calculator.html`,
   },
   fees: {
     title: '投資費用拖累計算機 | FinKit',
@@ -142,7 +142,7 @@ const TOOL_SEO = {
   rentbuy: {
     title: '買房 vs 租房試算 | FinKit',
     description: '用簡化模型比較買房累積淨值與租房投資資產差異。',
-    canonical: `${SITE_URL}/?tool=rentbuy`,
+    canonical: `${SITE_URL}/tools/rent-vs-buy-calculator.html`,
   },
   fire: {
     title: 'FIRE 退休數字計算機 | FinKit',

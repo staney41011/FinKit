@@ -4,9 +4,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "npm run seo:generate",
+    "prebuild": "npm run seo:generate && npm run content:generate",
     "build": "vite build",
     "seo:generate": "node scripts/generate-seo-pages.mjs",
+    "content:generate": "node scripts/generate-content-pages.mjs",
     "quotes:update": "node scripts/update-us-closes.mjs",
     "preview": "vite preview"
   },

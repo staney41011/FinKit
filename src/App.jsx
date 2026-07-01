@@ -643,6 +643,13 @@ function HomePage({ changeTab }) {
     { id: 'allocation', title: '資產配置', desc: '檢查股票、債券、現金比例是否跑偏。', icon: Scale, tone: 'indigo' },
   ];
 
+  const learningGuides = [
+    { title: '新手理財順序', href: '/learn/personal-finance-roadmap.html', desc: '先現金流，再預備金、負債、保障與投資。' },
+    { title: '定期定額比較', href: '/learn/dca-investing-guide.html', desc: '比較投入金額、報酬率、年限、費用與配置。' },
+    { title: '緊急預備金', href: '/learn/emergency-fund-guide.html', desc: '判斷 3、6、12 個月現金墊怎麼抓。' },
+    { title: 'FCN 風險檢查', href: '/learn/fcn-risk-guide.html', desc: '先看 KO、Strike、KI、接股與最差情境。' },
+  ];
+
   return (
     <div className="space-y-8">
       <SectionHeader
@@ -698,6 +705,27 @@ function HomePage({ changeTab }) {
             </button>
           );
         })}
+      </section>
+
+      <section className="tool-card p-5">
+        <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-sm font-bold text-slate-900">理財知識中心</p>
+            <p className="text-xs text-slate-500">先讀判斷邏輯，再回到工具做自己的情境試算。</p>
+          </div>
+          <a className="text-sm font-bold text-sky-700 hover:text-sky-900" href="/learn/">查看全部文章</a>
+        </div>
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          {learningGuides.map((guide) => (
+            <a key={guide.href} className="focus-ring rounded-lg border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white" href={guide.href}>
+              <span className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-sky-100 text-sky-700">
+                <BookOpen size={18} />
+              </span>
+              <span className="block text-sm font-bold text-slate-900">{guide.title}</span>
+              <span className="mt-2 block text-xs leading-relaxed text-slate-500">{guide.desc}</span>
+            </a>
+          ))}
+        </div>
       </section>
 
       <AdvisoryNote>

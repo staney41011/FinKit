@@ -2,7 +2,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const learnDir = join(fileURLToPath(new URL('../public', import.meta.url')), 'learn');
+const learnDir = join(fileURLToPath(new URL('../public', import.meta.url)), 'learn');
 const depth = {
   'personal-finance-roadmap': '一個簡單的判斷方式是：如果今天市場完全休市一年，你的財務系統還能正常運作嗎？如果答案是否定的，代表問題可能不在投資標的，而在現金流、負債或安全墊。先把不依賴市場上漲也能成立的部分做好，長期投資才有空間承受波動。',
   'dca-investing-guide': '定期定額也可以搭配「投入上限」與「再平衡規則」。例如每月固定投入，但單一資產達到總投資資產某個上限後，就把新增資金轉向其他低配資產。這能避免熱門資產連續上漲時，投資組合不知不覺變成過度集中。',

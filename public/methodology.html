@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="FinKit 計算方法與資料來源：說明複利、房貸、交易成本、退休、海外所得、匯率與 FCN 等工具的公式、假設與限制。" />
+  <meta name="robots" content="index,follow" />
+  <meta name="author" content="FinKit" />
+  <meta name="google-adsense-account" content="ca-pub-4463068342710380" />
+  <link rel="canonical" href="https://finkit.top/methodology.html" />
+  <title>FinKit 計算方法與資料來源｜公式、假設與限制</title>
+  <style>
+    body{margin:0;background:#f8fafc;color:#0f172a;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;line-height:1.8}main{max-width:900px;margin:auto;padding:48px 20px}a{color:#0369a1;font-weight:700}h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15}h2{margin-top:36px}.card,.formula{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:26px}.formula{margin:14px 0;background:#f8fafc;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.meta{color:#64748b;font-size:.9rem}li{margin:8px 0}footer{margin-top:40px;border-top:1px solid #e2e8f0;padding-top:22px;color:#64748b;font-size:.9rem}
+  </style>
+</head>
+<body><main>
+  <nav><a href="/">FinKit</a> / 計算方法與資料來源</nav>
+  <article class="card">
+    <h1>FinKit 計算方法與資料來源</h1>
+    <p class="meta">最後更新：2026-09-15</p>
+    <p>FinKit 的工具以「可重算、可理解」為原則。下面整理主要工具使用的公式邏輯、資料來源優先順序與常見限制。正式申報、交易或簽約時，仍應以主管機關、金融機構與商品正式文件為準。</p>
+
+    <h2>複利與定期定額</h2>
+    <p>單筆複利使用未來值概念，定期定額則以固定期間投入與月報酬率估算。模型假設報酬率固定，實際市場不會每年平滑上漲，因此結果應視為情境比較，而不是績效預測。</p>
+    <div class="formula">單筆未來值 = 本金 × (1 + 年化報酬率)^年數</div>
+    <p>長期規劃建議至少使用保守、中性與樂觀三組假設，並另外考慮費用與通膨。</p>
+
+    <h2>房貸與寬限期</h2>
+    <p>本息攤還以等額本息公式估算。寬限期階段僅估利息支出，寬限期結束後再用剩餘期間攤還本金。實際房貸仍可能因利率調整、提前還款、銀行計息方式與費用不同而有差異。</p>
+
+    <h2>台股交易成本</h2>
+    <p>交易工具把買賣價金、券商手續費折扣、最低手續費與常見交易稅率分開計算。不同商品與期間的稅率可能調整，最終應以券商對帳單、交易所與主管機關規定為準。</p>
+
+    <h2>退休與 FIRE</h2>
+    <p>FIRE Number 以年支出扣除較可靠的被動收入後，再除以假設提領率。退休提領工具則逐年把報酬、通膨與提領套入資產餘額。這類模型最容易低估的是報酬順序風險，因此不能只看長期平均報酬。</p>
+
+    <h2>海外所得與最低稅負</h2>
+    <p>海外所得工具依適用年度的財政部與國稅局公開資料更新門檻、級距與最低稅負參數。115 年度內容會區分海外所得 100 萬元計入門檻與基本所得額 750 萬元扣除額，並把一般所得稅額與基本稅額做比較。複雜夫妻申報、海外已納稅額與特殊所得仍應以正式申報系統或專業稅務意見為準。</p>
+    <p>主要參考來源：<a href="https://www.mof.gov.tw/" target="_blank" rel="noreferrer noopener">財政部</a>、各地區國稅局公開說明與年度公告。</p>
+
+    <h2>二代健保補充保費</h2>
+    <p>配息工具用公開規則做門檻與費率情境估算。是否實際扣取、所得類別判定與扣費方式仍以健保署及實際扣費單位為準。主要參考來源為 <a href="https://www.nhi.gov.tw/" target="_blank" rel="noreferrer noopener">衛生福利部中央健康保險署</a>。</p>
+
+    <h2>匯率</h2>
+    <p>匯率工具使用公開參考匯率 API 供快速估值，並保留手動成交匯率欄位。公開中間價不等於銀行或券商實際買賣價，使用者應另外考慮點差、手續費與匯款費。</p>
+
+    <h2>FCN 與結構型商品</h2>
+    <p>FCN 工具用使用者輸入的 KO、Strike、KI、票息與標的參考價進行情境估算。不同發行機構的觀察方式、提前贖回、接股、障礙條件與計價細節可能不同，因此試算結果不能取代 term sheet 或商品說明書。</p>
+
+    <h2>資料更新與版本</h2>
+    <ul>
+      <li>年度法規：在官方新年度參數公布後更新，頁面標示適用年度。</li>
+      <li>市場或報價：依工具顯示的快取或 API 更新方式處理。</li>
+      <li>公式變更：若發現會實質改變結果的錯誤，優先修正並重新部署。</li>
+      <li>所有工具：以教育與情境分析為目的，不保證投資結果或稅務結果。</li>
+    </ul>
+  </article>
+  <footer><p><a href="/about.html">關於 FinKit</a> · <a href="/editorial-policy.html">編輯與內容政策</a> · <a href="/contact.html">勘誤與聯絡</a> · <a href="/disclaimer.html">免責聲明</a></p></footer>
+</main></body>
+</html>

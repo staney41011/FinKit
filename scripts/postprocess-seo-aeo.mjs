@@ -9,6 +9,8 @@ const publicDir = fileURLToPath(new URL('../public', import.meta.url));
 
 const adsenseScript = `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}" crossorigin="anonymous"></script>`;
 const aiDiscovery = '<link rel="alternate" type="text/plain" href="/llms.txt" title="FinKit AI index" />';
+const trustLinks = '<p class="finkit-trust-links"><a href="/about.html">關於 FinKit</a> · <a href="/editorial-policy.html">編輯與內容政策</a> · <a href="/methodology.html">計算方法與資料來源</a> · <a href="/contact.html">勘誤與聯絡</a></p>';
+
 const globalSchema = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -27,6 +29,7 @@ const globalSchema = {
       name: 'FinKit',
       url: `${SITE_URL}/`,
       logo: { '@type': 'ImageObject', url: `${SITE_URL}/icon.png` },
+      publishingPrinciples: `${SITE_URL}/editorial-policy.html`,
     },
   ],
 };
@@ -52,8 +55,19 @@ const getMeta = (html, name, property = false) => {
 
 const getCanonical = (html) => html.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["'][^>]*>/i)?.[1] || '';
 const getTitle = (html) => html.match(/<title>([^<]+)<\/title>/i)?.[1]?.trim() || 'FinKit';
-
 const addBeforeHeadEnd = (html, snippet) => html.includes(snippet) ? html : html.replace('</head>', `  ${snippet}\n</head>`);
+const removeAdsense = (html) => html.replace(/\s*<script\b[^>]*pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js[^>]*><\/script>/gi, '');
+
+const visibleText = (html) => html
+  .replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
+  .replace(/<style\b[\s\S]*?<\/style>/gi, ' ')
+  .replace(/<[^>]+>/g, ' ')
+  .replace(/&nbsp;|&#160;/gi, ' ')
+  .replace(/&amp;/gi, '&')
+  .replace(/&lt;/gi, '<')
+  .replace(/&gt;/gi, '>')
+  .replace(/\s+/g, ' ')
+  .trim();
 
 const toolApplicationSchema = (html, canonical) => ({
   '@context': 'https://schema.org',
@@ -72,15 +86,17 @@ const toolApplicationSchema = (html, canonical) => ({
 
 const files = await walk(publicDir);
 let touched = 0;
+let adEligible = 0;
 for (const file of files) {
   let html = await readFile(file, 'utf8');
   const rel = relative(publicDir, file).split(sep).join('/');
   const canonical = getCanonical(html) || `${SITE_URL}/${rel === 'index.html' ? '' : rel}`;
   const original = html;
 
-  if (!html.includes('pagead2.googlesyndication.com/pagead/js/adsbygoogle.js')) {
-    html = addBeforeHeadEnd(html, adsenseScript);
-  }
+  // Start from a policy-safe baseline. Ads are never inherited by navigation,
+  // policy, contact, index, app-shell or calculator-only screens.
+  html = removeAdsense(html);
+
   if (!html.includes('href="/llms.txt"')) html = addBeforeHeadEnd(html, aiDiscovery);
   if (!/<meta[^>]+name=["']application-name["']/i.test(html)) html = addBeforeHeadEnd(html, '<meta name="application-name" content="FinKit" />');
   if (!/<meta[^>]+name=["']author["']/i.test(html)) html = addBeforeHeadEnd(html, '<meta name="author" content="FinKit" />');
@@ -100,10 +116,29 @@ for (const file of files) {
     html = addBeforeHeadEnd(html, `<meta property="article:modified_time" content="${LASTMOD}" />`);
   }
 
+  const editorialPage = (rel.startsWith('learn/') && rel !== 'learn/index.html') || (rel.startsWith('tools/') && rel !== 'tools/index.html');
+  if (editorialPage && !html.includes('name="content-review"')) {
+    html = addBeforeHeadEnd(html, `<meta name="content-review" content="FinKit editorial review; updated ${LASTMOD}" />`);
+  }
+
+  if (html.includes('</footer>') && !html.includes('/editorial-policy.html')) {
+    html = html.replace('</footer>', `${trustLinks}\n      </footer>`);
+  }
+
+  // Google Publisher Policies prohibit ads on low-value, navigation or no-content screens.
+  // During approval, FinKit monetizes only substantial long-form articles that pass a
+  // visible-content threshold. Interactive calculators and legal/navigation pages stay ad-free.
+  const article = rel.startsWith('learn/') && rel !== 'learn/index.html';
+  const substantial = visibleText(html).length >= 1000;
+  if (article && substantial) {
+    html = addBeforeHeadEnd(html, adsenseScript);
+    adEligible += 1;
+  }
+
   if (html !== original) {
     await writeFile(file, html);
     touched += 1;
   }
 }
 
-console.log(`SEO/AEO post-process complete: ${touched} HTML files enriched with discovery metadata, structured data, and AdSense code`);
+console.log(`SEO/AEO post-process complete: ${touched} HTML files enriched; AdSense enabled on ${adEligible} substantial editorial articles only`);

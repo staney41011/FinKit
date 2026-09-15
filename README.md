@@ -15,17 +15,21 @@ FinKit 提供獨立的 115 年度（2026 年所得、2027 年 5 月申報）海�
 
 舊 SPA 側欄的「海外所得」入口會導向新版旗艦頁，避免繼續使用舊年度混合參數。
 
-## SEO / AEO
+## SEO / AEO 與內容品質
 
-建置流程會自動產生並補強搜尋與 AI 可理解的靜態內容：
+建置流程會自動產生搜尋與 AI 可理解的靜態內容，並在部署前做 publisher-content 品質檢查：
 
 - 每個主要工具都有獨立 canonical URL、title、description 與 sitemap entry
+- 24 個工具 landing pages 都必須通過最低可見內容量檢查
+- 23 個一般工具頁額外加入人工策劃的使用順序、案例、判讀與常見誤區
+- 8 篇核心理財文章加入額外決策與壓力測試內容
 - 工具頁加入 `SoftwareApplication` structured data
 - 內容頁使用 `Article`、FAQ 與 Breadcrumb structured data
 - 海外所得頁加入官方財政部來源、FAQ、更新日期與直接答案區塊
 - `public/llms.txt` 提供 FinKit 的 AI discovery / 重要頁面索引
-- 所有靜態 HTML 會在 build 時補上共用 WebSite / Organization schema 與 discovery metadata
-- 首頁、工具目錄、知識中心與旗艦頁建立內部連結
+- `public/editorial-policy.html` 說明內容審閱、資料來源與更正原則
+- `public/methodology.html` 說明主要公式、資料來源與限制
+- build 若偵測到 AdSense 被放到導航、政策、首頁 app shell、工具目錄或內容過薄頁面，會直接失敗
 
 相關建置指令：
 
@@ -33,21 +37,28 @@ FinKit 提供獨立的 115 年度（2026 年所得、2027 年 5 月申報）海�
 npm run seo:generate
 npm run content:generate
 npm run tax:generate
+npm run quality:articles
+npm run quality:article-depth
+npm run quality:enrich
 npm run seo:postprocess
+npm run quality:finalize
+npm run quality:audit
 ```
 
 `npm run build` 會在 Vite 建置前自動依序執行上述流程。
 
 ## Google AdSense
 
-FinKit 已具備 Google AdSense Auto ads 的網站端基礎：
+FinKit 採「內容先於廣告」的廣告庫存政策，避免 Google 廣告出現在沒有 publisher content 或主要用途是導航、警示、操作的畫面。
 
 - Publisher：`ca-pub-4463068342710380`
 - `public/ads.txt` 使用對應的 `pub-4463068342710380`
-- 首頁與 build 產生的靜態 HTML 都會載入 AdSense site code
-- Privacy / Terms / Disclaimer / Contact 等營利化必要頁面持續保留
+- 首頁 SPA、互動計算器、工具目錄、知識中心目錄、About、Privacy、Terms、Disclaimer、Contact 一律不載入 AdSense ad-serving script
+- AdSense site code 只會出現在通過可見內容門檻的獨立長文 article pages
+- `quality:audit` 會檢查每個帶 AdSense 的頁面必須屬於文章內容頁且內容量達標
+- Privacy / Terms / Disclaimer / Contact 等必要信任頁面持續保留，但不作為廣告庫存
 
-網站端程式碼完成後，仍需在 Google AdSense 帳號中將 `finkit.top` 加入並通過審核，然後開啟 Auto ads；廣告密度、版位與排除區域由 AdSense 後台控制。
+網站端程式碼完成後，仍需在 Google AdSense 後台重新要求審查。審核通過後可使用 Auto ads，但目前程式端已把可出現廣告的 URL 範圍限制在內容充足的文章頁。
 
 ## 快速工作台
 
@@ -88,6 +99,9 @@ npm run quotes:update
 
 - `public/ads.txt`
 - `public/llms.txt`
+- `public/about.html`
+- `public/editorial-policy.html`
+- `public/methodology.html`
 - `public/privacy.html`
 - `public/terms.html`
 - `public/disclaimer.html`

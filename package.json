@@ -4,10 +4,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "npm run seo:generate && npm run content:generate",
+    "prebuild": "npm run seo:generate && npm run content:generate && npm run tax:generate && npm run seo:postprocess",
     "build": "vite build",
     "seo:generate": "node scripts/generate-seo-pages.mjs",
     "content:generate": "node scripts/generate-content-pages.mjs",
+    "tax:generate": "node scripts/generate-overseas-tax-tool.mjs",
+    "seo:postprocess": "node scripts/postprocess-seo-aeo.mjs",
     "quotes:update": "node scripts/update-us-closes.mjs",
     "preview": "vite preview"
   },

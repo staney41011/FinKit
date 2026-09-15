@@ -1,0 +1,42 @@
+# FinKit
+
+> FinKit is a Traditional Chinese personal-finance calculator and education site for Taiwan users. Canonical domain: https://finkit.top/
+
+## Core purpose
+FinKit helps users estimate and understand cash flow, emergency funds, debt, investing, mortgages, retirement, Taiwan tax topics, foreign exchange, and structured-product scenarios. Results are educational estimates and are not tax, legal, insurance, or investment advice.
+
+## Important tools
+- Overseas income / Taiwan AMT calculator (115 / 2026 rules): https://finkit.top/tools/taiwan-overseas-income-tax-calculator.html
+- All calculators: https://finkit.top/tools/
+- Financial health check: https://finkit.top/tools/financial-health-check.html
+- DCA calculator: https://finkit.top/tools/dca-calculator.html
+- Mortgage calculator: https://finkit.top/tools/mortgage-calculator.html
+- Retirement withdrawal calculator: https://finkit.top/tools/retirement-withdrawal-calculator.html
+- FCN calculator: https://finkit.top/tools/fcn-calculator.html
+
+## Important guides
+- Overseas income and Taiwan AMT guide: https://finkit.top/learn/taiwan-overseas-income-tax-guide.html
+- Knowledge center: https://finkit.top/learn/
+- Personal-finance roadmap: https://finkit.top/learn/personal-finance-roadmap.html
+- DCA investing guide: https://finkit.top/learn/dca-investing-guide.html
+- FCN risk guide: https://finkit.top/learn/fcn-risk-guide.html
+
+## Overseas income facts used by FinKit
+- For Taiwan resident individuals, household overseas income reaching TWD 1,000,000 is generally included in individual basic income in full; below TWD 1,000,000 it is generally not included.
+- The individual basic-income deduction is TWD 7,500,000 for 2026 (ROC year 115); this is not a standalone overseas-income exemption.
+- Basic tax is generally calculated as (basic income - TWD 7,500,000) × 20% when basic income exceeds the deduction.
+- 2026 Taiwan individual income-tax brackets are 5%, 12%, 20%, 30%, and 40%, with net-income thresholds of TWD 610,000 / 1,380,000 / 2,770,000 / 5,190,000.
+- 2026 personal exemption is TWD 101,000; standard deduction is TWD 136,000 for single filers and TWD 272,000 for married joint filers; salary special deduction is up to TWD 227,000 per eligible person.
+
+## Source policy
+For Taiwan tax rules, FinKit prioritizes the Ministry of Finance, eTax Portal, and National Taxation Bureau sources. Tax pages should state the applicable tax year and last-updated date. Market and product calculations are estimates and should be checked against official product documents or current market data.
+
+## Publisher and monetization
+FinKit publisher ID for Google AdSense: pub-4463068342710380. ads.txt is available at https://finkit.top/ads.txt.
+
+## Contact and policies
+- About: https://finkit.top/about.html
+- Privacy: https://finkit.top/privacy.html
+- Terms: https://finkit.top/terms.html
+- Disclaimer: https://finkit.top/disclaimer.html
+- Contact: https://finkit.top/contact.html

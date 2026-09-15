@@ -3,16 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="FinKit 是為台灣使用者打造的理財輔助工具箱，提供預算、負債、緊急預備金、複利、定期定額、台股交易、配息、房貸、退休、保險與稅務試算。" />
-    <meta name="keywords" content="FinKit, 理財工具, 複利計算, 定期定額, 台股交易, 房貸試算, FIRE, 預算規劃, 台灣理財" />
+    <meta name="description" content="FinKit 是為台灣使用者打造的免費理財工具箱，提供 2026 海外所得與最低稅負、複利、定期定額、台股交易、房貸、退休、保險、匯率與稅務試算。" />
+    <meta name="keywords" content="FinKit, 台灣理財工具, 海外所得, 最低稅負, AMT, 海外所得100萬, 海外所得750萬, 複利計算, 定期定額, 台股交易, 房貸試算, FIRE, 退休試算" />
     <meta name="author" content="FinKit" />
-    <meta name="robots" content="index, follow" />
+    <meta name="application-name" content="FinKit" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="google-adsense-account" content="ca-pub-4463068342710380" />
     <meta name="google-site-verification" content="co9Bg-sw-BxH6ESZXHdmf15CtnQi0KkmzIxcRsrg7GI" />
     <link rel="canonical" href="https://finkit.top/" />
     <link rel="icon" type="image/png" href="/icon.png" />
     <link rel="apple-touch-icon" href="/icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="FinKit AI index" />
     <meta name="theme-color" content="#0f172a" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="FinKit" />
@@ -20,15 +23,17 @@
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="zh_TW" />
     <meta property="og:site_name" content="FinKit" />
-    <meta property="og:title" content="FinKit 財富工具箱" />
-    <meta property="og:description" content="一站完成預算、投資、房貸、稅務、退休與風險檢查的台灣理財輔助工具。" />
+    <meta property="og:title" content="FinKit 台灣理財工具｜海外所得、投資、房貸與退休試算" />
+    <meta property="og:description" content="免費使用海外所得最低稅負、複利、ETF 定期定額、台股交易、房貸、退休、匯率與多種台灣理財試算工具。" />
     <meta property="og:url" content="https://finkit.top/" />
     <meta property="og:image" content="https://finkit.top/icon.png" />
+    <meta property="og:image:alt" content="FinKit 台灣理財工具箱" />
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="FinKit 財富工具箱" />
-    <meta name="twitter:description" content="一站完成預算、投資、房貸、稅務、退休與風險檢查的台灣理財輔助工具。" />
+    <meta name="twitter:title" content="FinKit 台灣理財工具｜海外所得、投資、房貸與退休試算" />
+    <meta name="twitter:description" content="免費使用海外所得最低稅負、投資、房貸、退休與稅務試算工具。" />
 
-    <title>FinKit 財富工具箱 | 台灣理財試算與規劃工具</title>
+    <title>FinKit 台灣理財工具｜海外所得、複利、ETF、房貸、退休與稅務試算</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4463068342710380" crossorigin="anonymous"></script>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -38,28 +43,45 @@
             "@id": "https://finkit.top/#website",
             "url": "https://finkit.top/",
             "name": "FinKit",
+            "alternateName": "FinKit 財富工具箱",
             "inLanguage": "zh-TW",
-            "description": "FinKit 是為台灣使用者打造的理財輔助工具箱，提供預算、投資、房貸、稅務、退休與風險檢查。"
+            "description": "FinKit 是為台灣使用者打造的免費理財工具箱，提供海外所得、投資、房貸、退休、匯率與稅務試算。",
+            "publisher": { "@id": "https://finkit.top/#organization" }
           },
           {
             "@type": "Organization",
             "@id": "https://finkit.top/#organization",
             "name": "FinKit",
             "url": "https://finkit.top/",
-            "logo": "https://finkit.top/icon.png"
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://finkit.top/icon.png"
+            }
           },
           {
             "@type": "SoftwareApplication",
             "@id": "https://finkit.top/#app",
-            "name": "FinKit 財富工具箱",
+            "name": "FinKit 台灣理財工具箱",
             "applicationCategory": "FinanceApplication",
             "operatingSystem": "Web",
             "url": "https://finkit.top/",
+            "inLanguage": "zh-TW",
+            "isAccessibleForFree": true,
+            "featureList": [
+              "海外所得與最低稅負試算",
+              "理財健檢與預算規劃",
+              "複利與定期定額試算",
+              "台股交易與配息試算",
+              "房貸與買租比較",
+              "退休與 FIRE 試算",
+              "匯率與投資風險工具"
+            ],
             "offers": {
               "@type": "Offer",
               "price": "0",
               "priceCurrency": "TWD"
-            }
+            },
+            "publisher": { "@id": "https://finkit.top/#organization" }
           }
         ]
       }
@@ -68,12 +90,13 @@
   <body>
     <div id="root">
       <main style="max-width: 960px; margin: 0 auto; padding: 40px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.8; color: #0f172a;">
-        <h1>FinKit 財富工具箱</h1>
-        <p>FinKit 是為台灣使用者設計的理財輔助網站，提供預算現金流、理財健檢、緊急預備金、負債清償、定期定額、資產配置、房貸、退休提領、稅務與 FCN 風險試算。所有工具以教育與情境分析為目的，協助使用者先整理假設，再做更穩健的財務決策。</p>
-        <p>網站內容包含互動試算工具與理財知識文章。若你的瀏覽器尚未載入 JavaScript，可先從下列靜態頁面進入。</p>
+        <h1>FinKit 台灣理財工具箱</h1>
+        <p>FinKit 提供台灣使用者免費、可直接操作的理財試算工具，涵蓋海外所得與最低稅負、現金流、緊急預備金、負債清償、定期定額、資產配置、房貸、退休提領、匯率、FCN 與其他常見財務情境。</p>
+        <p>工具頁除了計算結果，也整理公式、判讀方式、常見問題與資料來源。所有內容以教育與情境分析為目的，不構成投資、稅務、保險或法律建議。</p>
         <section>
-          <h2>主要工具</h2>
+          <h2>熱門理財工具</h2>
           <ul>
+            <li><a href="/tools/taiwan-overseas-income-tax-calculator.html">115年度海外所得與最低稅負 AMT 計算機</a></li>
             <li><a href="/tools/">全部理財工具目錄</a></li>
             <li><a href="/tools/dca-calculator.html">定期定額試算與比較工具</a></li>
             <li><a href="/tools/financial-health-check.html">理財健檢工具</a></li>
@@ -83,9 +106,10 @@
           </ul>
         </section>
         <section>
-          <h2>理財知識文章</h2>
+          <h2>理財知識中心</h2>
           <ul>
-            <li><a href="/learn/">理財知識中心</a></li>
+            <li><a href="/learn/taiwan-overseas-income-tax-guide.html">2026 海外所得稅完整指南：100萬、750萬、最低稅負與美股稅務</a></li>
+            <li><a href="/learn/">全部理財知識文章</a></li>
             <li><a href="/learn/personal-finance-roadmap.html">新手理財順序：先現金流，再預備金、保險、投資與退休</a></li>
             <li><a href="/learn/dca-investing-guide.html">定期定額怎麼比較：投入金額、報酬率、年限與資產配置</a></li>
             <li><a href="/learn/emergency-fund-guide.html">緊急預備金怎麼準備：3 個月、6 個月還是 12 個月</a></li>
@@ -97,5 +121,6 @@
     </div>
     <script type="module" src="/src/main.jsx"></script>
     <script defer src="/finkit-enhancements.js"></script>
+    <script defer src="/finkit-tax-redirect.js"></script>
   </body>
 </html>

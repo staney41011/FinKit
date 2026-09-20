@@ -11,19 +11,25 @@ const indexPath = join(root, 'index.html');
 const index = await readFile(indexPath, 'utf8');
 
 if (index.includes('/src/main.jsx')) {
-  fail('dist/index.html still references the Vite source entry instead of a built asset');
+  fail('dist/index.html still references the Vite source entry instead of production code');
 }
 
-const assetRefs = [
-  ...index.matchAll(/(?:src|href)=["'](\/assets\/[^"'?#]+)["']/g),
-].map((match) => match[1]);
-
-if (!assetRefs.some((path) => path.endsWith('.js'))) fail('no built JavaScript bundle referenced by index.html');
-if (!assetRefs.some((path) => path.endsWith('.css'))) fail('no built stylesheet referenced by index.html');
-
-for (const ref of new Set(assetRefs)) {
-  await access(join(root, ref.replace(/^\//, '')));
+for (const marker of [
+  'data-finkit-inline="app"',
+  'data-finkit-inline="style"',
+  'data-finkit-inline="enhancements"',
+  'data-finkit-inline="tax-redirect"',
+]) {
+  if (!index.includes(marker)) fail(`missing production inline marker: ${marker}`);
 }
+
+const app = index.match(/<script type="module" data-finkit-inline="app">([\s\S]*?)<\/script>/i)?.[1] || '';
+const css = index.match(/<style data-finkit-inline="style">([\s\S]*?)<\/style>/i)?.[1] || '';
+
+if (app.length < 100000) fail(`inlined app bundle is unexpectedly small (${app.length} bytes)`);
+if (css.length < 10000) fail(`inlined stylesheet is unexpectedly small (${css.length} bytes)`);
+if (/src=["']\/assets\/[^"']+\.js["']/i.test(index)) fail('critical app JavaScript is still external');
+if (/href=["']\/assets\/[^"']+\.css["']/i.test(index)) fail('critical app stylesheet is still external');
 
 for (const required of ['finkit-enhancements.js', 'finkit-tax-redirect.js', 'CNAME']) {
   await access(join(root, required));
@@ -34,4 +40,4 @@ if (cname !== 'finkit.top') {
   fail(`dist/CNAME must be finkit.top, got "${cname}"`);
 }
 
-console.log(`Built-site smoke test passed: ${assetRefs.length} asset references resolved; CNAME=${cname}`);
+console.log(`Built-site smoke test passed: app and CSS are self-contained in index.html; CNAME=${cname}`);

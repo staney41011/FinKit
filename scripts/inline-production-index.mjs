@@ -19,18 +19,29 @@ const taxRedirect = await readFile(join(dist, 'finkit-tax-redirect.js'), 'utf8')
 
 const safeScript = (value) => value.replace(/<\/script/gi, '<\\/script');
 const safeStyle = (value) => value.replace(/<\/style/gi, '<\\/style');
+const literalReplace = (source, search, replacement) => source.replace(search, () => replacement);
 
-html = html
-  .replace(cssMatch[0], `<style data-finkit-inline="style">\n${safeStyle(appCss)}\n</style>`)
-  .replace(appMatch[0], `<script type="module" data-finkit-inline="app">\n${safeScript(appJs)}\n</script>`)
-  .replace(
-    /<script\b[^>]*defer[^>]*src=["']\/finkit-enhancements\.js["'][^>]*><\/script>/i,
-    `<script data-finkit-inline="enhancements">\n${safeScript(enhancements)}\n</script>`,
-  )
-  .replace(
-    /<script\b[^>]*defer[^>]*src=["']\/finkit-tax-redirect\.js["'][^>]*><\/script>/i,
-    `<script data-finkit-inline="tax-redirect">\n${safeScript(taxRedirect)}\n</script>`,
-  );
+html = literalReplace(
+  html,
+  cssMatch[0],
+  `<style data-finkit-inline="style">\n${safeStyle(appCss)}\n</style>`,
+);
+
+html = literalReplace(
+  html,
+  appMatch[0],
+  `<script type="module" data-finkit-inline="app">\n${safeScript(appJs)}\n</script>`,
+);
+
+html = html.replace(
+  /<script\b[^>]*defer[^>]*src=["']\/finkit-enhancements\.js["'][^>]*><\/script>/i,
+  () => `<script data-finkit-inline="enhancements">\n${safeScript(enhancements)}\n</script>`,
+);
+
+html = html.replace(
+  /<script\b[^>]*defer[^>]*src=["']\/finkit-tax-redirect\.js["'][^>]*><\/script>/i,
+  () => `<script data-finkit-inline="tax-redirect">\n${safeScript(taxRedirect)}\n</script>`,
+);
 
 await writeFile(indexPath, html);
 console.log(`Production index inlined: app ${appJs.length} bytes, CSS ${appCss.length} bytes, helper scripts included`);

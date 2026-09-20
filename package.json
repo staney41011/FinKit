@@ -6,7 +6,7 @@
     "dev": "vite",
     "prebuild": "npm run seo:generate && npm run content:generate && npm run tax:generate && npm run quality:articles && npm run quality:article-depth && npm run quality:enrich && npm run seo:postprocess && npm run quality:finalize && npm run quality:audit",
     "build": "vite build",
-    "postbuild": "node scripts/audit-dist.mjs",
+    "postbuild": "node scripts/inline-production-index.mjs && node scripts/audit-dist.mjs",
     "seo:generate": "node scripts/generate-seo-pages.mjs",
     "content:generate": "node scripts/generate-content-pages.mjs",
     "tax:generate": "node scripts/generate-overseas-tax-tool.mjs",

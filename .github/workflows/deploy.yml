@@ -1,10 +1,8 @@
-name: Build and Deploy GitHub Pages
+name: Deploy FinKit v8 Static Site
 
 on:
   push:
-    branches:
-      - main
-      - 'feature/**'
+    branches: [main]
   pull_request:
     branches: [main]
 
@@ -14,42 +12,45 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages-${{ github.ref }}
-  cancel-in-progress: true
+  group: pages
+  cancel-in-progress: false
 
 jobs:
-  build:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Upload artifact
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/upload-pages-artifact@v5
-        with:
-          path: ./dist
+      - name: Verify clean static site
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f site/index.html
+          test -f site/styles.css
+          test -f site/tools-data.js
+          test -f site/app.js
+          test -f site/CNAME
+          test "$(tr -d '\r\n' < site/CNAME)" = "finkit.top"
+          grep -q "FinKit v8 CLEAN" site/index.html
+          grep -q "__FINKIT_V8__" site/app.js
+          grep -q "海外所得與最低稅負 AMT" site/tools-data.js
+          test "$(wc -c < site/tools-data.js)" -gt 10000
+          echo "FinKit v8 static verification passed."
 
   deploy:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
+    needs: verify
     steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Upload static site
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: ./site
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5

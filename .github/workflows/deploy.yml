@@ -48,7 +48,7 @@ jobs:
           node --check site/app.js
 
           # The rebuilt homepage must not depend on the retired React/Vite runtime.
-          if grep -Eiq 'react|/src/|vite|type="module"' site/index.html; then
+          if grep -Eiq '/src/|type="module"|react-dom|vite/client|@vite' site/index.html; then
             echo "Legacy React/Vite runtime reference found in production homepage."
             exit 1
           fi

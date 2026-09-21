@@ -1,0 +1,29 @@
+# FinKit
+
+> FinKit is a free Traditional Chinese personal-finance calculator and educational website for Taiwan.
+
+Canonical site: https://finkit.top/
+Language: zh-TW
+Updated: 2026-09-21
+
+## Core interactive calculator
+- https://finkit.top/
+- Query parameter examples: /?tool=tax, /?tool=loan, /?tool=fcn, /?tool=retirement
+
+## Calculator documentation
+- https://finkit.top/tools/
+- 24 independent tool pages explain direct answers, inputs, formulas, interpretation, limitations, and FAQs.
+
+## Knowledge center
+- https://finkit.top/learn/
+- Topics include overseas income AMT, DCA investing, emergency funds, mortgage affordability, retirement withdrawals, FCN risk, and asset allocation.
+
+## Trust and methodology
+- https://finkit.top/about.html
+- https://finkit.top/editorial-policy.html
+- https://finkit.top/methodology.html
+- https://finkit.top/privacy.html
+- https://finkit.top/disclaimer.html
+
+## Important
+FinKit provides educational scenario calculations. It does not provide individualized investment, tax, insurance, or legal advice. Parameters that can change by year should be verified against official Taiwan government or product documents.

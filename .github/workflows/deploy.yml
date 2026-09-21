@@ -21,21 +21,52 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
       - name: Verify clean static site
         shell: bash
         run: |
           set -euo pipefail
+
+          # Production shell
           test -f site/index.html
           test -f site/styles.css
           test -f site/tools-data.js
           test -f site/app.js
           test -f site/CNAME
+          test -f site/ads.txt
+          test -f site/sitemap.xml
+          test -f site/llms.txt
+
+          # Domain and version markers
           test "$(tr -d '\r\n' < site/CNAME)" = "finkit.top"
           grep -q "FinKit v8 CLEAN" site/index.html
           grep -q "__FINKIT_V8__" site/app.js
           grep -q "海外所得與最低稅負 AMT" site/tools-data.js
+
+          # JavaScript must at least parse before deployment.
+          node --check site/tools-data.js
+          node --check site/app.js
+
+          # The rebuilt homepage must not depend on the retired React/Vite runtime.
+          if grep -Eiq 'react|/src/|vite|type="module"' site/index.html; then
+            echo "Legacy React/Vite runtime reference found in production homepage."
+            exit 1
+          fi
+
+          # Keep the app screen ad-free while AdSense approval is being re-established.
+          if grep -Eiq 'pagead2\.googlesyndication\.com|adsbygoogle' site/index.html; then
+            echo "Ad-serving script found on the interactive app shell."
+            exit 1
+          fi
+
+          # SEO/AEO content layer must be present and separate from the app shell.
+          test "$(find site/tools -maxdepth 1 -type f -name '*.html' | wc -l)" -eq 25
+          test "$(find site/learn -maxdepth 1 -type f -name '*.html' | wc -l)" -eq 9
+          test "$(grep -c '<url>' site/sitemap.xml)" -ge 42
           test "$(wc -c < site/tools-data.js)" -gt 10000
-          echo "FinKit v8 static verification passed."
+          test "$(wc -c < site/index.html)" -gt 5000
+
+          echo "FinKit v8 verification passed: framework-free app + 24 tool pages + 8 editorial guides."
 
   deploy:
     if: github.event_name == 'push'
@@ -47,10 +78,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
       - name: Upload static site
         uses: actions/upload-pages-artifact@v5
         with:
           path: ./site
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5

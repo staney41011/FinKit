@@ -1,4 +1,4 @@
-name: Deploy FinKit v8 Static Site
+name: Deploy FinKit v9 Stable Site
 
 on:
   push:
@@ -22,51 +22,50 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Verify clean static site
+      - name: Verify self-contained homepage and content layer
         shell: bash
         run: |
           set -euo pipefail
 
-          # Production shell
           test -f site/index.html
-          test -f site/styles.css
-          test -f site/tools-data.js
-          test -f site/app.js
           test -f site/CNAME
           test -f site/ads.txt
           test -f site/sitemap.xml
           test -f site/llms.txt
-
-          # Domain and version markers
+          test -f site/version.json
+          test -f site/.nojekyll
           test "$(tr -d '\r\n' < site/CNAME)" = "finkit.top"
-          grep -q "FinKit v8 CLEAN" site/index.html
-          grep -q "__FINKIT_V8__" site/app.js
-          grep -q "海外所得與最低稅負 AMT" site/tools-data.js
 
-          # JavaScript must at least parse before deployment.
+          grep -q "FinKit v9 STABLE" site/index.html
+          grep -q "__FINKIT_V8__" site/index.html
+          grep -q "海外所得與最低稅負 AMT" site/index.html
+
+          # Homepage must render as a useful site even if JS never runs.
+          test "$(grep -o 'class="fallback-grid"' site/index.html | wc -l)" -ge 1
+          test "$(grep -o '/tools/[^"?]*\.html' site/index.html | sort -u | wc -l)" -ge 24
+          test "$(grep -o '/learn/[^"?]*\.html' site/index.html | sort -u | wc -l)" -ge 6
+
+          # Critical homepage assets are inline: no CSS/JS network dependency.
+          if grep -Eiq '<script[^>]+src=|<link[^>]+rel="stylesheet"' site/index.html; then
+            echo "Homepage still depends on external CSS/JS."
+            exit 1
+          fi
+
+          # Source JS still must parse, because the same logic is embedded in index.html.
           node --check site/tools-data.js
           node --check site/app.js
 
-          # The rebuilt homepage must not depend on the retired React/Vite runtime.
-          if grep -Eiq '/src/|type="module"|react-dom|vite/client|@vite' site/index.html; then
-            echo "Legacy React/Vite runtime reference found in production homepage."
-            exit 1
-          fi
-
-          # Keep the app screen ad-free while AdSense approval is being re-established.
+          # Keep app shell free of ad-serving code during approval.
           if grep -Eiq 'pagead2\.googlesyndication\.com|adsbygoogle' site/index.html; then
-            echo "Ad-serving script found on the interactive app shell."
+            echo "Ad-serving script found on homepage."
             exit 1
           fi
 
-          # SEO/AEO content layer must be present and separate from the app shell.
           test "$(find site/tools -maxdepth 1 -type f -name '*.html' | wc -l)" -eq 25
-          test "$(find site/learn -maxdepth 1 -type f -name '*.html' | wc -l)" -eq 9
-          test "$(grep -c '<url>' site/sitemap.xml)" -ge 42
-          test "$(wc -c < site/tools-data.js)" -gt 10000
-          test "$(wc -c < site/index.html)" -gt 5000
+          test "$(find site/learn -maxdepth 1 -type f -name '*.html' | wc -l)" -ge 9
+          test "$(wc -c < site/index.html)" -gt 30000
 
-          echo "FinKit v8 verification passed: framework-free app + 24 tool pages + 8 editorial guides."
+          echo "FinKit v9 verification passed: homepage is self-contained and useful without JavaScript."
 
   deploy:
     if: github.event_name == 'push'

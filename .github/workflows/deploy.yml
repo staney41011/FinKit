@@ -36,7 +36,7 @@ jobs:
           test -f site/.nojekyll
           test "$(tr -d '\r\n' < site/CNAME)" = "finkit.top"
 
-          grep -q "FinKit v9 STABLE" site/index.html
+          grep -q 'class="app-shell"' site/index.html
           grep -q "__FINKIT_V8__" site/index.html
           grep -q "海外所得與最低稅負 AMT" site/index.html
 

@@ -38,7 +38,7 @@ check(scripts.length>=1,'No calculator script found');
 if(scripts.length){
  const src=scripts.at(-1);
  try{new vm.Script(src,{filename:'overseas-tax.html inline code'})}catch(e){errors.push(`Calculator JavaScript parse error: ${e.message}`)}
- const values={net:5000000,foreign:5800000,dividends:0,other:3000000,ordinary:1170400,foreignPaid:130000,deduction:7500000,rate:20};
+ const values={net:5000000,foreign:5800000,dividends:0,other:3000000,ordinary:1170400,investmentCredit:0,foreignPaid:130000,deduction:7500000,rate:20};
  const elements=new Map();
  const element=(id)=>{if(!elements.has(id))elements.set(id,{value:String(values[id]??0),hidden:false,textContent:'',addEventListener() {},onclick:null});return elements.get(id)};
  const context={window:{},document:{getElementById:element},Number,Math,Intl,console};
@@ -60,6 +60,9 @@ if(scripts.length){
   assert.equal(simple.extra,200000);
   const noSourceTax=fn({...values,foreignPaid:0});
   assert.equal(noSourceTax.extra,89600);
+  const investmentCreditScenario=fn({...values,investmentCredit:40000});
+  assert.equal(Math.round(investmentCreditScenario.credit),32691);
+  assert.equal(Math.round(investmentCreditScenario.extra),56909);
   console.log('AMT tests: official case, under-1M threshold, 8M scenario, no credit all pass.');
  }catch(e){errors.push(`AMT scenario tests failed: ${e.message}`)}
 }

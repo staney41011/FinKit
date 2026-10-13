@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>多幣別即時參考匯率換算｜美元、台幣、日圓、歐元互換｜FinKit</title>
+<meta name="description" content="FinKit 多幣別匯率換算：支援台幣、美元、日圓、歐元、英鎊、人民幣、韓元等貨幣互換，自動抓取最新公開參考匯率，附更新日期、多國幣別對照、手動銀行成交價與離線快取。">
+<meta name="robots" content="index,follow,max-snippet:-1"><meta name="google-adsense-account" content="ca-pub-4463068342710380">
+<link rel="canonical" href="https://finkit.top/calculators/currency-converter.html">
+<meta property="og:title" content="多幣別匯率換算工具｜FinKit"><meta property="og:description" content="台幣、美元、日圓、歐元及其他幣別雙向換算，自動更新公開參考匯率，支援手動銀行牌告與快取備援。">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"多幣別匯率換算工具","url":"https://finkit.top/calculators/currency-converter.html","inLanguage":"zh-TW"},{"@type":"SoftwareApplication","name":"FinKit 多幣別匯率換算","applicationCategory":"FinanceApplication","operatingSystem":"Web","isAccessibleForFree":true,"url":"https://finkit.top/calculators/currency-converter.html"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首頁","item":"https://finkit.top/"},{"@type":"ListItem","position":2,"name":"理財工具","item":"https://finkit.top/tools/"},{"@type":"ListItem","position":3,"name":"多幣別匯率換算","item":"https://finkit.top/calculators/currency-converter.html"}]}]}</script>
+<style>
+:root{--dark:#12263c;--teal:#0f766e;--bg:#f4f7fb;--line:#dfe8f1;--muted:#65788d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--dark);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;line-height:1.7}button,input,select{font:inherit}a{color:var(--teal)}
+header{background:#0e1d30;color:#fff}header nav{max-width:1100px;margin:auto;padding:13px 18px;display:flex;align-items:center;gap:22px;flex-wrap:wrap}header a{color:#fff;text-decoration:none;font-size:13px}header .brand{font-size:20px;font-weight:900}
+main{max-width:1100px;margin:auto;padding:24px 17px 60px}.hero{background:linear-gradient(120deg,#112943,#0d746f);color:#fff;padding:30px;border-radius:22px}.hero h1{font-size:clamp(27px,3.5vw,39px);margin:0 0 9px}.hero p{margin:0;color:#dbece9;max-width:860px}.eyebrow{font-size:12px;font-weight:800;letter-spacing:.06em;color:#bef5e3}
+.layout{display:grid;grid-template-columns:1fr .85fr;gap:17px;margin-top:19px;align-items:start}.card{background:#fff;border:1px solid var(--line);border-radius:17px;padding:21px;box-shadow:0 5px 22px #14263a09}.card h2{margin:0 0 13px;font-size:20px}.group{margin-top:15px}.group label{display:block;font-size:13px;font-weight:800;margin-bottom:6px}.group input,.group select{background:white;width:100%;height:47px;padding:8px 11px;border:1px solid #c9d6e3;border-radius:11px;color:var(--dark)}.group input:focus,.group select:focus{outline:3px solid #b9e8df;border-color:var(--teal)}
+.pair{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:end}.swap{border:1px solid #b8d6d0;border-radius:11px;background:#ecf9f4;color:var(--teal);min-width:43px;height:47px;font-size:23px;cursor:pointer}.mode{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0 8px}.mode button,.actions button,.quick button{cursor:pointer;border:1px solid #cdd9e6;border-radius:10px;background:#f7fafc;color:#19465a;padding:8px 11px;font-size:13px}.mode button[aria-pressed="true"]{background:var(--teal);color:#fff;border-color:var(--teal)}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.actions button{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:800}.actions button:disabled{opacity:.55;cursor:wait}.quick{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.quick button:hover,.swap:hover{border-color:var(--teal)}
+.status{background:#eff5f9;border:1px solid #dbe7ed;padding:12px 14px;border-radius:12px;color:#365268;font-size:13px;margin-top:14px}.status.ok{background:#e8f9f2;border-color:#b6e4cf;color:#17624d}.status.warn{background:#fff5e8;border-color:#f1d09c;color:#965e18}.status.bad{background:#fff1f1;border-color:#ecc0c0;color:#aa3d3d}
+.result{padding:23px;border-radius:14px;background:linear-gradient(140deg,#122942,#174d54);color:#fff}.result .hint{font-size:12px;color:#c6e9e2}.result strong{display:block;font-size:clamp(26px,4vw,39px);word-break:break-word;line-height:1.4;margin:4px 0}.result .line{font-size:14px;color:#dcebe9}.result .line b{color:#fff}.mini{border:1px solid var(--line);background:#f8fafc;padding:13px;border-radius:12px;margin-top:12px}.mini small{display:block;color:var(--muted)}.mini strong{font-size:18px}
+.tablewrap{overflow-x:auto}table{border-collapse:collapse;width:100%}th,td{border-bottom:1px solid var(--line);text-align:left;padding:11px 8px;font-size:13px}th{font-size:12px;color:#566e82}td:last-child{text-align:right;font-weight:800}td:first-child{font-weight:650}.section{margin-top:19px}.section h2{margin:0 0 12px}.section p,.section li{color:#43576d;line-height:1.9}.section ul{padding-left:24px}.small{font-size:12px;color:var(--muted)}.hide{display:none}footer{border-top:1px solid var(--line);margin-top:25px;padding-top:17px;font-size:12px;color:var(--muted)}
+@media(max-width:840px){.layout{grid-template-columns:1fr}.hero{padding:23px}}@media(max-width:510px){main{padding:15px 11px 40px}.card{padding:17px}.pair{grid-template-columns:1fr 42px 1fr;gap:6px}.group select{font-size:13px;padding:5px}}
+</style></head>
+<body>
+<header><nav><a href="/" class="brand">FinKit</a><a href="/tools/">全部工具</a><a href="/learn/">理財知識</a></nav></header>
+<main>
+<section class="hero"><div class="eyebrow">多國貨幣 · 最新公開參考匯率</div><h1>多幣別匯率換算</h1><p>自由選擇來源幣別與目標幣別，支援台幣、美元、日圓、歐元及更多貨幣互換；會自動查詢公開參考匯率。也可以輸入銀行或券商實際成交匯率，並一次比較多個幣別。</p></section>
+<div class="layout">
+<section class="card" aria-labelledby="fxTitle"><h2 id="fxTitle">匯率換算條件</h2>
+<div class="group"><label for="amount">換算金額</label><input id="amount" type="number" min="0" step="any" value="1000" inputmode="decimal"></div>
+<div class="pair">
+<div class="group"><label for="from">從哪個幣別</label><select id="from"></select></div>
+<button type="button" id="swap" class="swap" aria-label="交換幣別" title="交換幣別">⇄</button>
+<div class="group"><label for="to">換成哪個幣別</label><select id="to"></select></div>
+</div>
+<div class="quick"><button type="button" data-pair="USD,TWD">美元 → 台幣</button><button type="button" data-pair="TWD,JPY">台幣 → 日圓</button><button type="button" data-pair="JPY,USD">日圓 → 美元</button><button type="button" data-pair="EUR,TWD">歐元 → 台幣</button></div>
+<div class="mode" aria-label="匯率模式">
+<button id="autoMode" type="button" aria-pressed="true">最新公開參考匯率</button>
+<button id="manualMode" type="button" aria-pressed="false">手動銀行成交價</button>
+</div>
+<div class="group hide" id="manualArea"><label for="manualRate">1 單位來源幣別可換多少目標幣別</label><input id="manualRate" type="number" min="0" step="any" inputmode="decimal" placeholder="例如 1 USD 可換 32.5 TWD"><div class="small">此欄位僅適用上方選取的一組幣別；切換幣別後請重新確認銀行報價。</div></div>
+<div class="actions"><button type="button" id="refresh">更新公開匯率</button></div>
+<div id="status" class="status" role="status" aria-live="polite">正在取得最新公開參考匯率…</div>
+</section>
+<aside class="card" aria-labelledby="resultTitle"><h2 id="resultTitle">換算結果</h2>
+<div class="result"><div class="hint">依目前選取的匯率</div><strong id="converted">讀取中…</strong><div class="line" id="pairRate">正在取得匯率資料</div></div>
+<div class="mini"><small>反向匯率</small><strong id="reverseRate">—</strong></div>
+<div class="mini"><small>資料日期與來源</small><strong id="sourceInfo" style="font-size:14px">—</strong></div>
+<p class="small">公開參考匯率多為每日更新，不等於逐秒交易行情或銀行即時買賣牌告；實際成交價會因銀行、時段、價差及手續費不同。</p></aside>
+</div>
+<section class="card section"><h2>常用幣別一次比較</h2><p class="small">以左側選取的來源貨幣為基準，將相同金額換算成下列多種幣別。此表使用同一組公開參考匯率；手動報價只適用上面的單一貨幣對。</p><div class="tablewrap"><table><thead><tr><th>目標幣別</th><th>1 單位來源幣別匯率</th><th id="basketAmount">換算結果</th></tr></thead><tbody id="basket"><tr><td colspan="3">載入公開匯率後會顯示比較。</td></tr></tbody></table></div></section>
+<section class="card section"><h2>參考匯率與實際成交匯率的差別</h2>
+<p>FinKit 會向公開匯率資料服務查詢最新可取得的參考價，並顯示資料的更新時間或日期。這類資料適合用於旅行預算、跨國商品估值與資產換算，<strong>不代表銀行願意依相同價格向你買入或賣出</strong>。</p>
+<ul><li>同一來源匯率表可換算任意貨幣對，方式為「目標幣別兌美元匯率 ÷ 來源幣別兌美元匯率」。</li>
+<li>如果要計算實際換匯費用，請改用「手動銀行成交價」，輸入銀行或券商當下可成交的報價。</li>
+<li>公開資料取得失敗時，系統會優先嘗試另一公開服務；若仍無法連線，才使用瀏覽器曾成功取得的快取，並明確標示資料可能過期。完全沒有資料時不會顯示虛構匯率。</li></ul>
+<p class="small">參考資料：<a href="https://www.exchangerate-api.com/docs/free" rel="noopener">ExchangeRate-API 免費公開匯率</a>、<a href="https://frankfurter.dev/" rel="noopener">Frankfurter 官方 API</a>。來源服務的實際更新頻率、幣別覆蓋與可用性依服務公告為準。</p></section>
+<footer>FinKit 免費理財試算。金額與幣別換算在你的瀏覽器內完成；查詢時只向匯率服務請求基準幣 USD 的公開匯率，不傳送你輸入的金額。<a href="/privacy.html">隱私權</a> · <a href="/methodology.html">計算方法</a></footer>
+</main>
+<script>
+(function(){
+'use strict';
+const CUR=[
+['TWD','新台幣'],['USD','美元'],['JPY','日圓'],['EUR','歐元'],['GBP','英鎊'],['CNY','人民幣'],['HKD','港幣'],['KRW','韓元'],['SGD','新加坡幣'],['AUD','澳幣'],['CAD','加拿大幣'],['CHF','瑞士法郎'],['NZD','紐西蘭幣'],['THB','泰銖'],['MYR','馬來西亞令吉'],['PHP','菲律賓披索'],['VND','越南盾'],['IDR','印尼盾'],['INR','印度盧比'],['AED','阿聯酋迪拉姆'],['SEK','瑞典克朗'],['NOK','挪威克朗'],['ZAR','南非蘭特'],['MXN','墨西哥披索']
+];
+const $=id=>document.getElementById(id),labels=Object.fromEntries(CUR),cacheKey='finkit-fx-reference-v2';
+const nf=new Intl.NumberFormat('zh-TW',{maximumFractionDigits:4}),rf=new Intl.NumberFormat('en-US',{maximumFractionDigits:8});
+let snapshot=null,mode='auto',busy=false;
+function positive(n){return typeof n==='number'&&Number.isFinite(n)&&n>0}
+function crossRate(rates,from,to){
+ if(from===to)return 1;
+ const a=rates&&rates[from],b=rates&&rates[to];
+ return positive(a)&&positive(b)?b/a:null;
+}
+function convert(amount,rates,from,to){
+ const r=crossRate(rates,from,to);
+ return r===null||!Number.isFinite(amount)||amount<0?null:amount*r;
+}
+function normalizeEr(data){
+ if(!data||data.result!=='success'||!data.rates)throw Error('公開匯率格式不正確');
+ const rates={};for(const [k,v] of Object.entries(data.rates))if(positive(v))rates[k.toUpperCase()]=v;
+ rates.USD=1;if(!positive(rates.TWD)||!positive(rates.JPY))throw Error('缺少主要幣別');
+ return {rates,asOf:String(data.time_last_update_utc||'').slice(0,35),source:'ExchangeRate-API',fetchedAt:Date.now()};
+}
+function normalizeFrankfurter(data){
+ if(!Array.isArray(data))throw Error('備援匯率格式不正確');
+ const rates={USD:1},dates=[];
+ for(const row of data){if(row.base==='USD'&&positive(row.rate)&&typeof row.quote==='string'){rates[row.quote.toUpperCase()]=row.rate;if(row.date)dates.push(row.date)}}
+ if(!positive(rates.TWD)||!positive(rates.JPY))throw Error('備援服務缺少主要幣別');
+ return {rates,asOf:dates.length?dates.sort().at(-1):'',source:'Frankfurter',fetchedAt:Date.now()};
+}
+function safeSnapshot(value){
+ return value&&value.rates&&positive(value.rates.USD)&&positive(value.rates.TWD)&&positive(value.rates.JPY)&&typeof value.source==='string'&&Number.isFinite(value.fetchedAt)?value:null;
+}
+function readCache(){try{return safeSnapshot(JSON.parse(localStorage.getItem(cacheKey)))}catch{return null}}
+function saveCache(v){try{localStorage.setItem(cacheKey,JSON.stringify(v))}catch{}}
+function fmt(v){return Number.isFinite(v)?nf.format(v):'—'}
+function rateFmt(v){return positive(v)?rf.format(v):'—'}
+function status(msg,tone){$('status').textContent=msg;$('status').className='status'+(tone?' '+tone:'')}
+function fetchTimed(url){
+ const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),8000);
+ return fetch(url,{signal:controller.signal,cache:'no-store'}).then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json()}).finally(()=>clearTimeout(timer));
+}
+async function fetchRates(){
+ if(busy)return;busy=true;$('refresh').disabled=true;
+ status('正在向公開匯率服務查詢最新資料…','');
+ let result=null,fail=[];
+ try{result=normalizeEr(await fetchTimed('https://open.er-api.com/v6/latest/USD'))}
+ catch(e){fail.push('主要來源無法連線');try{result=normalizeFrankfurter(await fetchTimed('https://api.frankfurter.dev/v2/rates?base=USD'))}
+ catch(e2){fail.push('備援來源無法連線')}}
+ if(result){snapshot=result;saveCache(result);status('已載入最新可取得的公開參考匯率（'+result.source+'）。資料日期請見結果欄。','ok')}
+ else if(snapshot){status('目前無法更新匯率，暫時沿用瀏覽器快取；資料可能已過期。你也可以改用手動銀行成交價。','warn')}
+ else{status('目前無法取得公開匯率。請稍後重試，或切換成「手動銀行成交價」輸入自己的報價。','bad')}
+ busy=false;$('refresh').disabled=false;render();
+}
+function values(){
+ const amount=Number($('amount').value),from=$('from').value,to=$('to').value,manual=Number($('manualRate').value);
+ const validAmount=$('amount').value.trim()!==''&&Number.isFinite(amount)&&amount>=0;
+ const rate=mode==='manual'?(positive(manual)&&$('manualRate').value.trim()!==''?manual:null):crossRate(snapshot&&snapshot.rates,from,to);
+ return {amount,from,to,validAmount,rate};
+}
+function render(){
+ const v=values();const result=v.validAmount&&positive(v.rate)?v.amount*v.rate:null;
+ $('converted').textContent=result===null?'—':fmt(result)+' '+v.to;
+ $('pairRate').textContent=positive(v.rate)?'1 '+v.from+' ≈ '+rateFmt(v.rate)+' '+v.to:'目前無可用匯率，請更新或切換手動模式';
+ $('reverseRate').textContent=positive(v.rate)?'1 '+v.to+' ≈ '+rateFmt(1/v.rate)+' '+v.from:'—';
+ const age=snapshot?Math.round((Date.now()-snapshot.fetchedAt)/3600000):null;
+ $('sourceInfo').textContent=mode==='manual'?'手動輸入（你提供的銀行／券商報價）':snapshot?snapshot.source+' · '+(snapshot.asOf||'日期未提供')+(age!==null&&age>24?' · 快取可能過期':''):'尚未取得匯率';
+ if(mode==='manual')status('使用手動成交匯率；其他幣別比較仍使用最近取得的公開參考資料。','');
+ renderBasket(v);
+}
+function renderBasket(v){
+ const basket=$('basket');basket.replaceChildren();$('basketAmount').textContent=fmt(v.amount)+' '+v.from+' 兌換';
+ if(!snapshot||!v.validAmount){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=3;td.textContent='目前無公開參考匯率可供多幣別比較。';tr.append(td);basket.append(tr);return}
+ const targets=['TWD','USD','JPY','EUR','GBP','CNY','HKD','KRW','SGD','AUD'].filter(code=>code!==v.from);
+ for(const target of targets){
+  const r=crossRate(snapshot.rates,v.from,target);if(r===null)continue;
+  const tr=document.createElement('tr');for(const str of [target+' '+labels[target],rateFmt(r),fmt(v.amount*r)+' '+target]){const td=document.createElement('td');td.textContent=str;tr.append(td)}basket.append(tr);
+ }
+ if(!basket.children.length){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=3;td.textContent='目前沒有這組來源幣別的公開參考資料。';tr.append(td);basket.append(tr)}
+}
+function setMode(value){mode=value;$('autoMode').setAttribute('aria-pressed',String(mode==='auto'));$('manualMode').setAttribute('aria-pressed',String(mode==='manual'));$('manualArea').classList.toggle('hide',mode!=='manual');render()}
+function setPair(from,to){$('from').value=from;$('to').value=to;$('manualRate').value='';render()}
+for(const sel of ['from','to']){const el=$(sel);for(const [code,name] of CUR){const opt=document.createElement('option');opt.value=code;opt.textContent=code+' · '+name;el.append(opt)}el.addEventListener('change',()=>{$('manualRate').value='';render()})}
+$('from').value='USD';$('to').value='TWD';
+$('swap').addEventListener('click',()=>setPair($('to').value,$('from').value));
+$('amount').addEventListener('input',render);$('manualRate').addEventListener('input',render);
+$('autoMode').addEventListener('click',()=>setMode('auto'));
+$('manualMode').addEventListener('click',()=>setMode('manual'));
+$('refresh').addEventListener('click',fetchRates);
+for(const button of document.querySelectorAll('[data-pair]'))button.addEventListener('click',()=>{const pair=button.dataset.pair.split(',');setPair(pair[0],pair[1])});
+window.FinKitFX={crossRate,convert,normalizeEr,normalizeFrankfurter};
+snapshot=readCache();if(snapshot)status('正在檢查最新資料，暫時顯示上次成功取得的快取匯率…','warn');
+render();fetchRates();
+})();
+</script></body></html>

@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="zh-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>2026 海外所得最低稅負試算｜100 萬門檻、750 萬扣除額、海外稅額抵減｜FinKit</title>
-<meta name="description" content="115年度海外所得最低稅負 AMT 計算機：輸入綜合所得淨額、海外所得、一般所得稅額及海外已納稅額，試算基本所得額、基本稅額、可扣抵限額與額外稅負。含財政部官方案例。">
+<title>海外所得配置計算機｜2026 最低稅負 AMT 試算與情境比較｜FinKit</title>
+<meta name="description" content="海外所得配置計算機：115年度（2026年）最低稅負 AMT 試算，動態比較海外所得90萬、100萬、300萬、500萬、800萬、1000萬元的基本所得額與額外稅負。含外國已納稅額扣抵及財政部案例。">
 <meta name="robots" content="index,follow,max-snippet:-1"><meta name="google-adsense-account" content="ca-pub-4463068342710380"><link rel="canonical" href="https://finkit.top/calculators/overseas-tax.html">
-<meta property="og:title" content="海外所得最低稅負 AMT 試算｜FinKit"><meta property="og:description" content="115年度海外所得、基本所得額、已納稅額扣抵與稅負差額試算。">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"115年度海外所得最低稅負試算","url":"https://finkit.top/calculators/overseas-tax.html","inLanguage":"zh-TW"},{"@type":"SoftwareApplication","name":"FinKit 海外所得與最低稅負計算機","applicationCategory":"FinanceApplication","operatingSystem":"Web","isAccessibleForFree":true,"url":"https://finkit.top/calculators/overseas-tax.html"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首頁","item":"https://finkit.top/"},{"@type":"ListItem","position":2,"name":"理財工具","item":"https://finkit.top/tools/"},{"@type":"ListItem","position":3,"name":"海外所得最低稅負","item":"https://finkit.top/calculators/overseas-tax.html"}]}]}</script>
+<meta property="og:title" content="海外所得配置計算機與最低稅負 AMT 情境比較｜FinKit"><meta property="og:description" content="115年度海外所得、基本所得額、已納稅額扣抵與稅負差額試算。">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"海外所得配置計算機：115年度最低稅負試算","url":"https://finkit.top/calculators/overseas-tax.html","inLanguage":"zh-TW"},{"@type":"SoftwareApplication","name":"FinKit 海外所得配置計算機","alternateName":"海外所得最低稅負 AMT 計算機","applicationCategory":"FinanceApplication","operatingSystem":"Web","isAccessibleForFree":true,"url":"https://finkit.top/calculators/overseas-tax.html"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首頁","item":"https://finkit.top/"},{"@type":"ListItem","position":2,"name":"理財工具","item":"https://finkit.top/tools/"},{"@type":"ListItem","position":3,"name":"海外所得最低稅負","item":"https://finkit.top/calculators/overseas-tax.html"}]}]}</script>
 <style>
 :root{--ink:#14243a;--muted:#60748d;--bg:#f5f8fc;--border:#dce5ef;--teal:#087f77}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;color:var(--ink);line-height:1.75}
@@ -19,7 +19,7 @@ main{max-width:1120px;margin:auto;padding:28px 18px 65px}.hero{padding:30px;bord
 @media(max-width:780px){.cols{grid-template-columns:1fr}.fields{grid-template-columns:1fr 1fr}main{padding:16px 12px 45px}.card{padding:17px}}@media(max-width:430px){.fields{grid-template-columns:1fr}}
 </style></head>
 <body><header><nav><a href="/">FinKit</a><a href="/tools/">全部工具</a><a href="/learn/">理財知識</a><a href="/methodology.html">資料來源</a></nav></header>
-<main><div class="hero"><span class="flag">115 年度｜2026 年所得</span><h1>海外所得與最低稅負 AMT 試算</h1><p>把「綜合所得淨額」與「海外所得」一起計入，試算基本稅額、一般所得稅額差額，並估算符合條件的海外已納稅額扣抵。適用台灣個人申報戶的教學情境。</p></div>
+<main><div class="hero"><span class="flag">115 年度｜2026 年所得</span><h1>海外所得配置計算機｜最低稅負 AMT 試算</h1><p>把「綜合所得淨額」與「海外所得」一起計入，試算基本稅額、一般所得稅額差額，並估算符合條件的海外已納稅額扣抵。適用台灣個人申報戶的教學情境。</p></div>
 <p class="intro"><strong>先看關鍵：</strong>海外所得全戶全年達 <strong>100 萬元</strong>，原則上<strong>全數</strong>計入基本所得額；基本所得額超過 <strong>750 萬元</strong>後，超過部分乘 <strong>20%</strong> 才得到基本稅額；是否需要補稅，還要與一般所得稅額比較。</p>
 <div class="cols">
 <section class="card"><h2>1. 輸入申報戶資料</h2>
@@ -47,6 +47,7 @@ main{max-width:1120px;margin:auto;padding:28px 18px 65px}.hero{padding:30px;bord
 <div class="stat"><div class="k">一般所得稅額加計額外基本稅額</div><div class="v" id="total">—</div></div>
 <p class="explain" id="detail" aria-live="polite"></p></aside>
 </div>
+<section class="section card"><h2>海外所得配置計算機：不同金額情境即時比較</h2><p>下表維持上方輸入的綜合所得淨額、一般所得稅額與其他基本所得不變，只調整海外所得金額。為公平比較，<strong>本表統一假設海外已納所得稅額為零</strong>；上方單一情境仍依實際填入的合格扣抵額計算。這是稅負敏感度分析，不代表節稅建議。</p><div class="tablewrap"><table><thead><tr><th>海外所得配置金額</th><th>基本所得額</th><th>基本稅額</th><th>額外基本稅額（未扣國外稅）</th></tr></thead><tbody id="scenarioBody"><tr><td colspan="4">輸入條件即可比較。</td></tr></tbody></table></div><p class="explain">實際所得年度、來源與歸屬仍須依法認定。</p></section>
 <section class="section card"><h2>3. 三種情境看差異</h2><div class="tablewrap"><table><thead><tr><th>情境</th><th>綜合所得淨額</th><th>海外所得</th><th>其他基本所得</th><th>基本稅額</th><th>判讀</th></tr></thead><tbody>
 <tr><td>門檻未達</td><td>200 萬</td><td>90 萬</td><td>0</td><td>0</td><td>海外所得未達 100 萬，原則無須計入</td></tr>
 <tr><td>計入但未必補稅</td><td>200 萬</td><td>600 萬</td><td>0</td><td>10 萬</td><td>還須與一般所得稅額比較</td></tr>
@@ -93,6 +94,8 @@ function run(){
  const v={};for(const id of ids){const e=document.getElementById(id),n=Number(e.value);if(e.value.trim()===''||!Number.isFinite(n)||n<0||(id==='rate'&&n>100)){document.getElementById('error').hidden=false;document.getElementById('error').textContent='請輸入有效的非負數，稅率不得高於 100%。';return;}v[id]=n;}
  document.getElementById('error').hidden=true;
  const r=compute(v);
+ const scenarioLevels=[900000,1000000,3000000,5000000,8000000,10000000];
+ document.getElementById('scenarioBody').innerHTML=scenarioLevels.map(amount=>{const scenario=compute({...v,foreign:amount,foreignPaid:0});return '<tr><td>'+money(amount)+'</td><td>'+money(scenario.basicIncome)+'</td><td>'+money(scenario.basicTax)+'</td><td>'+money(scenario.extra)+'</td></tr>';}).join('');
  for(const [k,x] of Object.entries({included:r.inc,baseIncome:r.basicIncome,baseTax:r.basicTax,diff:r.gap,creditLimit:r.cap,credit:r.credit,extra:r.extra,total:r.total}))document.getElementById(k).textContent=money(x);
  document.getElementById('detail').textContent=r.inc===0?'海外所得未達 100 萬元，本頁依一般規則不計入基本所得額；其他基本所得仍可能觸發最低稅負。':r.gap===0?'基本稅額未高於一般所得稅額，依本頁假設不需額外繳納基本稅額。':'海外已納稅額須具合法憑證；本頁依財政部一般例示估算扣抵限額，請以正式申報結果為準。';
 }

@@ -26,10 +26,12 @@ for(let i=0;i<paths.length;i++){
  }
 }
 const home=htmls[0],tax=htmls[1];
-check(home.includes('v9 STABLE'),'Stable homepage version not preserved');
+check(home.includes('class="fallback-grid"'),'Homepage fallback content must be preserved');
 check(home.includes("window.location.assign('/calculators/overseas-tax.html')"),'Embedded tax tool does not route to independent calculator');
 check(!/<script[^>]+src=|<link[^>]+rel="stylesheet"/i.test(home),'Homepage has new external startup dependency');
 check(tax.includes('綜合所得淨額'),'Tax calculator must include domestic net income');
+check(tax.includes('id="scenarioBody"') && tax.includes('scenarioLevels='),'Dynamic overseas-income comparison missing');
+check(!home.includes('class="version">'),'Public homepage must not show version badges');
 check(!/pagead2\.googlesyndication\.com|adsbygoogle/i.test(tax),'Tax interactive page should not serve ads while review pending');
 check(htmls[8].includes('href="/calculators/overseas-tax.html"'),'Tax SEO landing link is outdated');
 

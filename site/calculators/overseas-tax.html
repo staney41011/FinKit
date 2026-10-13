@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2026 海外所得最低稅負試算｜100 萬門檻、750 萬扣除額、海外稅額抵減｜FinKit</title>
+<meta name="description" content="115年度海外所得最低稅負 AMT 計算機：輸入綜合所得淨額、海外所得、一般所得稅額及海外已納稅額，試算基本所得額、基本稅額、可扣抵限額與額外稅負。含財政部官方案例。">
+<meta name="robots" content="index,follow,max-snippet:-1"><meta name="google-adsense-account" content="ca-pub-4463068342710380"><link rel="canonical" href="https://finkit.top/calculators/overseas-tax.html">
+<meta property="og:title" content="海外所得最低稅負 AMT 試算｜FinKit"><meta property="og:description" content="115年度海外所得、基本所得額、已納稅額扣抵與稅負差額試算。">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"115年度海外所得最低稅負試算","url":"https://finkit.top/calculators/overseas-tax.html","inLanguage":"zh-TW"},{"@type":"SoftwareApplication","name":"FinKit 海外所得與最低稅負計算機","applicationCategory":"FinanceApplication","operatingSystem":"Web","isAccessibleForFree":true,"url":"https://finkit.top/calculators/overseas-tax.html"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首頁","item":"https://finkit.top/"},{"@type":"ListItem","position":2,"name":"理財工具","item":"https://finkit.top/tools/"},{"@type":"ListItem","position":3,"name":"海外所得最低稅負","item":"https://finkit.top/calculators/overseas-tax.html"}]}]}</script>
+<style>
+:root{--ink:#14243a;--muted:#60748d;--bg:#f5f8fc;--border:#dce5ef;--teal:#087f77}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;color:var(--ink);line-height:1.75}
+a{color:#08756f}header{background:#0e1e33;color:white;padding:14px max(20px,calc((100vw - 1120px)/2))}header a{color:white;text-decoration:none;font-weight:800}header nav{display:flex;gap:22px;flex-wrap:wrap}header nav a:not(:first-child){font-size:13px;font-weight:500;color:#b7d8dd}
+main{max-width:1120px;margin:auto;padding:28px 18px 65px}.hero{padding:30px;border-radius:20px;background:linear-gradient(120deg,#112d47,#097e77);color:white}.hero h1{font-size:clamp(25px,3.4vw,37px);margin:0 0 10px}.hero p{max-width:900px;margin:0;line-height:1.8;color:#e0f2f1}
+.flag{display:inline-block;font-size:12px;border:1px solid #b9f3ea;border-radius:99px;padding:2px 11px;color:#d6fff3;margin-bottom:12px}
+.intro{background:#e9f9f5;border:1px solid #b0e5d7;padding:16px 20px;border-radius:14px;margin:18px 0;color:#164e49}
+.cols{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);gap:18px;align-items:start}.card{background:white;border:1px solid var(--border);border-radius:16px;padding:22px;box-shadow:0 5px 15px #13243e09}.card h2{margin:0 0 14px;font-size:21px}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.field label{font-size:13px;font-weight:750;display:block;margin-bottom:5px}.field input{width:100%;min-height:45px;padding:9px 11px;border:1px solid #c5d3e0;border-radius:9px;font-size:16px;color:#12263b;background:#fff}.field input:focus{outline:3px solid #b1ebe2;border-color:var(--teal)}.field small{font-size:11px;color:var(--muted);display:block;margin-top:4px}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}button{padding:10px 13px;background:var(--teal);color:white;border:0;border-radius:10px;font:inherit;font-weight:700;cursor:pointer}button.secondary{background:#edf4f9;color:#14505a}
+.stat{padding:13px 15px;background:#f7fafc;border:1px solid var(--border);border-radius:11px;margin:10px 0}.stat .k{font-size:12px;color:var(--muted)}.stat .v{font-weight:850;font-size:clamp(20px,3vw,29px)}.stat.accent{background:#eaf8f5;border-color:#97d5c4}.stat.warning{background:#fff5e8;border-color:#f2c98e}
+.explain{font-size:13px;color:#506781}.section{margin-top:22px}.section h2{font-size:22px}.section p,.section li{line-height:1.9;color:#3d5168}.tablewrap{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:540px}th,td{border-bottom:1px solid var(--border);padding:10px;text-align:left}th{background:#eff5f9;font-size:13px}td{font-size:14px}footer{font-size:12px;color:#64748b;margin-top:30px}.alert{font-size:13px;padding:11px 14px;border-radius:10px;background:#fff6e5;border:1px solid #f2cd93;margin-top:10px}
+@media(max-width:780px){.cols{grid-template-columns:1fr}.fields{grid-template-columns:1fr 1fr}main{padding:16px 12px 45px}.card{padding:17px}}@media(max-width:430px){.fields{grid-template-columns:1fr}}
+</style></head>
+<body><header><nav><a href="/">FinKit</a><a href="/tools/">全部工具</a><a href="/learn/">理財知識</a><a href="/methodology.html">資料來源</a></nav></header>
+<main><div class="hero"><span class="flag">115 年度｜2026 年所得</span><h1>海外所得與最低稅負 AMT 試算</h1><p>把「綜合所得淨額」與「海外所得」一起計入，試算基本稅額、一般所得稅額差額，並估算符合條件的海外已納稅額扣抵。適用台灣個人申報戶的教學情境。</p></div>
+<p class="intro"><strong>先看關鍵：</strong>海外所得全戶全年達 <strong>100 萬元</strong>，原則上<strong>全數</strong>計入基本所得額；基本所得額超過 <strong>750 萬元</strong>後，超過部分乘 <strong>20%</strong> 才得到基本稅額；是否需要補稅，還要與一般所得稅額比較。</p>
+<div class="cols">
+<section class="card"><h2>1. 輸入申報戶資料</h2>
+<div class="fields">
+<div class="field"><label for="net">綜合所得淨額（新台幣）</label><input type="number" id="net" value="5000000" min="0" step="10000"><small>不是所得總額，也不是已繳稅額；使用申報系統的綜合所得淨額</small></div>
+<div class="field"><label for="foreign">海外所得合計</label><input type="number" id="foreign" value="5800000" min="0" step="10000"><small>含依法認定的海外來源所得，達 100 萬原則全額計入</small></div>
+<div class="field"><label for="dividends">分開計稅股利及盈餘合計</label><input type="number" id="dividends" value="0" min="0" step="10000"><small>選擇 28% 分開計稅者，填列相關金額</small></div>
+<div class="field"><label for="other">其他應計入基本所得額項目</label><input type="number" id="other" value="3000000" min="0" step="10000"><small>如特定保險給付、應計入證券交易所得等；避免重複計入</small></div>
+<div class="field"><label for="ordinary">一般所得稅額</label><input type="number" id="ordinary" value="1170400" min="0" step="10000"><small>含適用之股利分開計稅額、扣除相關投資抵減後；不等於已預繳稅</small></div>
+<div class="field"><label for="investmentCredit">一般稅額已扣除的投資抵減額</label><input type="number" id="investmentCredit" value="0" min="0" step="10000"><small>未使用投資抵減填 0；用於還原海外稅額扣抵上限的計算基礎</small></div>
+<div class="field"><label for="foreignPaid">海外已納所得稅額（符合扣抵條件）</label><input type="number" id="foreignPaid" value="130000" min="0" step="10000"><small>須具正式來源國納稅證明；僅得於法定限額內扣抵</small></div>
+<div class="field"><label for="deduction">基本所得扣除額</label><input type="number" id="deduction" value="7500000" min="0" step="10000"><small>115 年度財政部公告：750 萬元</small></div>
+<div class="field"><label for="rate">基本稅率（%）</label><input type="number" id="rate" value="20" min="0" max="100" step="0.1"><small>115 年度基本稅率：20%</small></div>
+</div>
+<div class="actions"><button type="button" id="example">載入財政部官方案例</button><button class="secondary" type="button" id="simple">載入簡單案例</button><button class="secondary" type="button" id="reset">重設</button></div>
+<div class="alert" id="error" role="status" hidden></div></section>
+<aside class="card"><h2>2. 即時試算結果</h2>
+<div class="stat"><div class="k">海外所得計入基本所得額</div><div class="v" id="included">—</div></div>
+<div class="stat"><div class="k">基本所得額</div><div class="v" id="baseIncome">—</div></div>
+<div class="stat"><div class="k">基本稅額</div><div class="v" id="baseTax">—</div></div>
+<div class="stat"><div class="k">基本稅額－一般所得稅額（未抵扣）</div><div class="v" id="diff">—</div></div>
+<div class="stat"><div class="k">海外已納所得稅可扣抵上限（估算）</div><div class="v" id="creditLimit">—</div></div>
+<div class="stat"><div class="k">本次可抵扣海外已納稅額</div><div class="v" id="credit">—</div></div>
+<div class="stat accent"><div class="k">估計需額外繳納基本稅額</div><div class="v" id="extra">—</div></div>
+<div class="stat"><div class="k">一般所得稅額加計額外基本稅額</div><div class="v" id="total">—</div></div>
+<p class="explain" id="detail" aria-live="polite"></p></aside>
+</div>
+<section class="section card"><h2>3. 三種情境看差異</h2><div class="tablewrap"><table><thead><tr><th>情境</th><th>綜合所得淨額</th><th>海外所得</th><th>其他基本所得</th><th>基本稅額</th><th>判讀</th></tr></thead><tbody>
+<tr><td>門檻未達</td><td>200 萬</td><td>90 萬</td><td>0</td><td>0</td><td>海外所得未達 100 萬，原則無須計入</td></tr>
+<tr><td>計入但未必補稅</td><td>200 萬</td><td>600 萬</td><td>0</td><td>10 萬</td><td>還須與一般所得稅額比較</td></tr>
+<tr><td>財政部範例</td><td>500 萬</td><td>580 萬</td><td>300 萬</td><td>126 萬</td><td>一般稅額 117.04 萬；扣抵後另繳 30,545 元</td></tr>
+</tbody></table></div>
+<p>以上為特定假設，不代表每個申報戶都會繳納相同稅額。填入自己的正式申報數字，比猜測「海外所得多少才安全」可靠。</p></section>
+<section class="section card"><h2>4. 公式與海外已納稅額扣抵</h2>
+<p><strong>基本所得額</strong>＝綜合所得淨額＋分開計稅股利及盈餘＋符合門檻的海外所得＋其他依法應計入項目。</p>
+<p><strong>基本稅額</strong>＝max〔0，（基本所得額－750 萬）× 20%〕。</p>
+<p><strong>基本稅額與一般稅額差額</strong>＝max〔0，基本稅額－一般所得稅額〕。</p>
+<p><strong>海外已納稅額扣抵上限</strong>依財政部例示：〔基本稅額－（扣除投資抵減前的一般稅額）〕× 海外所得 ÷（基本所得額－綜合所得淨額－分開計稅股利及盈餘）；實際可扣抵以已納稅額及法定限額較低者為準，特殊所得與證明要求另依規定。</p>
+<p><strong>最終額外稅額</strong>＝max〔0，差額－可扣抵海外已納稅額〕。本頁未處理所有特殊抵減與跨年 CFC 項目。</p></section>
+<section class="section card"><h2>5. 常見問題</h2>
+<h3>海外所得 100 萬是不是直接課 20%？</h3><p>不是。100 萬是基本所得額的計入門檻之一，超過或達門檻時原則全額計入；是否額外繳稅仍看綜合所得淨額、其他項目、750 萬扣除額及一般稅額。</p>
+<h3>海外所得 750 萬以下都不必申報嗎？</h3><p>不是。750 萬是基本所得額扣除額，並不是海外所得免申報門檻。應先確認全年海外所得及基本所得額申報義務。</p>
+<h3>美股股息已被美國扣稅，還能在台灣扣抵嗎？</h3><p>符合稅法及證明文件規定者，可能在最低稅負差額範圍內扣抵，但不代表可將所有國外已納稅額直接全數抵掉。以正式納稅證明與申報系統為準。</p>
+<h3>這個計算機是正式報稅軟體嗎？</h3><p>不是。它提供可核算的教學情境；綜合所得淨額、一般所得稅額請優先以國稅局及正式報稅系統取得的數字輸入。</p></section>
+<section class="section card"><h2>官方來源與延伸閱讀</h2><ul>
+<li><a href="https://www.etax.nat.gov.tw/etwmain/tax-info/understanding/tax-saving-manual/national/individual-income-tax/6xKrvGR" rel="noopener">財政部稅務入口網：最低稅負制、扣抵公式與官方例題</a></li>
+<li><a href="https://gazette.nat.gov.tw/EG_FileManager/eguploadpub/eg031218/ch04/type3/gov30/num13/Eg.htm" rel="noopener">財政部 115 年度基本所得額扣除額公告</a></li>
+<li><a href="https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0340115" rel="noopener">全國法規資料庫：所得基本稅額條例</a></li>
+<li><a href="/learn/overseas-income-amt-guide.html">FinKit：海外所得與最低稅負完整說明</a></li>
+</ul><p>資料核對：2026-10-13。若法規變動，以財政部公告及正式申報系統為準。</p></section>
+<footer>FinKit 理財工具箱｜計算於本機瀏覽器完成，不會將輸入的金額送到 FinKit。廣告與內容編輯分開；本頁不載入廣告程式。<p><a href="/">首頁</a> · <a href="/privacy.html">隱私</a> · <a href="/methodology.html">計算方法</a></p></footer>
+</main><script>
+(function(){
+'use strict';
+const ids=['net','foreign','dividends','other','ordinary','investmentCredit','foreignPaid','deduction','rate'];
+const money=x=>'NT$ '+Math.round(x).toLocaleString('zh-TW');
+function compute(v){
+ const inc=v.foreign>=1000000?v.foreign:0;
+ const basicIncome=v.net+v.dividends+v.other+inc;
+ const basicTax=Math.max(0,(basicIncome-v.deduction)*v.rate/100);
+ const gap=Math.max(0,basicTax-v.ordinary);
+ const denominator=basicIncome-v.net-v.dividends;
+ const capBase=Math.max(0,basicTax-v.ordinary-v.investmentCredit);
+ const cap=(inc>0&&denominator>0)?Math.min(gap,capBase*inc/denominator):0;
+ const credit=Math.min(v.foreignPaid,cap);
+ const extra=Math.max(0,gap-credit);
+ return {inc,basicIncome,basicTax,gap,cap,credit,extra,total:v.ordinary+extra};
+}
+window.FinKitAMT=compute;
+function run(){
+ const v={};for(const id of ids){const e=document.getElementById(id),n=Number(e.value);if(e.value.trim()===''||!Number.isFinite(n)||n<0||(id==='rate'&&n>100)){document.getElementById('error').hidden=false;document.getElementById('error').textContent='請輸入有效的非負數，稅率不得高於 100%。';return;}v[id]=n;}
+ document.getElementById('error').hidden=true;
+ const r=compute(v);
+ for(const [k,x] of Object.entries({included:r.inc,baseIncome:r.basicIncome,baseTax:r.basicTax,diff:r.gap,creditLimit:r.cap,credit:r.credit,extra:r.extra,total:r.total}))document.getElementById(k).textContent=money(x);
+ document.getElementById('detail').textContent=r.inc===0?'海外所得未達 100 萬元，本頁依一般規則不計入基本所得額；其他基本所得仍可能觸發最低稅負。':r.gap===0?'基本稅額未高於一般所得稅額，依本頁假設不需額外繳納基本稅額。':'海外已納稅額須具合法憑證；本頁依財政部一般例示估算扣抵限額，請以正式申報結果為準。';
+}
+function load(obj){for(const [k,v] of Object.entries(obj))document.getElementById(k).value=v;run();}
+document.getElementById('example').onclick=()=>load({net:5000000,foreign:5800000,dividends:0,other:3000000,ordinary:1170400,investmentCredit:0,foreignPaid:130000,deduction:7500000,rate:20});
+document.getElementById('simple').onclick=()=>load({net:2000000,foreign:8000000,dividends:0,other:0,ordinary:200000,investmentCredit:0,foreignPaid:100000,deduction:7500000,rate:20});
+document.getElementById('reset').onclick=()=>load({net:0,foreign:0,dividends:0,other:0,ordinary:0,investmentCredit:0,foreignPaid:0,deduction:7500000,rate:20});
+for(const id of ids)document.getElementById(id).addEventListener('input',run);
+run();
+})();
+</script></body></html>

@@ -9,7 +9,7 @@
   <url><loc>https://finkit.top/editorial-policy.html</loc><lastmod>2026-09-21</lastmod><changefreq>monthly</changefreq><priority>0.55</priority></url>
   <url><loc>https://finkit.top/methodology.html</loc><lastmod>2026-09-21</lastmod><changefreq>monthly</changefreq><priority>0.55</priority></url>
   <url><loc>https://finkit.top/tools/</loc><lastmod>2026-09-21</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
-  <url><loc>https://finkit.top/learn/</loc><lastmod>2026-09-21</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://finkit.top/learn/</loc><lastmod>2026-10-13</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://finkit.top/tools/financial-health-check.html</loc><lastmod>2026-09-21</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <url><loc>https://finkit.top/tools/budget-planner.html</loc><lastmod>2026-09-21</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <url><loc>https://finkit.top/tools/net-worth-calculator.html</loc><lastmod>2026-09-21</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
@@ -41,5 +41,10 @@
   <url><loc>https://finkit.top/learn/retirement-withdrawal-guide.html</loc><lastmod>2026-09-21</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://finkit.top/learn/fcn-risk-guide.html</loc><lastmod>2026-09-21</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://finkit.top/learn/asset-allocation-guide.html</loc><lastmod>2026-09-21</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://finkit.top/learn/overseas-income-amt-guide.html</loc><lastmod>2026-09-21</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://finkit.top/learn/overseas-income-amt-guide.html</loc><lastmod>2026-10-13</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://finkit.top/calculators/overseas-tax.html</loc><lastmod>2026-10-13</lastmod><changefreq>monthly</changefreq><priority>.95</priority></url>
+  <url><loc>https://finkit.top/learn/overseas-income-amt-examples.html</loc><lastmod>2026-10-13</lastmod><changefreq>monthly</changefreq><priority>.82</priority></url>
+  <url><loc>https://finkit.top/learn/mortgage-grace-period-payment.html</loc><lastmod>2026-10-13</lastmod><changefreq>monthly</changefreq><priority>.82</priority></url>
+  <url><loc>https://finkit.top/learn/fund-fee-compounding-20-years.html</loc><lastmod>2026-10-13</lastmod><changefreq>monthly</changefreq><priority>.82</priority></url>
+  <url><loc>https://finkit.top/learn/taiwan-etf-transaction-cost-example.html</loc><lastmod>2026-10-13</lastmod><changefreq>monthly</changefreq><priority>.82</priority></url>
 </urlset>

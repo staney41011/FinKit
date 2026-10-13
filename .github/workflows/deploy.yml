@@ -65,7 +65,10 @@ jobs:
           test "$(find site/learn -maxdepth 1 -type f -name '*.html' | wc -l)" -ge 9
           test "$(wc -c < site/index.html)" -gt 30000
 
-          echo "FinKit v9 verification passed: homepage is self-contained and useful without JavaScript."
+          # Finance regression, sitemap links, all inline HTML scripts and schema consistency.
+          node scripts/verify-content-v10.mjs
+
+          echo "FinKit verification passed: stable homepage + independent calculator + editorial content."
 
   deploy:
     if: github.event_name == 'push'

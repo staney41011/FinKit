@@ -68,6 +68,9 @@ jobs:
           # Finance regression, sitemap links, all inline HTML scripts and schema consistency.
           node scripts/verify-content-v10.mjs
 
+          # Prevent GitHub Pages branch publishing and Actions artifact from diverging.
+          node scripts/check-pages-mirror.mjs
+
           echo "FinKit verification passed: stable homepage + independent calculator + editorial content."
 
   deploy:

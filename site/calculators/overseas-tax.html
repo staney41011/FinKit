@@ -29,6 +29,7 @@ main{max-width:1120px;margin:auto;padding:28px 18px 65px}.hero{padding:30px;bord
 <div class="field"><label for="dividends">分開計稅股利及盈餘合計</label><input type="number" id="dividends" value="0" min="0" step="10000"><small>選擇 28% 分開計稅者，填列相關金額</small></div>
 <div class="field"><label for="other">其他應計入基本所得額項目</label><input type="number" id="other" value="3000000" min="0" step="10000"><small>如特定保險給付、應計入證券交易所得等；避免重複計入</small></div>
 <div class="field"><label for="ordinary">一般所得稅額</label><input type="number" id="ordinary" value="1170400" min="0" step="10000"><small>含適用之股利分開計稅額、扣除相關投資抵減後；不等於已預繳稅</small></div>
+<div class="field"><label for="investmentCredit">一般稅額已扣除的投資抵減額</label><input type="number" id="investmentCredit" value="0" min="0" step="10000"><small>未使用投資抵減填 0；用於還原海外稅額扣抵上限的計算基礎</small></div>
 <div class="field"><label for="foreignPaid">海外已納所得稅額（符合扣抵條件）</label><input type="number" id="foreignPaid" value="130000" min="0" step="10000"><small>須具正式來源國納稅證明；僅得於法定限額內扣抵</small></div>
 <div class="field"><label for="deduction">基本所得扣除額</label><input type="number" id="deduction" value="7500000" min="0" step="10000"><small>115 年度財政部公告：750 萬元</small></div>
 <div class="field"><label for="rate">基本稅率（%）</label><input type="number" id="rate" value="20" min="0" max="100" step="0.1"><small>115 年度基本稅率：20%</small></div>
@@ -56,7 +57,7 @@ main{max-width:1120px;margin:auto;padding:28px 18px 65px}.hero{padding:30px;bord
 <p><strong>基本所得額</strong>＝綜合所得淨額＋分開計稅股利及盈餘＋符合門檻的海外所得＋其他依法應計入項目。</p>
 <p><strong>基本稅額</strong>＝max〔0，（基本所得額－750 萬）× 20%〕。</p>
 <p><strong>基本稅額與一般稅額差額</strong>＝max〔0，基本稅額－一般所得稅額〕。</p>
-<p><strong>海外已納稅額扣抵上限</strong>依財政部例示：上述差額 × 海外所得 ÷（基本所得額－綜合所得淨額－分開計稅股利及盈餘）；實際可扣抵以已納稅額及法定限額較低者為準，特殊所得與證明要求另依規定。</p>
+<p><strong>海外已納稅額扣抵上限</strong>依財政部例示：〔基本稅額－（扣除投資抵減前的一般稅額）〕× 海外所得 ÷（基本所得額－綜合所得淨額－分開計稅股利及盈餘）；實際可扣抵以已納稅額及法定限額較低者為準，特殊所得與證明要求另依規定。</p>
 <p><strong>最終額外稅額</strong>＝max〔0，差額－可扣抵海外已納稅額〕。本頁未處理所有特殊抵減與跨年 CFC 項目。</p></section>
 <section class="section card"><h2>5. 常見問題</h2>
 <h3>海外所得 100 萬是不是直接課 20%？</h3><p>不是。100 萬是基本所得額的計入門檻之一，超過或達門檻時原則全額計入；是否額外繳稅仍看綜合所得淨額、其他項目、750 萬扣除額及一般稅額。</p>
@@ -73,7 +74,7 @@ main{max-width:1120px;margin:auto;padding:28px 18px 65px}.hero{padding:30px;bord
 </main><script>
 (function(){
 'use strict';
-const ids=['net','foreign','dividends','other','ordinary','foreignPaid','deduction','rate'];
+const ids=['net','foreign','dividends','other','ordinary','investmentCredit','foreignPaid','deduction','rate'];
 const money=x=>'NT$ '+Math.round(x).toLocaleString('zh-TW');
 function compute(v){
  const inc=v.foreign>=1000000?v.foreign:0;
@@ -81,7 +82,8 @@ function compute(v){
  const basicTax=Math.max(0,(basicIncome-v.deduction)*v.rate/100);
  const gap=Math.max(0,basicTax-v.ordinary);
  const denominator=basicIncome-v.net-v.dividends;
- const cap=(inc>0&&denominator>0)?Math.min(gap,gap*inc/denominator):0;
+ const capBase=Math.max(0,basicTax-v.ordinary-v.investmentCredit);
+ const cap=(inc>0&&denominator>0)?Math.min(gap,capBase*inc/denominator):0;
  const credit=Math.min(v.foreignPaid,cap);
  const extra=Math.max(0,gap-credit);
  return {inc,basicIncome,basicTax,gap,cap,credit,extra,total:v.ordinary+extra};
@@ -95,9 +97,9 @@ function run(){
  document.getElementById('detail').textContent=r.inc===0?'海外所得未達 100 萬元，本頁依一般規則不計入基本所得額；其他基本所得仍可能觸發最低稅負。':r.gap===0?'基本稅額未高於一般所得稅額，依本頁假設不需額外繳納基本稅額。':'海外已納稅額須具合法憑證；本頁依財政部一般例示估算扣抵限額，請以正式申報結果為準。';
 }
 function load(obj){for(const [k,v] of Object.entries(obj))document.getElementById(k).value=v;run();}
-document.getElementById('example').onclick=()=>load({net:5000000,foreign:5800000,dividends:0,other:3000000,ordinary:1170400,foreignPaid:130000,deduction:7500000,rate:20});
-document.getElementById('simple').onclick=()=>load({net:2000000,foreign:8000000,dividends:0,other:0,ordinary:200000,foreignPaid:100000,deduction:7500000,rate:20});
-document.getElementById('reset').onclick=()=>load({net:0,foreign:0,dividends:0,other:0,ordinary:0,foreignPaid:0,deduction:7500000,rate:20});
+document.getElementById('example').onclick=()=>load({net:5000000,foreign:5800000,dividends:0,other:3000000,ordinary:1170400,investmentCredit:0,foreignPaid:130000,deduction:7500000,rate:20});
+document.getElementById('simple').onclick=()=>load({net:2000000,foreign:8000000,dividends:0,other:0,ordinary:200000,investmentCredit:0,foreignPaid:100000,deduction:7500000,rate:20});
+document.getElementById('reset').onclick=()=>load({net:0,foreign:0,dividends:0,other:0,ordinary:0,investmentCredit:0,foreignPaid:0,deduction:7500000,rate:20});
 for(const id of ids)document.getElementById(id).addEventListener('input',run);
 run();
 })();

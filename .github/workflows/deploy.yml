@@ -42,7 +42,8 @@ jobs:
 
           # Homepage must render as a useful site even if JS never runs.
           test "$(grep -o 'class="fallback-grid"' site/index.html | wc -l)" -ge 1
-          test "$(grep -o '/tools/[^"?]*\.html' site/index.html | sort -u | wc -l)" -ge 24
+          test "$(grep -o '/tools/[^"?]*\.html' site/index.html | sort -u | wc -l)" -ge 23
+          grep -q 'href="/calculators/currency-converter.html"' site/index.html
           test "$(grep -o '/learn/[^"?]*\.html' site/index.html | sort -u | wc -l)" -ge 6
 
           # Critical homepage assets are inline: no CSS/JS network dependency.
@@ -70,6 +71,7 @@ jobs:
 
           # Prevent GitHub Pages branch publishing and Actions artifact from diverging.
           node scripts/check-pages-mirror.mjs
+          node scripts/verify-forex.mjs
 
           echo "FinKit verification passed: stable homepage + independent calculator + editorial content."
 

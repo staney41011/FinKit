@@ -1,0 +1,30 @@
+# FinKit — Taiwan Finance Calculators & Decision Guides
+
+Canonical website: https://finkit.top/
+Language: Traditional Chinese (zh-TW)
+Updated: 2026-10-13
+
+## About FinKit
+FinKit is a free personal-finance education and scenario-calculation website for Taiwan. Tools are not professional investment, insurance, legal, or tax advice. Calculations use clearly stated assumptions and are run locally in the browser.
+
+## Calculator entry points
+- Homepage and 24 original core tools: https://finkit.top/
+- Independent 2026 Taiwan overseas-income / individual AMT calculator: https://finkit.top/calculators/overseas-tax.html
+- Tool directory and calculation explanations: https://finkit.top/tools/
+
+## Original decision examples
+- Taiwan 2026 overseas income AMT scenarios: https://finkit.top/learn/overseas-income-amt-examples.html
+- Tax guide, thresholds and foreign tax credit: https://finkit.top/learn/overseas-income-amt-guide.html
+- Mortgage grace period, payment jump and total interest: https://finkit.top/learn/mortgage-grace-period-payment.html
+- Long-term investment fee difference: https://finkit.top/learn/fund-fee-compounding-20-years.html
+- Taiwan ETF transaction costs: https://finkit.top/learn/taiwan-etf-transaction-cost-example.html
+- All editorial guides: https://finkit.top/learn/
+
+## Editorial and transparency
+- https://finkit.top/editorial-policy.html
+- https://finkit.top/methodology.html
+- https://finkit.top/about.html
+- https://finkit.top/privacy.html
+
+## Source policy
+Tax law and annually adjustable parameters must be checked against the Taiwan Ministry of Finance, law databases, and applicable official notices. Investment trading costs should be checked against TWSE and brokerage disclosures. Structured data is descriptive; it does not guarantee indexing or AI citation.

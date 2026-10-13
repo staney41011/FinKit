@@ -1,0 +1,3 @@
+FinKit publishing check: 2026-10-13 ROOT_AND_SITE_SYNCED
+This file is served by the same published site as the homepage.
+If this file is missing or shows older content, investigate GitHub Pages source, DNS, and CDN rather than editing React or calculator code.

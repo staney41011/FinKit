@@ -81,7 +81,7 @@ for(const path of urls){
  const local=path===''?'index.html':path.endsWith('/')?path+'index.html':path;
  try{await access(new URL(local,root))}catch{errors.push('Sitemap target missing: '+path)}
 }
-for(const p of paths.slice(1,8))check(urls.includes(p),'Missing sitemap entry: '+p);
+for(const p of paths.slice(1,8)){const target=p.endsWith('/index.html')?p.replace(/index\.html$/,''):p;check(urls.includes(target),'Missing sitemap entry: '+p);}
 check(urls.length>=47,'Sitemap lost pages');
 const hub=htmls[2];
 for(const p of paths.slice(3,8))check(hub.includes('/'+p),'Missing knowledge hub link '+p);

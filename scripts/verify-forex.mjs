@@ -123,7 +123,8 @@ assert.ok(home.includes("window.location.assign('/calculators/currency-converter
 assert.ok(app.includes("window.location.assign('/calculators/currency-converter.html')"),'Source app JS must have same forex routing');
 assert.ok(home.includes('href="/calculators/currency-converter.html"'),'Static homepage must link to calculator');
 assert.ok(!home.includes('內容與工具分離'),'Removed homepage section came back');
-assert.ok(!/<footer class="footer">[\s\S]*?<a /i.test(home),'Homepage bottom-right footer links came back');
+const footer=home.match(/<footer class="footer">([\s\S]*?)<\/footer>/i)?.[1]||'';
+assert.ok(footer.length>0 && !/<a\s/i.test(footer),'Homepage bottom-right footer links came back');
 assert.ok(landing.includes('href="/calculators/currency-converter.html"'),'SEO landing action is not pointing to live FX tool');
 assert.ok(sitemap.includes('https://finkit.top/calculators/currency-converter.html'),'Sitemap missing FX tool');
 assert.ok(!/pagead2\.googlesyndication\.com|adsbygoogle/.test(fx),'Calculator-only page must not include AdSense serving script');

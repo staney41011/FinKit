@@ -73,6 +73,7 @@ jobs:
           node scripts/check-pages-mirror.mjs
           node scripts/verify-forex.mjs
           node scripts/audit-publisher-content.mjs
+          node scripts/verify-user-first.mjs
 
           echo "FinKit verification passed: stable homepage + independent calculator + editorial content."
 

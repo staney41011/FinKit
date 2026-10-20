@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>房貸升息與寬限期試算｜月付、利息、壓力測試｜FinKit</title>
+<meta name="description" content="房貸月付會增加多少？輸入本金、利率、年限與寬限期，即時比較目前月付、升息後月付、寬限期前後差額與總利息。免費免登入。">
+<meta name="robots" content="index,follow,max-snippet:-1"><meta name="google-adsense-account" content="ca-pub-4463068342710380">
+<link rel="canonical" href="https://finkit.top/calculators/mortgage-stress-test.html">
+<meta property="og:title" content="房貸升息與寬限期試算｜FinKit"><meta property="og:description" content="房貸利率上升或寬限期結束後，每月要多付多少？">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"房貸升息與寬限期比較","url":"https://finkit.top/calculators/mortgage-stress-test.html","inLanguage":"zh-TW"},{"@type":"SoftwareApplication","name":"FinKit 房貸升息與寬限期試算","applicationCategory":"FinanceApplication","operatingSystem":"Web","isAccessibleForFree":true,"url":"https://finkit.top/calculators/mortgage-stress-test.html"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"FinKit","item":"https://finkit.top/"},{"@type":"ListItem","position":2,"name":"理財工具","item":"https://finkit.top/tools/"},{"@type":"ListItem","position":3,"name":"房貸升息與寬限期試算","item":"https://finkit.top/calculators/mortgage-stress-test.html"}]}]}</script>
+<style>
+:root{--bg:#f4f7fa;--ink:#11263a;--muted:#566b80;--line:#dee8ed;--brand:#0c766b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif}
+a{color:var(--brand)}button,input{font:inherit}header{background:#0f2236;color:#fff}header nav{max-width:1040px;margin:auto;display:flex;gap:23px;align-items:center;padding:13px 20px}header nav a{color:#fff;text-decoration:none;font-size:14px}header nav a:first-child{font-size:20px;font-weight:900}
+main{max-width:1040px;margin:auto;padding:24px 18px 60px}.hero{background:linear-gradient(120deg,#112b43,#0f766e);padding:28px;border-radius:20px;color:#fff}.hero h1{font-size:clamp(27px,3.5vw,36px);line-height:1.35;margin:0}.hero p{color:#d6eee9;margin:9px 0 0}
+.layout{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:18px;margin-top:18px;align-items:start}.card{background:#fff;border:1px solid var(--line);border-radius:17px;padding:21px;box-shadow:0 3px 16px #10233609}.card h2{font-size:19px;margin:0 0 13px}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.field label{display:block;font-weight:750;font-size:13px;margin-bottom:6px}.field input{width:100%;min-height:46px;border:1px solid #bfd0dc;border-radius:10px;padding:9px 11px;background:#fff;color:#0f2236}.field input:focus{outline:3px solid #beece1;border-color:var(--brand)}.field small{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:19px}button{cursor:pointer;border:1px solid #cee0dd;color:var(--brand);border-radius:10px;padding:10px 14px;background:#edf8f4;font-weight:800}button.primary{color:#fff;background:var(--brand);border-color:var(--brand)}
+.highlight{background:#ebf9f4;border:1px solid #a3dacb;border-radius:13px;padding:17px}.highlight span{display:block;color:#375e57;font-size:13px}.highlight strong{display:block;font-size:clamp(25px,4vw,36px);margin:3px 0}.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}.metric{border:1px solid var(--line);border-radius:11px;background:#f8fbfc;padding:12px}.metric span{font-size:12px;display:block;color:var(--muted)}.metric strong{font-size:clamp(17px,2.5vw,22px);display:block}.bad{color:#b45309}.status{font-size:13px;color:var(--muted);margin-top:12px}.error{color:#9b2626;background:#fff1f1;border:1px solid #f3bcbc;padding:11px;border-radius:10px}
+.section{margin-top:17px}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:620px}th,td{text-align:right;border-bottom:1px solid var(--line);padding:11px 9px;font-size:13px}th:first-child,td:first-child{text-align:left}th{background:#e9f5f3}.mini{font-size:13px;color:var(--muted)}footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.75}
+@media(max-width:790px){.layout{grid-template-columns:1fr}}@media(max-width:530px){main{padding:14px 11px 44px}.hero{padding:21px}.card{padding:17px}.fields{grid-template-columns:1fr}.metrics{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><nav><a href="/">FinKit</a><a href="/tools/">全部工具</a><a href="/learn/mortgage-grace-period-payment.html">寬限期案例</a></nav></header>
+<main>
+<section class="hero"><h1>房貸升息與寬限期試算</h1><p>利率上升、寬限期結束，每月要多付多少？</p></section>
+<div class="layout">
+<section class="card"><h2>輸入房貸條件</h2><div class="fields">
+<div class="field"><label for="principal">貸款本金（元）</label><input id="principal" type="number" value="10000000" min="1" step="100000" inputmode="decimal"></div>
+<div class="field"><label for="rate">目前年利率（%）</label><input id="rate" type="number" value="2.5" min="0" max="40" step="0.1" inputmode="decimal"></div>
+<div class="field"><label for="rise">升息幅度（百分點）</label><input id="rise" type="number" value="1" min="0" max="20" step="0.25" inputmode="decimal"></div>
+<div class="field"><label for="years">貸款總年限（年）</label><input id="years" type="number" value="30" min="1" max="50" step="1" inputmode="numeric"></div>
+<div class="field"><label for="grace">寬限期（年）</label><input id="grace" type="number" value="3" min="0" max="49" step="1" inputmode="numeric"><small>包含在上方貸款總年限內</small></div>
+</div><div class="actions"><button type="button" id="reset">恢復範例</button><button type="button" id="copy" class="primary">複製試算結果</button></div><p class="status" id="status" role="status" aria-live="polite">修改金額後自動重新計算。</p></section>
+<section class="card"><h2>每月付款比較</h2>
+<div class="highlight"><span>升息後、寬限期結束的月付金</span><strong id="stressAfter">—</strong><span id="vsGrace">相較寬限期間增加 —</span></div>
+<div class="metrics">
+<div class="metric"><span>目前利率｜正常本息月付</span><strong id="baseMonthly">—</strong></div>
+<div class="metric"><span>升息後｜正常本息月付</span><strong id="riseMonthly">—</strong></div>
+<div class="metric"><span>目前利率｜寬限期間月付</span><strong id="graceMonthly">—</strong></div>
+<div class="metric"><span>目前利率｜寬限期結束月付</span><strong id="baseAfter">—</strong></div>
+</div>
+<p class="status" id="summary" aria-live="polite"></p></section>
+</div>
+<section class="card section"><h2>四種情境一次看</h2><div class="tablewrap">
+<table><thead><tr><th>情境</th><th>寬限期間月付</th><th>正常攤還月付</th><th>整期總利息</th></tr></thead><tbody id="comparison"><tr><td colspan="4">輸入後顯示結果</td></tr></tbody></table></div>
+<p class="mini">假設貸款本金固定、利率於整個比較情境中維持不變。本試算未包含開辦費、浮動利率分段變動、提前還本與其他費用；升息情境是將較高利率套用整段貸款的壓力測試，而非預測未來調息時間。</p></section>
+<section class="card section"><h2>計算方式</h2>
+<p>本息平均攤還月付＝本金 × 月利率 ÷〔1－(1＋月利率)<sup>−總期數</sup>〕。寬限期只付利息，本金假設不變，結束後以<strong>剩餘期限</strong>重新攤還本金。總利息＝全期付款合計－原始本金。</p>
+<p>例如本金 1,000 萬、30 年、2.5% 利率，不使用寬限期每月約 39,512 元；利率升為 3.5% 時每月約 44,904 元。使用 3 年寬限期會降低前三年月付，但提高之後的本金攤還壓力。</p>
+<p class="mini">了解細節：<a href="/learn/mortgage-grace-period-payment.html">房貸 1,000 萬與三年寬限期案例</a>。本工具僅供試算，正式月付與費用以銀行契約為準。</p>
+</section>
+<footer>FinKit 免費理財工具。數字僅在瀏覽器中計算，不需登入，也不會自動上傳貸款金額。</footer>
+</main>
+<script>
+(function(){
+'use strict';
+const ids=['principal','rate','rise','years','grace'],$=id=>document.getElementById(id);
+const ntwd=n=>'NT$ '+Math.round(n).toLocaleString('zh-TW');
+function pmt(principal,annual,months){
+ if(!(principal>=0&&months>0&&annual>=0))return NaN;
+ const r=annual/100/12;
+ return r===0?principal/months:principal*r/(1-Math.pow(1+r,-months));
+}
+function scenario(principal,annual,years,grace){
+ const totalMonths=years*12,graceMonths=grace*12;
+ if(!(principal>0&&annual>=0&&years>0&&grace>=0&&grace<years))return null;
+ const during=graceMonths?principal*annual/100/12:null;
+ const after=pmt(principal,annual,totalMonths-graceMonths);
+ const interest=after*(totalMonths-graceMonths)+(during||0)*graceMonths-principal;
+ return {during,after,interest};
+}
+window.FinKitMortgage={pmt,scenario};
+let lastText='';
+function invalidate(message){lastText='';$('status').className='status error';$('status').textContent=message;for(const id of ['baseMonthly','riseMonthly','graceMonthly','baseAfter','stressAfter'])$(id).textContent='—';$('vsGrace').textContent='—';$('summary').textContent='';$('comparison').replaceChildren();}
+function render(){
+ const v={};for(const id of ids){const e=$(id),raw=e.value.trim(),n=Number(raw);if(!raw||!Number.isFinite(n)||n<0){invalidate('請輸入有效且非負的數字。');return;}v[id]=n}
+ if(v.principal<=0||v.years<=0||v.years>50||v.grace>=v.years||v.rate>40||v.rise>20||v.rate+v.rise>40){invalidate('寬限期須短於總年限；貸款本金與年限須大於零；年利率不可超過 40%。');return}
+ const a=scenario(v.principal,v.rate,v.years,0),b=scenario(v.principal,v.rate+v.rise,v.years,0),c=scenario(v.principal,v.rate,v.years,v.grace),d=scenario(v.principal,v.rate+v.rise,v.years,v.grace);
+ $('baseMonthly').textContent=ntwd(a.after);$('riseMonthly').textContent=ntwd(b.after);$('graceMonthly').textContent=v.grace?ntwd(c.during):'無寬限期';
+ $('baseAfter').textContent=ntwd(c.after);$('stressAfter').textContent=ntwd(d.after);
+ $('vsGrace').textContent=v.grace?'比升息情境的寬限期間增加 '+ntwd(d.after-d.during):'不使用寬限期；每月增加 '+ntwd(b.after-a.after);
+ $('summary').textContent='升息 '+v.rise+' 個百分點，無寬限期的月付增加 '+ntwd(b.after-a.after)+'。';
+ const lines=[['原利率 · 無寬限期',a],['升息後 · 無寬限期',b],['原利率 · '+v.grace+' 年寬限期',c],['升息後 · '+v.grace+' 年寬限期',d]];
+ $('comparison').replaceChildren();
+ for(const [label,s] of lines){const tr=document.createElement('tr');for(const val of [label,s.during===null?'—':ntwd(s.during),ntwd(s.after),ntwd(s.interest)]){const td=document.createElement('td');td.textContent=val;tr.append(td)}$('comparison').append(tr)}
+ lastText='FinKit 房貸試算\n本金：'+ntwd(v.principal)+'，貸款：'+v.years+' 年，寬限：'+v.grace+' 年\n原利率：'+v.rate+'%，升息後：'+(v.rate+v.rise)+'%\n'+lines.map(([name,s])=>name+'｜正常月付 '+ntwd(s.after)+'｜總利息 '+ntwd(s.interest)).join('\n')+'\nhttps://finkit.top/calculators/mortgage-stress-test.html';
+ $('status').className='status';$('status').textContent='修改條件後即時更新。';
+}
+for(const id of ids)$(id).addEventListener('input',render);
+$('reset').addEventListener('click',()=>{Object.entries({principal:10000000,rate:2.5,rise:1,years:30,grace:3}).forEach(([k,v])=>$(k).value=v);render()});
+$('copy').addEventListener('click',async()=>{if(!lastText){$('status').textContent='請先輸入有效條件。';return}
+ try{await navigator.clipboard.writeText(lastText);$('status').textContent='已複製試算結果。';}catch{$('status').textContent='無法自動複製，請檢查瀏覽器剪貼簿權限。'}});
+render();
+})();
+</script>
+</body></html>

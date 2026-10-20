@@ -72,9 +72,10 @@ function scenario(principal,annual,years,grace){
 }
 window.FinKitMortgage={pmt,scenario};
 let lastText='';
+function invalidate(message){lastText='';$('status').className='status error';$('status').textContent=message;for(const id of ['baseMonthly','riseMonthly','graceMonthly','baseAfter','stressAfter'])$(id).textContent='—';$('vsGrace').textContent='—';$('summary').textContent='';$('comparison').replaceChildren();}
 function render(){
- const v={};for(const id of ids){const e=$(id),raw=e.value.trim(),n=Number(raw);if(!raw||!Number.isFinite(n)||n<0){$('status').className='status error';$('status').textContent='請輸入有效且非負的數字。';return;}v[id]=n}
- if(v.principal<=0||v.years<=0||v.years>50||v.grace>=v.years||v.rate>40||v.rise>20||v.rate+v.rise>40){$('status').className='status error';$('status').textContent='寬限期須短於總年限；貸款本金與年限須大於零；年利率不可超過 40%。';return}
+ const v={};for(const id of ids){const e=$(id),raw=e.value.trim(),n=Number(raw);if(!raw||!Number.isFinite(n)||n<0){invalidate('請輸入有效且非負的數字。');return;}v[id]=n}
+ if(v.principal<=0||v.years<=0||v.years>50||v.grace>=v.years||v.rate>40||v.rise>20||v.rate+v.rise>40){invalidate('寬限期須短於總年限；貸款本金與年限須大於零；年利率不可超過 40%。');return}
  const a=scenario(v.principal,v.rate,v.years,0),b=scenario(v.principal,v.rate+v.rise,v.years,0),c=scenario(v.principal,v.rate,v.years,v.grace),d=scenario(v.principal,v.rate+v.rise,v.years,v.grace);
  $('baseMonthly').textContent=ntwd(a.after);$('riseMonthly').textContent=ntwd(b.after);$('graceMonthly').textContent=v.grace?ntwd(c.during):'無寬限期';
  $('baseAfter').textContent=ntwd(c.after);$('stressAfter').textContent=ntwd(d.after);

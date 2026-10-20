@@ -20,7 +20,7 @@
 @media(max-width:1100px){.fallback-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:800px){.fallback-hero{grid-template-columns:1fr}.fallback-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:520px){.fallback-grid,.fallback-articles{grid-template-columns:1fr}.fallback-hero{padding:24px}.fallback-hero h1{font-size:30px}}
-</style>
+.hero-quick{grid-template-columns:1fr;padding:29px 30px}.hero-quick h1{font-size:clamp(27px,3.2vw,38px);margin:0 0 16px}.search-label{display:block;font-size:13px;font-weight:750;color:#cfe5e4;margin-bottom:7px}.home-search{width:100%;max-width:650px;height:50px;padding:10px 15px;border-radius:12px;border:1px solid #91bac3;background:#fff;color:#0f172a;outline:none}.home-search:focus{border-color:#5eead4;box-shadow:0 0 0 3px #99f6e44d}.quick-tools{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}.quick-tools a,.fallback-links a{display:inline-flex;align-items:center;border-radius:999px;padding:8px 12px;font-size:13px;text-decoration:none;background:#ffffff16;color:#fff;border:1px solid #ffffff55}.quick-tools a:hover{background:#ffffff2d}.fallback-links a{color:#09685f;border:1px solid #b9dfd8;background:#eefaf6;font-weight:750}.tool-card{text-decoration:none;color:inherit}.tool-card:focus-visible{outline:3px solid #0ea5e9;outline-offset:2px}.tool-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.tool-actions .back{font-size:13px;padding:8px 11px}.action-status{min-height:20px;color:#0f766e;font-size:12px;margin:0 0 10px}@media(max-width:800px){.hero-quick{padding:22px}.tool-actions{justify-content:flex-start}}@media(max-width:520px){.hero-quick{padding:20px}.quick-tools{gap:7px}.quick-tools a{font-size:12px;padding:7px 10px}}</style>
 </head>
 <body>
 <a class="skip" href="#content">跳到主要內容</a>
@@ -31,41 +31,47 @@
       <div>
         
         <h1>台灣理財工具箱</h1>
-        <p>首頁現在本身就是完整網站，不再依賴 JavaScript 才能正常顯示。你可以直接瀏覽 24 個理財工具、海外所得專區與原創理財指南；若瀏覽器允許 JavaScript，還會自動切換成互動工作台。</p>
+        <p>挑選工具、填入金額，立即看到試算結果。免費、免登入。</p>
       </div>
-      <div class="fallback-stat"><span>核心工具</span><strong>24 個</strong><span>現金流、投資、房貸、退休、FCN、海外所得與更多情境試算。</span></div>
+      
     </div>
-    <div class="fallback-links"><a href="/calculators/overseas-tax.html"><strong>海外所得配置計算機｜比較不同金額的最低稅負 →</strong></a></div>
+    <nav class="fallback-links" aria-label="常用工具"><a href="/calculators/overseas-tax.html"><strong>海外所得稅</strong></a><a href="/calculators/currency-converter.html"><strong>多幣匯率</strong></a><a href="/calculators/mortgage-stress-test.html"><strong>房貸升息</strong></a><a href="/?tool=dca"><strong>定期定額</strong></a><a href="/?tool=fcn"><strong>FCN</strong></a></nav>
 <section class="fallback-section"><h2>全部理財工具</h2>
-      <p>即使瀏覽器停用 JavaScript，也可以正常進入每個工具的說明頁。</p>
+      
       <div class="fallback-grid"><a href="/tools/financial-health-check.html"><strong>理財健檢</strong><span>現金流、淨資產與預備金總覽</span></a><a href="/tools/budget-planner.html"><strong>預算現金流</strong><span>收入怎麼分配更有餘裕</span></a><a href="/tools/net-worth-calculator.html"><strong>淨資產計算</strong><span>資產負債一次看懂</span></a><a href="/tools/emergency-fund-calculator.html"><strong>緊急預備金</strong><span>3、6、12 個月安全墊</span></a><a href="/tools/financial-goal-calculator.html"><strong>財務目標倒推</strong><span>從目標倒推每月投入</span></a><a href="/tools/debt-payoff-calculator.html"><strong>負債清償</strong><span>還款時間與利息成本</span></a><a href="/tools/risk-profile-calculator.html"><strong>風險屬性</strong><span>期限、回撤與承受度</span></a><a href="/tools/asset-allocation-calculator.html"><strong>資產配置</strong><span>比例直接換算金額</span></a><a href="/tools/life-insurance-gap-calculator.html"><strong>保障缺口</strong><span>家庭責任需求估算</span></a><a href="/tools/compound-interest-calculator.html"><strong>複利計算</strong><span>本金、月投入與時間</span></a><a href="/tools/dca-calculator.html"><strong>定期定額</strong><span>投入、年限與報酬情境</span></a><a href="/tools/stock-trading-calculator.html"><strong>台股交易損益</strong><span>手續費與交易稅後損益</span></a><a href="/tools/dividend-health-premium-calculator.html"><strong>配息與補充保費</strong><span>單次與全年現金流概算</span></a><a href="/tools/unit-dividend-calculator.html"><strong>單位數與配息</strong><span>淨值、單位數與配息</span></a><a href="/tools/irr-calculator.html"><strong>IRR 年化報酬</strong><span>不同年期投資可比化</span></a><a href="/tools/investment-fee-calculator.html"><strong>投資費用拖累</strong><span>長期費用差有多大</span></a><a href="/tools/fcn-calculator.html"><strong>FCN 情境試算</strong><span>KO、Strike、KI 與接股風險</span></a><a href="/tools/mortgage-calculator.html"><strong>房貸試算</strong><span>月付、利息與寬限期</span></a><a href="/tools/rent-vs-buy-calculator.html"><strong>買房 vs 租房</strong><span>資產與現金流情境比較</span></a><a href="/tools/fire-calculator.html"><strong>FIRE 財務自由</strong><span>安全提領率與目標資產</span></a><a href="/tools/retirement-withdrawal-calculator.html"><strong>退休提領</strong><span>通膨與資產耗盡壓力測試</span></a><a href="/tools/inflation-calculator.html"><strong>通膨購買力</strong><span>未來需要多少等值金額</span></a><a href="/calculators/currency-converter.html"><strong>多幣別匯率換算</strong><span>最新公開參考匯率 · 24 種貨幣互換</span></a><a href="/tools/taiwan-overseas-income-tax-calculator.html"><strong>海外所得與最低稅負</strong><span>115 年度 AMT 教學試算</span></a></div>
     </section>
     <section class="fallback-section">
       <h2>精選理財指南</h2>
-      <p>FinKit 不只提供計算器，也整理決策邏輯、案例與限制。</p>
+      
       <div class="fallback-articles"><a class="fallback-article" href="/learn/overseas-income-amt-guide.html">2026 海外所得與最低稅負：100 萬、750 萬怎麼看</a><a class="fallback-article" href="/learn/mortgage-affordability-guide.html">房貸可負擔度：別只看銀行願意借多少</a><a class="fallback-article" href="/learn/retirement-withdrawal-guide.html">退休提領壓力測試：平均報酬不是全部</a><a class="fallback-article" href="/learn/fcn-risk-guide.html">FCN 風險檢查：KO、Strike、KI、接股與最差情境</a><a class="fallback-article" href="/learn/dca-investing-guide.html">定期定額怎麼比較：投入金額、年限、報酬與費用</a><a class="fallback-article" href="/learn/asset-allocation-guide.html">資產配置與再平衡：先管理風險，再選商品</a></div>
       <div class="fallback-links"><a href="/learn/">全部理財文章</a><a href="/methodology.html">計算方法與資料來源</a><a href="/about.html">關於 FinKit</a></div>
     </section>
-    <div class="fallback-note">FinKit 為教育與情境試算用途，不構成投資、稅務、保險或法律建議。。</div>
+    <div class="fallback-note">FinKit 為教育與情境試算用途，不構成個別化投資、稅務、保險或法律建議。</div>
   </div>
 </section>
 
 <div class="app-shell" id="appShell">
   <aside class="sidebar" id="sidebar">
     <button class="brand" id="homeBtn" type="button"><span class="brand-mark">F</span><span><b>FinKit</b><small>台灣理財工具箱</small></span></button>
-    <input id="toolSearch" class="search" placeholder="搜尋：房貸、FCN、退休…" aria-label="搜尋工具">
+    <input id="toolSearch" class="search" placeholder="搜尋工具或需求…" aria-label="搜尋工具">
     <nav id="nav"></nav>
-    <div class="side-foot">資料以試算與教育用途為主。<br><a href="/learn/">理財文章</a> · <a href="/methodology.html">方法</a> · <a href="/privacy.html">隱私</a></div>
+    <div class="side-foot"><a href="/learn/">理財文章</a> · <a href="/methodology.html">方法</a> · <a href="/privacy.html">隱私</a></div>
   </aside>
   <main class="main" id="content">
     <header class="topbar"><div><button class="mobile-menu" id="mobileMenu" type="button">☰</button> <span class="crumb" id="crumb">理財總覽</span></div></header>
     <div class="content">
       <section id="homeView">
-        <div class="hero">
-          <div><h1>把複雜的理財問題，變成可以試算的決策。</h1><p>從現金流、投資、房貸、退休到海外所得，用清楚的試算工具，掌握自己的理財數字。</p></div>
-          <div class="hero-panel"><span>理財工具</span><strong>24</strong><span>不需登入、不上傳你輸入的試算金額。</span></div>
+        <div class="hero hero-quick">
+          <div><h1>你想算什麼？</h1><label for="homeToolSearch" class="search-label">搜尋理財工具</label><input id="homeToolSearch" class="home-search" type="search" placeholder="例如：房貸、ETF、海外所得、配息…" autocomplete="off">
+          <nav class="quick-tools" aria-label="常用計算工具">
+            <a href="/calculators/overseas-tax.html">海外所得稅</a>
+            <a href="/calculators/currency-converter.html">多幣匯率</a>
+            <a href="/calculators/mortgage-stress-test.html">房貸升息</a>
+            <a href="/?tool=dca" data-tool="dca">定期定額</a>
+            <a href="/?tool=fcn" data-tool="fcn">FCN</a>
+          </nav></div>
         </div>
-        <section class="section"><div class="section-head"><div><h2>全部理財工具</h2><p>輸入條件後即時更新結果。</p></div></div><div class="tool-grid" id="toolGrid"></div></section>
+        <section class="section"><div class="section-head"><div><h2>全部工具</h2></div></div><div class="tool-grid" id="toolGrid"></div></section>
 
       </section>
       <section id="toolView" class="tool-view"></section>
@@ -124,18 +130,29 @@ if(window.__FINKIT_V8__)return;
 window.__FINKIT_V8__=true;
 var data=window.FINKIT_DATA;
 if(!data){document.getElementById('staticFallback').querySelector('.boot-note').textContent='工具資料檔未載入，請稍後重新整理。';return}
+var aliases={tax:'海外所得 美國股票 美股獲利 最低稅負 補稅 AMT 稅額',forex:'匯率 換匯 美元 台幣 日圓 即時',loan:'房貸 貸款 月付 本息 攤還 升息',rentbuy:'租屋 買房 頭期款',dca:'ETF 基金 定投 月存 定期定額',stock:'股票 ETF 交易稅 手續費 損益',fcn:'結構型商品 KO KI 敲入 敲出 配息',dividend:'配息 股利 補充保費',unit:'基金 單位數 月配息',irr:'IRR 年化利率 報酬',fees:'費用 管理費 經理費 ETF',retirement:'退休 退休金 提領 長壽',fire:'退休 財務自由',emergency:'預備金 失業 安全墊',debt:'信用卡 負債 月付 清償',allocation:'股債 資產配置 比例',compound:'複利 利滾利',networth:'資產負債',insurance:'保障缺口 壽險',risk:'KYC 風險屬性',inflation:'通膨 購買力'};
 var groups=data.groups,tools=data.tools,N=data.N,nav=document.getElementById('nav'),grid=document.getElementById('toolGrid'),home=document.getElementById('homeView'),view=document.getElementById('toolView'),crumb=document.getElementById('crumb'),search=document.getElementById('toolSearch'),side=document.getElementById('sidebar');
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]})}
 function renderNav(){nav.innerHTML=groups.map(function(g){return'<div class="nav-group"><div class="nav-group-title">'+esc(g.name)+'</div>'+g.ids.map(function(id){return'<button class="nav-btn" type="button" data-tool="'+id+'">'+esc(tools[id].name)+'</button>'}).join('')+'</div>'}).join('')}
-function renderCards(filter){var q=(filter||'').trim().toLowerCase(),out=[];groups.forEach(function(g){g.ids.forEach(function(id){var t=tools[id];if(q&&(t.name+' '+t.desc+' '+g.name).toLowerCase().indexOf(q)<0)return;out.push('<article class="tool-card" data-tool="'+id+'" tabindex="0"><span class="tag">'+esc(g.name)+'</span><h3>'+esc(t.name)+'</h3><p>'+esc(t.desc)+'</p><div class="go">開啟試算 →</div></article>')})});grid.innerHTML=out.length?out.join(''):'<div class="empty">找不到符合的工具，換一個關鍵字試試。</div>'}
+function matchTool(id,g,q){var t=tools[id],needle=(q||'').trim().toLowerCase();if(!needle)return true;return(t.name+' '+t.desc+' '+g+' '+(aliases[id]||'')).toLowerCase().indexOf(needle)>=0}
+function renderCards(filter){var q=(filter||'').trim().toLowerCase(),out=[];groups.forEach(function(g){g.ids.forEach(function(id){var t=tools[id];if(!matchTool(id,g.name,q))return;out.push('<a class="tool-card" data-tool="'+id+'" href="/?tool='+id+'"><span class="tag">'+esc(g.name)+'</span><h3>'+esc(t.name)+'</h3><p>'+esc(t.desc)+'</p><span class="go">立即試算 →</span></a>')})});grid.innerHTML=out.length?out.join(''):'<div class="empty">找不到工具，試試「月付」、「美股」或「ETF」。</div>'}
 function vals(t){var o={};t.fields.forEach(function(f){var e=document.querySelector('[data-field="'+f.key+'"]');o[f.key]=f.type==='select'?e.value:N(e.value)});return o}
-function input(f){if(f.type==='select')return'<div class="field"><label>'+esc(f.label)+'</label><select data-field="'+f.key+'">'+f.options.map(function(o){return'<option value="'+o[0]+'" '+(String(o[0])===String(f.value)?'selected':'')+'>'+esc(o[1])+'</option>'}).join('')+'</select>'+(f.note?'<small>'+esc(f.note)+'</small>':'')+'</div>';return'<div class="field"><label>'+esc(f.label)+'</label><input data-field="'+f.key+'" type="number" value="'+f.value+'" min="'+f.min+'" step="'+f.step+'" placeholder="'+esc(f.suffix||'')+'">'+(f.note?'<small>'+esc(f.note)+'</small>':'')+'</div>'}
+function input(f){if(f.type==='select')return'<div class="field"><label for="field-'+f.key+'">'+esc(f.label)+'</label><select id="field-'+f.key+'" data-field="'+f.key+'">'+f.options.map(function(o){return'<option value="'+o[0]+'" '+(String(o[0])===String(f.value)?'selected':'')+'>'+esc(o[1])+'</option>'}).join('')+'</select>'+(f.note?'<small>'+esc(f.note)+'</small>':'')+'</div>';return'<div class="field"><label for="field-'+f.key+'">'+esc(f.label)+'</label><input id="field-'+f.key+'" data-field="'+f.key+'" type="number" value="'+f.value+'" min="'+f.min+'" step="'+f.step+'" placeholder="'+esc(f.suffix||'')+'">'+(f.note?'<small>'+esc(f.note)+'</small>':'')+'</div>'}
 function calc(id){var t=tools[id],host=document.getElementById('results');try{host.innerHTML=t.calc(vals(t)).map(function(r){return'<div class="result '+(r.tone||'')+'"><div class="label">'+esc(r.label)+'</div><div class="value">'+esc(r.value)+'</div>'+(r.sub?'<div class="sub">'+esc(r.sub)+'</div>':'')+'</div>'}).join('')}catch(e){host.innerHTML='<div class="result bad"><div class="label">試算暫時無法完成</div><div class="sub">請檢查輸入值後再試一次。</div></div>'}}
-function openTool(id,push){if(id==='forex'){window.location.assign('/calculators/currency-converter.html');return;}if(id==='tax'){window.location.assign('/calculators/overseas-tax.html');return;}var t=tools[id];if(!t)return;home.style.display='none';view.className='tool-view active';crumb.textContent=t.name;view.innerHTML='<div class="tool-header"><div class="tool-title"><h1>'+esc(t.name)+'</h1><p>'+esc(t.desc)+'</p></div><button class="back" id="backHome" type="button">← 回工具總覽</button></div><div class="calc-layout"><section class="panel"><h2>輸入條件</h2><div class="fields">'+t.fields.map(input).join('')+'</div><div class="formula">'+esc(t.formula||'')+'</div><p class="note">FinKit 為教育與情境試算工具。稅務、保險、金融商品與法規請以主管機關及正式文件為準。</p></section><aside class="panel"><h2>試算結果</h2><div class="results" id="results"></div></aside></div>';document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-tool')===id)});view.querySelectorAll('[data-field]').forEach(function(e){e.addEventListener('input',function(){calc(id)});e.addEventListener('change',function(){calc(id)})});document.getElementById('backHome').onclick=function(){showHome(true)};calc(id);if(push!==false)try{history.pushState({tool:id},'',location.pathname+'?tool='+encodeURIComponent(id))}catch(e){};window.scrollTo({top:0,behavior:'smooth'});side.classList.remove('open')}
-function showHome(push){home.style.display='block';view.className='tool-view';view.innerHTML='';crumb.textContent='理財總覽';document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active')});if(push)try{history.pushState({},'',location.pathname)}catch(e){};window.scrollTo({top:0,behavior:'smooth'});side.classList.remove('open')}
-document.addEventListener('click',function(e){var h=e.target.closest('[data-tool]');if(h)openTool(h.getAttribute('data-tool'),true)});
+function copyText(txt,message){var output=document.getElementById('actionStatus');function ok(){if(output)output.textContent=message}function fail(){if(output)output.textContent='無法自動複製，請檢查剪貼簿權限。'}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,fail)}else{var e=document.createElement('textarea');e.value=txt;e.setAttribute('readonly','');e.style.position='fixed';e.style.left='-9999px';document.body.appendChild(e);e.select();try{document.execCommand('copy')?ok():fail()}catch(err){fail()}document.body.removeChild(e)}}
+function openTool(id,push){if(id==='forex'){window.location.assign('/calculators/currency-converter.html');return;}if(id==='tax'){window.location.assign('/calculators/overseas-tax.html');return;}var t=tools[id];if(!t)return;document.title=t.name+' 試算｜FinKit';home.style.display='none';view.className='tool-view active';crumb.textContent=t.name;view.innerHTML='<div class="tool-header"><div class="tool-title"><h1>'+esc(t.name)+'</h1><p>'+esc(t.desc)+'</p></div><div class="tool-actions"><button class="back" id="backHome" type="button">← 返回</button><button class="back" id="resetTool" type="button">重設</button><button class="back" id="copyResults" type="button">複製結果</button><button class="back" id="shareTool" type="button">分享工具</button></div></div><div id="actionStatus" class="action-status" role="status" aria-live="polite"></div><div class="calc-layout"><section class="panel"><h2>輸入條件</h2><div class="fields">'+t.fields.map(input).join('')+'</div><div class="formula">'+esc(t.formula||'')+'</div><p class="note">FinKit 為教育與情境試算工具。稅務、保險、金融商品與法規請以主管機關及正式文件為準。</p></section><aside class="panel"><h2>試算結果</h2><div class="results" id="results"></div></aside></div>';document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-tool')===id)});view.querySelectorAll('[data-field]').forEach(function(e){e.addEventListener('input',function(){calc(id)});e.addEventListener('change',function(){calc(id)})});document.getElementById('backHome').onclick=function(){showHome(true)};
+document.getElementById('resetTool').onclick=function(){t.fields.forEach(function(f){var e=view.querySelector('[data-field="'+f.key+'"]');if(e)e.value=f.value});calc(id);document.getElementById('actionStatus').textContent='已恢復預設值。'};
+document.getElementById('copyResults').onclick=function(){var lines=[t.name];document.querySelectorAll('#results .result').forEach(function(item){var label=item.querySelector('.label'),value=item.querySelector('.value');if(label&&value)lines.push(label.textContent+'：'+value.textContent)});copyText(lines.join('\\n'),'結果已複製。')};
+document.getElementById('shareTool').onclick=function(){copyText(location.origin+'/?tool='+encodeURIComponent(id),'工具連結已複製，不會包含你的試算金額。')};
+calc(id);if(push!==false)try{history.pushState({tool:id},'',location.pathname+'?tool='+encodeURIComponent(id))}catch(e){};window.scrollTo({top:0,behavior:'smooth'});side.classList.remove('open')}
+function showHome(push){document.title='FinKit 台灣理財工具箱｜免費理財試算';home.style.display='block';view.className='tool-view';view.innerHTML='';crumb.textContent='理財總覽';document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active')});if(push)try{history.pushState({},'',location.pathname)}catch(e){};window.scrollTo({top:0,behavior:'smooth'});side.classList.remove('open')}
+document.addEventListener('click',function(e){var h=e.target.closest('[data-tool]');if(h){if(h.tagName==='A')e.preventDefault();openTool(h.getAttribute('data-tool'),true)}});
 document.addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('tool-card')){e.preventDefault();openTool(e.target.getAttribute('data-tool'),true)}});
-search.addEventListener('input',function(){renderCards(search.value);document.querySelectorAll('.nav-btn').forEach(function(b){var t=tools[b.getAttribute('data-tool')],q=search.value.trim().toLowerCase();b.style.display=!q||(t.name+' '+t.desc).toLowerCase().indexOf(q)>=0?'flex':'none'})});
+var homeSearch=document.getElementById('homeToolSearch');
+function searchTools(q,origin){renderCards(q);if(homeSearch&&origin!==homeSearch)homeSearch.value=q;if(origin!==search)search.value=q;document.querySelectorAll('.nav-btn').forEach(function(b){var id=b.getAttribute('data-tool');b.style.display=matchTool(id,'',q)?'flex':'none'})}
+search.addEventListener('input',function(){searchTools(search.value,search)});
+if(homeSearch){homeSearch.addEventListener('input',function(){searchTools(homeSearch.value,homeSearch)});
+homeSearch.addEventListener('keydown',function(e){if(e.key==='Enter'){var first=grid.querySelector('[data-tool]');if(first){e.preventDefault();openTool(first.getAttribute('data-tool'),true)}}})}
 document.getElementById('homeBtn').onclick=function(){showHome(true)};
 document.getElementById('mobileMenu').onclick=function(){side.classList.toggle('open')};
 window.addEventListener('popstate',function(){var id=new URLSearchParams(location.search).get('tool');if(id&&tools[id])openTool(id,false);else showHome(false)});

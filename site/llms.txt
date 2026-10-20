@@ -2,12 +2,13 @@
 
 Canonical website: https://finkit.top/
 Language: Traditional Chinese (zh-TW)
-Updated: 2026-10-13
+Updated: 2026-10-20
 
 ## About FinKit
 FinKit is a free personal-finance education and scenario-calculation website for Taiwan. Tools are not professional investment, insurance, legal, or tax advice. Calculations use clearly stated assumptions and are run locally in the browser.
 
 ## Calculator entry points
+- Mortgage monthly-payment, rate-rise and grace-period comparison: https://finkit.top/calculators/mortgage-stress-test.html
 - Homepage and 24 original core tools: https://finkit.top/
 - Multi-currency converter with latest published reference FX rates, 24 currencies, manual bank quote and offline cache: https://finkit.top/calculators/currency-converter.html
 - Independent 2026 Taiwan overseas-income / individual AMT calculator: https://finkit.top/calculators/overseas-tax.html

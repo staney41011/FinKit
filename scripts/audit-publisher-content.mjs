@@ -5,13 +5,16 @@ const read=path=>readFile(new URL(path,site),'utf8');
 const slugs=['dca-investing-guide','emergency-fund-guide','retirement-withdrawal-guide','fcn-risk-guide','mortgage-affordability-guide','asset-allocation-guide'];
 function visible(s){return s.replace(/<style[\s\S]*?<\/style>/g,'').replace(/<script[\s\S]*?<\/script>/g,'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()}
 let count=0;
+const articleDates=new Map();
 for(const slug of slugs){
  const s=await read('learn/'+slug+'.html');
  const length=visible(s).length;
  assert.ok(length>=980,slug+' needs more useful explanation: '+length);
  assert.ok(s.includes('<table')&&s.includes('</table>'),slug+' needs a reproducible comparison');
  assert.ok(s.includes('href="/?tool='),slug+' must link to a working calculator');
- assert.ok(s.includes('"dateModified":"2026-10-16"'),slug+' needs true revision date');
+ const modified=s.match(/"dateModified":"(2026-\d{2}-\d{2})"/)?.[1];
+ assert.ok(modified && modified>='2026-10-16',slug+' needs a current and valid revision date');
+ articleDates.set(slug,modified);
  count+=length;
 }
 for(const name of ['about.html','editorial-policy.html','methodology.html']){
@@ -19,7 +22,7 @@ for(const name of ['about.html','editorial-policy.html','methodology.html']){
  assert.ok(visible(s).length>=650,name+' needs a substantive methodology or disclosure');
 }
 const sitemap=await read('sitemap.xml');
-for(const slug of slugs)assert.ok(sitemap.includes('<loc>https://finkit.top/learn/'+slug+'.html</loc><lastmod>2026-10-16</lastmod>'),slug+' sitemap lastmod is outdated');
+for(const slug of slugs)assert.ok(sitemap.includes('<loc>https://finkit.top/learn/'+slug+'.html</loc><lastmod>'+articleDates.get(slug)+'</lastmod>'),slug+' sitemap lastmod does not match article date');
 const home=await read('index.html');
 assert.ok(home.includes('class="app-shell"')&&home.includes('class="fallback-grid"'),'Homepage stability regression');
 assert.ok(!home.includes('內容與工具分離'),'Previously removed homepage section returned');
